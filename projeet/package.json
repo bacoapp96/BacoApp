@@ -1,0 +1,15 @@
+{
+  "name": "estudiantes",
+  "version": "1.0.0",
+  "description": "crear app",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "author": "compañeros sena",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.20.0"
+  }
+}
