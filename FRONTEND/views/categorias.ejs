@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Categorías - BacoApp</title>
+
+  <link rel="stylesheet" href="./css/categorias.css">
+</head>
+<body>
+
+<div class="search">
+    <input type="text" placeholder="Buscar productos...">
+    <button class="search-btn">🔍</button>
+</div>
+
+
+  <button id="menu-btn" class="menu-btn">☰</button>
+
+  
+  <aside id="sidebar" class="sidebar">
+    <button id="close-btn" class="close-btn">✕</button>
+
+    <h2 class="brand">BacoApp</h2>
+    
+    <nav class="nav">
+      <ul>
+        <li><a href="/Inicio">Inicio</a></li>
+        <li><a href="/Categorias">Categorías</a></li>
+        <li><a href="#carrito">Carrito</a></li>
+        <li><a href="#">Cuenta</a></li>
+        <li><a href="/Index">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+    
+  </aside>
+
+  <aside id="cart-sidebar" class="cart-sidebar">
+
+  <button class="close-cart">✕</button>
+
+  <h2>Tu Carrito</h2>
+
+  <div class="cart-items">
+    <div id="carrito-contenido"></div>
+    
+  </div>
+
+  <div class="cart-actions">
+    <p id="total-price">Total: $0</p>
+    <button id="btn-pagar">Pagar</button>
+    <button id="btn-vaciar">Vaciar Carrito</button>
+    <button id="btn-seguir">Seguir Comprando</button>
+  </div>
+
+</aside>
+    <main class="categories-main">
+
+   
+    <h1>Selecciona tu categoria de preferencia y disfruta de nuestros productos.</h1>
+
+   
+    <section class="category" aria-label="Lista de categorías">
+
+      <a class="category-card" href="categoria-vinos.html" aria-label="Vinos">
+        <img src="img/vinosSeleccionados.jpg" alt="Vinos seleccionados" loading="lazy">
+        <h3>Vinos</h3>
+      </a>
+
+      <a class="category-card" href="categoria-whisky.html" aria-label="Whiskys">
+        <img src="img/whiskys.jpg" alt="Whiskys" loading="lazy">
+        <h3>Whiskys</h3>
+      </a>
+
+      <a class="category-card" href="categoria-rones.html" aria-label="Rones">
+        <img src="img/rones.jpg" alt="Rones" loading="lazy">
+        <h3>Rones</h3>
+      </a>
+
+      <a class="category-card" href="categoria-cervezas.html" aria-label="Cervezas">
+        <img src="img/cervezas.jpg" alt="Cervezas" loading="lazy">
+        <h3>Cervezas</h3>
+      </a>
+
+      <a class="category-card" href="categoria-tequilas.html" aria-label="Tequilas">
+        <img src="img/tequilas.jpg" alt="Tequilas" loading="lazy">
+        <h3>Tequilas</h3>
+      </a>
+
+      <a class="category-card" href="categoria-aguardientes.html" aria-label="Aguardientes">
+        <img src="img/aguardientes.jpg" alt="Aguardientes" loading="lazy">
+        <h3>Aguardientes</h3>
+      </a>
+
+      <a class="category-card" href="categoria-gaseosas.html" aria-label="Gaseosas">
+        <img src="img/gaseosas.jpg" alt="Gaseosas" loading="lazy">
+        <h3>Gaseosas</h3>
+      </a>
+
+      <a class="category-card" href="categoria-jugos.html" aria-label="Jugos">
+        <img src="img/jugos.jpg" alt="Jugos" loading="lazy">
+        <h3>Jugos</h3>
+      </a>
+
+      <a class="category-card" href="categoria-vodkas.html" aria-label="Vodkas">
+        <img src="img/vodkas.jpg" alt="Vodkas" loading="lazy">
+        <h3>Vodkas</h3>
+      </a>
+
+      <a class="category-card" href="categoria-ginebras.html" aria-label="Ginebras">
+        <img src="img/ginebras.jpg" alt="Ginebras" loading="lazy">
+        <h3>Ginebras</h3>
+      </a>
+
+      <a class="category-card" href="categoria-desechables.html" aria-label="Desechables">
+        <img src="img/desechables.jpg" alt="Desechables" loading="lazy">
+        <h3>Desechables</h3>
+      </a>
+
+      <a class="category-card" href="categoria-dulces.html" aria-label="Dulces">
+        <img src="img/dulces.jpg" alt="Dulces" loading="lazy">
+        <h3>Dulces</h3>
+      </a>
+
+      <a class="category-card" href="categoria-accesorios.html" aria-label="Accesorios">
+        <img src="img/accesorios.jpg" alt="Accesorios" loading="lazy">
+        <h3>Accesorios</h3>
+      </a>
+
+    </section>
+
+  </main>
+
+  <script src="./js/categorias.js"></script>
+</body>
+</html>

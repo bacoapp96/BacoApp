@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busqueda-BacoApp</title>
+    <link rel="stylesheet" href="css/busqueda.css">
+</head>
+<body>
+
+<h1>🔍 Buscar Productos</h1>
+
+
+<input type="text" placeholder="Busca whisky, ron, cerveza..." class="search-box">
+
+<div class="results">
+
+    <% productos.forEach(producto => { %>
+
+        <div class="result-item">
+            <h3><%= producto.Nombre %></h3>
+            <p><%= producto.Descripcion %></p>
+            <strong>$<%= producto.Precio %></strong>
+        </div>
+
+    <% }) %>
+
+</div>
+
+</body>
+</html>

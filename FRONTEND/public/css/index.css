@@ -1,0 +1,67 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* FONDO */
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #1e1e2f, #3a0ca3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CONTENEDOR */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* TARJETA */
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    text-align: center;
+    width: 350px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* LOGO */
+.logo {
+    width: 80px;
+    margin-bottom: 20px;
+}
+
+/* TEXTO */
+.card h1 {
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 14px;
+    margin-bottom: 25px;
+    opacity: 0.8;
+}
+
+/* BOTÓN */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #7209b7;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #560bad;
+}
