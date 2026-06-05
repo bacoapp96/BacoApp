@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Proveedores</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/proveedores.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="admin-page">
+
+    <%- include("partials/admin-sidebar", { active: "proveedores" }) %>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+
+        <!-- HEADER -->
+
+        <div class="top-header">
+
+            <h1>🚚 Proveedores</h1>
+
+            <div class="header-actions">
+
+                <input type="text"
+                       id="buscador"
+                       placeholder="Buscar proveedor...">
+
+                <button id="btnNuevo">
+                    + Nuevo proveedor
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- KPI -->
+
+        <div class="kpi-container">
+
+            <div class="kpi-card" id="cardActivos">
+
+                <h3>Proveedores activos</h3>
+
+                <p>18</p>
+
+            </div>
+
+
+            <div class="kpi-card" id="cardPendientes">
+
+                <h3>Pedidos pendientes</h3>
+
+                <p>6</p>
+
+            </div>
+
+
+            <div class="kpi-card" id="cardEntregas">
+
+                <h3>Entregas hoy</h3>
+
+                <p>4</p>
+
+            </div>
+
+
+            <div class="kpi-card" id="cardDeuda">
+
+                <h3>Deuda total</h3>
+
+                <p>$5.800.000</p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ALERTAS -->
+
+        <div class="alertas">
+
+            <div class="alerta warning">
+
+                ⚠️ Whisky Old Parr está próximo a agotarse
+
+            </div>
+
+
+            <div class="alerta danger"
+                 id="pedidoAtrasado">
+
+                🚫 Pedido #204 lleva retraso de 3 días
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLA -->
+
+        <div class="tabla-container">
+
+            <div class="tabla-header">
+
+                <h2>Lista de proveedores</h2>
+
+                <select id="filtroEstado">
+
+                    <option value="todos">
+                        Todos
+                    </option>
+
+                    <option value="Activo">
+                        Activos
+                    </option>
+
+                    <option value="Pendiente">
+                        Pendientes
+                    </option>
+
+                    <option value="Cancelado">
+                        Cancelados
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Proveedor</th>
+
+                        <th>Teléfono</th>
+
+                        <th>Pedidos</th>
+
+                        <th>Estado</th>
+
+                        <th>Deuda</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="tablaProveedores">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- DETALLE PEDIDOS -->
+
+        <div class="detalle-container">
+
+            <h2>
+                📦 Pedidos recientes
+            </h2>
+
+            <div id="detallePedidos">
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DETALLE COMPLETO -->
+
+        <div class="detalle-pedido-completo">
+
+            <h2>
+                📋 Detalle del pedido
+            </h2>
+
+            <div id="detalleCompleto">
+
+                <div class="pedido-detalle-card">
+
+                    <h3>
+                        Pedido #204
+                    </h3>
+
+                    <p>
+                        🚚 Proveedor:
+                        AndesLiquor
+                    </p>
+
+                    <p>
+                        📅 Fecha:
+                        28/05/2026
+                    </p>
+
+                    <p>
+                        📌 Estado:
+                        Pendiente
+                    </p>
+
+                    <hr>
+
+                    <div class="productos-pedido">
+
+                        <div class="producto-item">
+
+                            <span>
+                                Whisky Old Parr
+                            </span>
+
+                            <span>
+                                x10
+                            </span>
+
+                        </div>
+
+
+                        <div class="producto-item">
+
+                            <span>
+                                Ron Medellín
+                            </span>
+
+                            <span>
+                                x20
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h4>
+                        💰 Total:
+                        $2.500.000
+                    </h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MODAL -->
+
+        <div class="modal" id="modalProveedor">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h2 id="tituloModal">
+                        Nuevo proveedor
+                    </h2>
+
+                    <span id="cerrarModal">
+                        ✖
+                    </span>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <input type="text"
+                           id="nombreProveedor"
+                           placeholder="Nombre del proveedor">
+
+                    <input type="text"
+                           id="telefonoProveedor"
+                           placeholder="Teléfono">
+
+                    <input type="email"
+                           id="correoProveedor"
+                           placeholder="Correo">
+
+                    <input type="text"
+                           id="direccionProveedor"
+                           placeholder="Dirección">
+
+                    <input type="text"
+                           id="ciudadProveedor"
+                           placeholder="Ciudad">
+
+                    <input type="text"
+                           id="nitProveedor"
+                           placeholder="NIT">
+
+                    <input type="text"
+                           id="contactoProveedor"
+                           placeholder="Contacto principal">
+
+                    <textarea id="notasProveedor"
+                              placeholder="Notas del proveedor"></textarea>
+
+                </div>
+
+
+                <button id="guardarProveedor">
+
+                    Guardar proveedor
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- JS -->
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/proveedores.js"></script>
+
+</body>
+
+</html>

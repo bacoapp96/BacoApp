@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin</title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="admin-page">
+  <div class="dashboard-container">
+    <%- include("partials/admin-sidebar", { active: "dashboard" }) %>
+
+    <main class="main">
+      <section class="dashboard-hero">
+        <div>
+          <span class="eyebrow">BACOAPP</span>
+          <h1>Menu principal</h1>
+          <p>Gestiona inventario, clientes, reportes y configuracion desde un solo panel.</p>
+        </div>
+
+        <button class="refresh-btn" onclick="refreshDashboard()" type="button">
+          <i class="fa-solid fa-rotate-right"></i>
+          Actualizar
+        </button>
+      </section>
+
+      <section class="admin-shortcuts" aria-label="Accesos rapidos">
+        <a class="admin-shortcut" href="/inventario">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <strong>Inventario</strong>
+          <span>Productos y stock</span>
+        </a>
+
+        <a class="admin-shortcut" href="/cliente">
+          <i class="fa-solid fa-users"></i>
+          <strong>Clientes</strong>
+          <span>Gestion comercial</span>
+        </a>
+
+        <a class="admin-shortcut" href="/reportes">
+          <i class="fa-solid fa-chart-pie"></i>
+          <strong>Reportes</strong>
+          <span>Ventas y actividad</span>
+        </a>
+
+        <a class="admin-shortcut" href="/proveedores">
+          <i class="fa-solid fa-truck-ramp-box"></i>
+          <strong>Proveedores</strong>
+          <span>Pedidos y aliados</span>
+        </a>
+      </section>
+
+      <section class="cards">
+        <div class="card">
+          <i class="fa-solid fa-sack-dollar"></i>
+          <h3>Ventas hoy</h3>
+          <p>$ <span id="sales">0</span></p>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-receipt"></i>
+          <h3>Pedidos</h3>
+          <p id="orders">0</p>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-store"></i>
+          <h3>Tiendas activas</h3>
+          <p id="stores">0</p>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-user-group"></i>
+          <h3>Usuarios</h3>
+          <p id="users">0</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Ultimos pedidos</h2>
+          <a href="/reportes">Ver reportes</a>
+        </div>
+
+        <div class="list" id="ordersList">
+          <div class="item">
+            <span>Pedido #101 - BacoStore</span>
+            <strong>Enviado</strong>
+          </div>
+
+          <div class="item">
+            <span>Pedido #102 - AndesLiquor</span>
+            <strong>Pendiente</strong>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

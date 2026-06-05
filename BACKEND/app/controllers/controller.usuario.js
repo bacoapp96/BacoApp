@@ -1,12 +1,14 @@
 import pool from "../config/db.js";
 
+
+
 export const login = async (req, res) => {
 
     const { Usuario, password } = req.body;
 
     try {
         const [rows] = await pool.query(
-            "SELECT * FROM usuario WHERE Nombre = ? AND Password = ?",
+            "SELECT * FROM usuario WHERE Usuario = ? AND Password = ?",
             [Usuario, password]
         );
 
@@ -15,7 +17,7 @@ export const login = async (req, res) => {
             return res.json({
                 ok: true,
                 user: {
-                    Nombre: rows[0].Nombre,
+                    Usuario: rows[0].Usuario,
                     rol: rows[0].rol
                 }
             });
@@ -39,7 +41,7 @@ export const login = async (req, res) => {
 export const listarUsuarios = async (req, res) => {
     try {
         const [rows] = await pool.query(
-            "SELECT Id_usuario, Nombre, Email, rol FROM usuario"
+            "SELECT Id_usuario, Nombre, Usuario, Email, rol FROM usuario"
         );
 
         res.json(rows);
@@ -53,7 +55,7 @@ export const listarUsuarios = async (req, res) => {
 export const obtenerUsuario = async (req, res) => {
     try {
         const [rows] = await pool.query(
-            "SELECT Id_usuario, Nombre, Email, rol FROM usuario WHERE Id_usuario = ?",
+            "SELECT Id_usuario, Nombre, Usuario, Email, rol FROM usuario WHERE Id_usuario = ?",
             [req.params.id]
         );
 
@@ -71,36 +73,32 @@ export const obtenerUsuario = async (req, res) => {
 // CREAR
 export const crearUsuario = async (req, res) => {
     try {
-        const { Nombre, Email, Password, rol } = req.body;
+        const { nombre, usuario, email, password, celular} = req.body;
 
-        if (!Nombre || !Email || !Password || !rol) {
-            return res.status(400).json({ error: "Faltan datos" });
-        }
+        const query = `
+            INSERT INTO usuario (Nombre, Usuario, Email, Password, Celular, Rol)
+            VALUES (?, ?, ?, ?, ?, 'cliente')
+        `;
 
-        const [result] = await pool.query(
-            "INSERT INTO usuario (Nombre, Email, Password, rol) VALUES (?, ?, ?, ?)",
-            [Nombre, Email, Password, rol]
-        );
+        await pool.query(query, [nombre, usuario, email, password, celular]);
 
-        res.json({
-            mensaje: "Usuario creado",
-            id: result.insertId
-        });
+        res.json({ message: "Usuario registrado correctamente" });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ message: "Error al registrar usuario" });
     }
 };
 
 // ACTUALIZAR
 export const actualizarUsuario = async (req, res) => {
     try {
-        const { Nombre, Email, Password, rol } = req.body;
+        const { Nombre, Usuario, Email, Password, rol } = req.body;
         const id = req.params.id;
 
         const [result] = await pool.query(
-            "UPDATE usuario SET Nombre = ?, Email = ?, Password = ?, rol = ? WHERE Id_usuario = ?",
-            [Nombre, Email, Password, rol, id]
+            "UPDATE usuario SET Nombre = ?, Usuario = ?, Email = ?, Password = ?, rol = ? WHERE Id_usuario = ?",
+            [Nombre, Usuario, Email, Password, rol, id]
         );
 
         if (result.affectedRows === 0) {

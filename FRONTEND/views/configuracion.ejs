@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración | BacoApp</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/configuracion.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="admin-page">
+
+    <div class="dashboard-container">
+
+        <%- include("partials/admin-sidebar", { active: "configuracion" }) %>
+
+        <!-- MAIN -->
+        <main class="main-config">
+
+            <!-- HEADER -->
+            <div class="header-config">
+
+                <div>
+
+                    <h1>
+                        ⚙️ Configuración del sistema
+                    </h1>
+
+                    <p>
+                        Administra la plataforma BacoApp
+                    </p>
+
+                </div>
+
+                <div class="header-actions">
+
+                    <button class="save-btn">
+                        Guardar cambios
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- INFORMACIÓN GENERAL -->
+            <section class="config-card" id="informacion-general">
+
+                <h2>Información general</h2>
+
+                <div class="form-grid">
+
+                    <div class="input-group">
+
+                        <label>Nombre de la empresa</label>
+
+                        <input 
+                            type="text"
+                            value="BacoApp"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label>Correo administrativo</label>
+
+                        <input 
+                            type="email"
+                            value="admin@bacoapp.com"
+                        >
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label>Teléfono</label>
+
+                        <input 
+                            type="text"
+                            value="+57 321 000 0000"
+                        >
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label>Moneda</label>
+
+                        <select>
+
+                            <option>COP</option>
+                            <option>USD</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- SEGURIDAD -->
+            <section class="config-card" id="seguridad">
+
+                <h2>Seguridad</h2>
+
+                <div class="security-item">
+
+                    <div>
+
+                        <h3>
+                            Autenticación en dos pasos
+                        </h3>
+
+                        <p>
+                            Protege el acceso del administrador
+                        </p>
+
+                    </div>
+
+                    <div class="toggle active">
+                        <div class="circle"></div>
+                    </div>
+
+                </div>
+
+                <div class="security-item">
+
+                    <div>
+
+                        <h3>
+                            Alertas de inicio de sesión
+                        </h3>
+
+                        <p>
+                            Recibe notificaciones de accesos sospechosos
+                        </p>
+
+                    </div>
+
+                    <div class="toggle active">
+                        <div class="circle"></div>
+                    </div>
+
+                </div>
+
+                <div class="security-item">
+
+                    <div>
+
+                        <h3>
+                            Cerrar sesiones activas
+                        </h3>
+
+                        <p>
+                            Desconecta dispositivos conectados
+                        </p>
+
+                    </div>
+
+                    <button class="security-btn">
+                        Cerrar sesiones
+                    </button>
+
+                </div>
+
+                <div class="security-item">
+
+                    <div>
+
+                        <h3>
+                            Cambiar contraseña
+                        </h3>
+
+                        <p>
+                            Actualiza la contraseña administrativa
+                        </p>
+
+                    </div>
+
+                    <button class="security-btn">
+                        Cambiar
+                    </button>
+
+                </div>
+
+            </section>
+
+            <!-- MÉTODOS DE PAGO -->
+            <section class="config-card" id="metodos-pago">
+
+                <h2>Métodos de pago</h2>
+
+                <div class="security-item">
+
+                    <div>
+
+                        <h3>
+                            Tarjetas bancarias
+                        </h3>
+
+                        <p>
+                            Aceptar pagos con Visa y Mastercard
+                        </p>
+
+                    </div>
+
+                    <div class="toggle active">
+                        <div class="circle"></div>
+                    </div>
+
+                </div>
+
+                <div class="security-item">
+
+                    <div>
+
+                        <h3>
+                            Nequi
+                        </h3>
+
+                        <p>
+                            Permitir pagos mediante Nequi
+                        </p>
+
+                    </div>
+
+                    <div class="toggle active">
+                        <div class="circle"></div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- APARIENCIA -->
+            <section class="config-card" id="apariencia">
+
+                <h2>Temas de apariencia</h2>
+
+                <div class="themes">
+
+                    <div class="theme active-theme" data-theme-option="dark">
+
+                        <div class="theme-preview dark"></div>
+
+                        <p>Oscuro</p>
+
+                    </div>
+
+                    <div class="theme" data-theme-option="gold">
+
+                        <div class="theme-preview gold"></div>
+
+                        <p>Dorado</p>
+
+                    </div>
+
+                    <div class="theme" data-theme-option="neon">
+
+                        <div class="theme-preview neon"></div>
+
+                        <p>Neón</p>
+
+                    </div>
+
+                    <div class="theme" data-theme-option="minimal">
+
+                        <div class="theme-preview minimal"></div>
+
+                        <p>Minimalista</p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- RESPALDO -->
+            <section class="backup-card" id="respaldo">
+
+                <div>
+
+                    <h2>
+                        Respaldo automático
+                    </h2>
+
+                    <p>
+                        Última copia realizada hace 2 horas
+                    </p>
+
+                </div>
+
+                <button class="backup-btn">
+                    Crear respaldo
+                </button>
+
+            </section>
+
+            <!-- ZONA PELIGRO -->
+            <section class="danger-zone">
+
+                <div>
+
+                    <h2>
+                        Zona peligrosa
+                    </h2>
+
+                    <p>
+                        Estas acciones son permanentes y pueden afectar el sistema.
+                    </p>
+
+                </div>
+
+                <button class="danger-btn">
+                    Eliminar cuenta administrativa
+                </button>
+
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="footer">
+
+                <p>
+                    © BacoApp - Todos los derechos reservados
+                </p>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/configuracion.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<script src="/js/theme.js"></script>
+
+<aside class="sidebar">
+  <h2>BacoApp</h2>
+
+  <ul>
+    <li class="<%= active === 'dashboard' ? 'active' : '' %>">
+      <a class="menu-link" href="/dashboard">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li class="<%= active === 'inventario' ? 'active' : '' %>">
+      <a class="menu-link" href="/inventario">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <span>Inventario</span>
+      </a>
+    </li>
+    <li class="<%= active === 'cliente' ? 'active' : '' %>">
+      <a class="menu-link" href="/cliente">
+        <i class="fa-solid fa-users"></i>
+        <span>Clientes</span>
+      </a>
+    </li>
+    <li class="<%= active === 'reportes' ? 'active' : '' %>">
+      <a class="menu-link" href="/reportes">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Reportes</span>
+      </a>
+    </li>
+    <li class="<%= active === 'proveedores' ? 'active' : '' %>">
+      <a class="menu-link" href="/proveedores">
+        <i class="fa-solid fa-truck-ramp-box"></i>
+        <span>Proveedores</span>
+      </a>
+    </li>
+    <li class="<%= active === 'configuracion' ? 'active' : '' %>">
+      <a class="menu-link" href="/configuracion">
+        <i class="fa-solid fa-gear"></i>
+        <span>Configuracion</span>
+      </a>
+    </li>
+    <li class="<%= active === 'ayuda' ? 'active' : '' %>">
+      <a class="menu-link" href="/ayuda">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>Ayuda</span>
+      </a>
+    </li>
+    <li class="<%= active === 'cuenta-admin' ? 'active' : '' %>">
+      <a class="menu-link" href="/cuenta-admin">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>Cuenta admin</span>
+      </a>
+    </li>
+    <li>
+      <a class="menu-link" href="/Index">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Cerrar sesion</span>
+      </a>
+    </li>
+  </ul>
+</aside>

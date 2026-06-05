@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Ayuda | BacoApp</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/ayuda.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="admin-page">
+
+    <div class="dashboard-container">
+
+        <%- include("partials/admin-sidebar", { active: "ayuda" }) %>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- HEADER -->
+            <div class="help-header">
+
+                <div>
+
+                    <h1>
+                        ❓ Centro de ayuda
+                    </h1>
+
+                    <p>
+                        ¿Necesitas ayuda con BacoApp?
+                    </p>
+
+                </div>
+
+                <a href="/dashboard" class="back-btn">
+                    ← Volver al panel
+                </a>
+
+            </div>
+
+            <!-- SEARCH -->
+            <section class="search-section">
+
+                <input 
+                    type="text"
+                    placeholder="Buscar ayuda..."
+                    id="searchInput"
+                >
+
+            </section>
+
+            <!-- FAQ -->
+            <section class="help-card">
+
+                <h2>
+                    Preguntas frecuentes
+                </h2>
+
+                <div class="faq-item">
+
+                    <h3>
+                        ¿Cómo agregar productos?
+                    </h3>
+
+                    <p>
+                        Ve al módulo inventario y selecciona 
+                        “Agregar producto”.
+                    </p>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <h3>
+                        ¿Cómo cambiar la contraseña?
+                    </h3>
+
+                    <p>
+                        Ingresa a configuración y luego seguridad.
+                    </p>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <h3>
+                        ¿Cómo crear un respaldo?
+                    </h3>
+
+                    <p>
+                        Ve a configuración y entra en respaldo.
+                    </p>
+
+                </div>
+
+            </section>
+
+            <!-- SOPORTE -->
+            <section class="help-card">
+
+                <h2>
+                    Soporte
+                </h2>
+
+                <div class="support-buttons">
+
+                    <button class="help-btn">
+                        💬 WhatsApp
+                    </button>
+
+                    <button class="help-btn">
+                        📧 Correo
+                    </button>
+
+                    <button class="help-btn">
+                        🎧 Chat en vivo
+                    </button>
+
+                </div>
+
+            </section>
+
+            <!-- REPORTAR -->
+            <section class="help-card">
+
+                <h2>
+                    Reportar un problema
+                </h2>
+
+                <textarea 
+                    placeholder="Describe el problema..."
+                ></textarea>
+
+                <button class="send-btn">
+                    Enviar reporte
+                </button>
+
+            </section>
+
+            <!-- TIPS -->
+            <section class="help-card">
+
+                <h2>
+                    Consejos rápidos
+                </h2>
+
+                <div class="tip-box">
+
+                    <p>
+                        🔐 Activa la autenticación en dos pasos
+                        para proteger tu cuenta administrativa.
+                    </p>
+
+                </div>
+
+                <div class="tip-box">
+
+                    <p>
+                        💾 Realiza respaldos automáticos cada semana.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/ayuda.js"></script>
+
+</body>
+</html>

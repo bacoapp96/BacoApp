@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - BacoApp</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/carrito.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <%- include("partials/client-sidebar", { active: "carrito" }) %>
+
+    <main class="cart-page">
+        <header class="cart-hero">
+            <div>
+                <span class="cart-kicker">Pedido cliente</span>
+                <h1>Tu carrito</h1>
+                <p>Revisa cantidades, aplica beneficios y prepara tu compra antes del pago.</p>
+            </div>
+
+            <a class="cart-continue" href="/Inicio">
+                <i class="fa-solid fa-arrow-left"></i>
+                Seguir comprando
+            </a>
+        </header>
+
+        <section class="cart-layout">
+            <div class="cart-main-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Productos seleccionados</h2>
+                        <p><span data-cart-count>0</span> unidades en el carrito</p>
+                    </div>
+                    <button id="btn-vaciar" class="ghost-btn" type="button">
+                        <i class="fa-solid fa-trash"></i>
+                        Vaciar
+                    </button>
+                </div>
+
+                <div class="cart-items cart-page-items">
+                    <div id="carrito-contenido" data-cart-container></div>
+                </div>
+
+                <details class="event-helper">
+                    <summary>
+                        <span><i class="fa-solid fa-champagne-glasses"></i> Preparar compra para evento</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+                    <div class="event-grid">
+                        <button class="btn-agregar" type="button" data-nombre="Pack reunion premium" data-precio="280000" data-tipo="Pack sugerido">
+                            Pack reunion premium
+                        </button>
+                        <button class="btn-agregar" type="button" data-nombre="Mix snacks y gaseosas" data-precio="95000" data-tipo="Complemento">
+                            Mix snacks y gaseosas
+                        </button>
+                        <button class="btn-agregar" type="button" data-nombre="Kit celebracion VIP" data-precio="420000" data-tipo="Pack sugerido">
+                            Kit celebracion VIP
+                        </button>
+                    </div>
+                </details>
+            </div>
+
+            <aside class="cart-summary-panel">
+                <h2>Resumen del pedido</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong data-cart-subtotal>$0</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Descuento</span>
+                    <strong data-cart-discount>$0</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Envio</span>
+                    <strong data-cart-shipping>Gratis</strong>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong id="total-price" data-cart-total>Total: $0</strong>
+                </div>
+
+                <div class="coupon-box">
+                    <label for="couponCode">Codigo promocional</label>
+                    <div>
+                        <input id="couponCode" type="text" placeholder="BACO10">
+                        <button id="applyCoupon" type="button">Aplicar</button>
+                    </div>
+                    <button id="clearCoupon" class="text-btn" type="button">Quitar cupon</button>
+                </div>
+
+                <div class="recommendation">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <p data-cart-recommendation>Agrega productos para recibir recomendaciones del pedido.</p>
+                </div>
+
+                <button id="btn-pagar" class="checkout-btn" type="button">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Continuar al pago
+                </button>
+
+                <div class="cart-recommendations">
+                    <h3>Recomendado para BacoApp</h3>
+                    <ul>
+                        <li>Direccion y franja horaria de entrega.</li>
+                        <li>Metodo de pago y comprobante.</li>
+                        <li>Validacion de edad antes de finalizar.</li>
+                        <li>Notas para empaques, hielo o regalos.</li>
+                    </ul>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

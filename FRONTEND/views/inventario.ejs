@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/inventario.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body class="admin-page">
+
+    <%- include("partials/admin-sidebar", { active: "inventario" }) %>
+
+
+    <!-- CONTENIDO -->
+    <main class="main-content">
+
+        <!-- HEADER -->
+        <header class="top-header">
+
+            <div class="admin">
+                👤 Administrador
+            </div>
+
+        </header>
+
+
+        <!-- INVENTARIO -->
+        <section class="inventario-container">
+
+            <!-- TITULO Y BUSCADOR -->
+            <div class="inventario-header">
+
+                <h1>Inventario</h1>
+
+                <div class="buscador">
+                    <input 
+                        type="text" 
+                        id="inputBuscar"
+                        placeholder="Buscar producto..."
+                    >
+
+                    <button id="btnBuscar">
+                        Buscar
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- CARDS -->
+            <div class="stats-container">
+
+                <div class="stat-card" id="cardTotal">
+                    <h3>Productos totales</h3>
+                    <p id="totalProductos">0</p>
+                </div>
+
+                <div class="stat-card" id="cardStock">
+                    <h3>Bajo stock</h3>
+                    <p id="bajoStock">0</p>
+                </div>
+
+                <div class="stat-card" id="cardVendidos">
+                    <h3>Más vendidos</h3>
+                    <p id="masVendido">0</p>
+                </div>
+
+                <div class="stat-card" id="cardAgotados">
+                    <h3>Agotados</h3>
+                    <p id="agotados">0</p>
+                </div>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="tabla-productos">
+
+                <table class="inventario-table">
+
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Categoría</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- JS -->
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/inventario.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,480 @@
+
+/* LAYOUT */
+
+.dashboard-container{
+    display:flex;
+    min-height:100vh;
+}
+
+
+/* MAIN */
+
+.main-config{
+    flex:1;
+    padding:40px;
+}
+
+/* HEADER */
+
+.header-config{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:35px;
+}
+
+.header-config h1{
+    font-size:38px;
+    margin-bottom:8px;
+}
+
+.header-config p{
+    color:var(--gray);
+}
+
+/* ACTIONS */
+
+.header-actions{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+/* BOTON VOLVER */
+
+.back-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:14px 22px;
+
+    text-decoration:none;
+
+    background:#1d1d1d;
+
+    border:1px solid #333;
+
+    border-radius:14px;
+
+    color:white;
+
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    background:#2d2d2d;
+    transform:translateY(-3px);
+}
+
+/* BOTON GUARDAR */
+
+.save-btn{
+    background:var(--gold);
+    color:black;
+
+    border:none;
+
+    padding:15px 25px;
+
+    border-radius:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.save-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 20px rgba(200,155,60,0.3);
+}
+
+/* CARDS */
+
+.config-card{
+    background:rgba(23,23,23,0.95);
+
+    backdrop-filter:blur(10px);
+
+    padding:30px;
+
+    border-radius:24px;
+
+    margin-bottom:25px;
+
+    border:1px solid var(--border);
+
+    transition:0.3s;
+}
+
+.config-card:hover{
+    border-color:var(--gold);
+    transform:translateY(-2px);
+}
+
+.config-card h2{
+    margin-bottom:25px;
+    font-size:24px;
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label{
+    margin-bottom:10px;
+    color:var(--gray);
+}
+
+.input-group input,
+.input-group select{
+    background:#222;
+
+    border:1px solid #333;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    color:white;
+
+    outline:none;
+
+    transition:0.3s;
+}
+
+.input-group input:focus,
+.input-group select:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 15px rgba(200,155,60,0.2);
+}
+
+/* BLOQUEADO */
+
+input[readonly]{
+    background:#111;
+    color:#777;
+    cursor:not-allowed;
+}
+
+/* ITEMS */
+
+.security-item,
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:var(--card-hover);
+
+    padding:22px;
+
+    border-radius:18px;
+
+    margin-bottom:15px;
+
+    transition:0.3s;
+}
+
+.security-item:hover,
+.history-item:hover{
+    background:#292929;
+}
+
+.security-item p,
+.history-item p{
+    color:var(--gray);
+    margin-top:5px;
+}
+
+/* TOGGLE */
+
+.toggle{
+    width:60px;
+    height:30px;
+
+    background:#555;
+
+    border-radius:30px;
+
+    position:relative;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.circle{
+    width:24px;
+    height:24px;
+
+    background:white;
+
+    border-radius:50%;
+
+    position:absolute;
+
+    top:3px;
+    left:3px;
+
+    transition:0.3s;
+}
+
+.toggle.active{
+    background:var(--gold);
+}
+
+.toggle.active .circle{
+    left:33px;
+}
+
+/* BUTTONS */
+
+.security-btn,
+.backup-btn{
+    background:var(--gold);
+    color:black;
+
+    border:none;
+
+    padding:13px 20px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.security-btn:hover,
+.backup-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* STATUS */
+
+.status{
+    background:#444;
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-size:14px;
+}
+
+.status.success{
+    background:#0f7b0f;
+}
+
+/* THEMES */
+
+.themes{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.theme{
+    background:#222;
+
+    padding:15px;
+
+    border-radius:18px;
+
+    border:2px solid transparent;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.theme:hover{
+    transform:translateY(-5px);
+}
+
+.active-theme{
+    border-color:var(--gold);
+}
+
+.theme-preview{
+    height:100px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
+.dark{
+    background:linear-gradient(to bottom right,#444,#000);
+}
+
+.gold{
+    background:linear-gradient(to bottom right,#d4a017,#ffdb70);
+}
+
+.neon{
+    background:linear-gradient(to bottom right,#00ffcc,#001f1f);
+}
+
+.minimal{
+    background:linear-gradient(to bottom right,#ddd,#999);
+}
+
+/* BACKUP */
+
+.backup-card{
+    background:linear-gradient(to right,var(--gold),var(--gold-hover));
+
+    color:black;
+
+    padding:35px;
+
+    border-radius:24px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-top:25px;
+}
+
+/* DANGER */
+
+.danger-zone{
+    background:#2a1010;
+
+    border:1px solid #5e1a1a;
+
+    padding:30px;
+
+    border-radius:24px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-top:30px;
+}
+
+.danger-zone p{
+    color:#d7b0b0;
+    margin-top:5px;
+}
+
+.danger-btn{
+    background:#ff2e2e;
+    color:white;
+
+    border:none;
+
+    padding:15px 24px;
+
+    border-radius:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.danger-btn:hover{
+    background:#ff0000;
+    transform:translateY(-3px);
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:40px;
+
+    text-align:center;
+
+    padding:25px;
+
+    color:#888;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    .dashboard-container{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        height:auto;
+
+        position:relative;
+
+        border-right:none;
+        border-bottom:1px solid #2c2c2c;
+    }
+
+    .main-config{
+        padding:20px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .themes{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .header-config{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .header-actions{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .back-btn,
+    .save-btn{
+        width:100%;
+        justify-content:center;
+    }
+
+    .backup-card,
+    .danger-zone{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .themes{
+        grid-template-columns:1fr;
+    }
+
+    .history-item,
+    .security-item{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+}

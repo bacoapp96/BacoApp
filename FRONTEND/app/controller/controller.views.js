@@ -7,9 +7,13 @@ import { fileURLToPath } from 'url';
 //api del backend
 export const API_URL = {
     usuarios: "http://localhost:3000/api/usuarios",
-    productos: "http://localhost:3000/api/producto",
-    categorias: "http://localhost:3000/api/categorias",
-    busquedas: "http://localhost:3000/api/producto/busqueda"
+            productos: "http://localhost:3000/api/productos",
+            categorias: "http://localhost:3000/api/categorias",
+            busquedas: "http://localhost:3000/api/producto/busqueda",
+            ofertas: "http://localhost:3000/api/ofertas"
+            
+
+   
 };
 
 const getPath = (ruta) => fileURLToPath(new URL(ruta, import.meta.url));
@@ -18,6 +22,50 @@ const getPath = (ruta) => fileURLToPath(new URL(ruta, import.meta.url));
 // Controlador para la vista index
 export const getIndex = (req, res) => {
     res.sendFile(getPath("../../public/index.html"));
+};
+
+//controlador para cuenta-admin
+
+export const getCuentaAdmin = (req, res) => {
+    res.render(getPath("../../views/cuenta-admin.ejs"));
+};
+
+//conrolador para proveedores
+export const getProveedores = (req, res) => {
+    res.render(getPath("../../views/proveedores.ejs"));
+};
+
+//controlador para configuracion
+export const getConfiguracion = (req, res) => {
+    res.render(getPath("../../views/configuracion.ejs"));
+};
+
+//controlador para dashboard
+export const getDashboard = (req, res) => {
+    res.render(getPath("../../views/dashboard.ejs"));
+};
+
+//controlador para ayuda
+export const getAyuda = (req, res) => {
+    res.render(getPath("../../views/ayuda.ejs"));
+};
+
+//controlador estatico
+// Controlador para la vista inventario
+export const getInventario = (req, res) => {
+    res.render(getPath("../../views/inventario.ejs"));
+};
+
+//controlador estatico
+// controlador vista de reportes
+export const getReportes = (req, res) => {
+    res.render(getPath("../../views/reportes.ejs"));
+};
+
+//controlador estatico
+// Controlador para la vista recovery
+export const getRecovery = (req, res) => {
+    res.render(getPath("../../views/recovery.ejs"));
 };
 
 //controlador estatico
@@ -29,7 +77,19 @@ export const getLogin = (req, res) => {
 //controlador dinamico
 // Controlador para la vista tienda
 export const getTienda = (req, res) => {
-    res.render(getPath("../../views/tienda.ejs"));
+    res.redirect("/Inicio");
+};
+
+
+//controlador para vista carrito
+export const getCarrito = (req, res) => {
+    res.render(getPath("../../views/carrito.ejs"));
+};
+
+//controlador dinamico
+//controlador cliente 
+export const getCliente = (req, res) => {
+    res.render(getPath("../../views/cliente.ejs"));
 };
 
 //controlador dinamico
@@ -67,7 +127,7 @@ export const getRegistroAdmin = (req, res) => {
 export const getCategoria = async(req, res) => {
 
     try {
-        const categorias = await fetch(`${API_URL_CATEGORIAS}`).then(res => res.json());
+        const categorias = await fetch(`${API_URL.categorias}`).then(res => res.json());
         res.render(getPath("../../views/categorias.ejs"), { categorias: categorias.data });
     } catch (error) {
         console.error("Datos de categorías no disponibles", error);
@@ -78,41 +138,45 @@ export const getCategoria = async(req, res) => {
 //controlador dinamico
 //controlador para vista inicio
 export const getInicio = async (req, res) => {
+
     try {
 
-        const response = await fetch(API_URL.productos);
-        const data = await response.json();
+        // PRODUCTOS
+        const responseProductos = await fetch(API_URL.productos);
+        const productos = await responseProductos.json();
 
-        console.log("PRODUCTOS:", data);
+        // OFERTAS
+        const responseOfertas = await fetch(API_URL.ofertas);
+        const ofertas = await responseOfertas.json();
+
+        console.log("PRODUCTOS:", productos);
+        console.log("OFERTAS:", ofertas);
 
         res.render("inicio", {
-            productos: data || []
+            productos: productos || [],
+            ofertas: ofertas || []
         });
 
     } catch (error) {
-        console.error("Error productos inicio:", error);
+
+        console.error("Error inicio:", error);
 
         res.render("inicio", {
-            productos: []
+            productos: [],
+            ofertas: []
         });
+
     }
+
 };
-export const getAdministrador = async (req, res) => {
-    try {
 
-        // si luego quieres traer productos del backend
-        const productos = await fetch(API_URL.productos)
-            .then(res => res.json());
+//controlador para admin
+export const getAdministrador = (req, res) => {
+    res.redirect("/dashboard");
+};
 
-        res.render("administrador", {
-            productos: productos.data || []
-        });
-
-    } catch (error) {
-        console.error("Error en administrador:", error);
-
-        res.render("administrador", {
-            productos: []
-        });
-    }
+//controlador dinamico
+//controlador para vista cuenta
+export const getCuenta = (req, res) => {
+    res.render(getPath("../../views/cuenta.ejs"));
 };

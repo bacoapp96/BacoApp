@@ -1,51 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio</title>
-  <link rel="stylesheet" href="css/inicio.css">
+  <title>Inicio - BacoApp</title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/inicio.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
-<body>
+<body class="inicio-page">
+  <script src="/js/theme.js"></script>
+  <%
+    const productosLista = typeof productos !== "undefined" && Array.isArray(productos) ? productos : [];
+    const ofertasLista = typeof ofertas !== "undefined" && Array.isArray(ofertas)
+      ? ofertas.filter(oferta => oferta && oferta.titulo)
+      : [];
+  %>
 
-  <h1>Productos</h1>
-<% if (Array.isArray(productos)) { %>
+  <button id="menu-btn" class="menu-btn" aria-label="Abrir menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 
-  <% productos.forEach(producto => { %>
-    <div class="producto">
-      <h3><%= producto.Nombre %></h3>
-      <strong>$<%= producto.Precio %></strong>
-    </div>
-  <% }) %>
+  <div id="overlay" class="overlay"></div>
 
-<% } else { %>
-
-  <p>Error cargando productos</p>
-
-<% } %>
-
-  <section class="promociones">
-
-    <div class="promo-card">
-      <h3>Ron Medellin 750ml</h3>
-      <p>Antes: $63.000</p>
-      <strong>Ahora: $50.000</strong>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-top">
+      <h2 class="brand">BacoApp</h2>
+      <button id="close-btn" class="close-btn" aria-label="Cerrar menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
 
-    <div class="promo-card">
-      <h3>Whisky Old Parr 12 años</h3>
-      <p>Antes: $120.000</p>
-      <strong>Ahora: $95.000</strong>
+    <nav class="nav">
+      <ul>
+        <li class="active"><a href="/Inicio"><i class="fa-solid fa-house"></i> Inicio</a></li>
+        <li><a href="/Categorias"><i class="fa-solid fa-wine-bottle"></i> Categorias</a></li>
+        <li><a href="#carrito"><i class="fa-solid fa-cart-shopping"></i> Carrito <span data-cart-count>0</span></a></li>
+        <li><a href="/Cuenta"><i class="fa-solid fa-user"></i> Cuenta</a></li>
+        <li><a href="/Index"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <aside id="cart-sidebar" class="cart-sidebar">
+    <button class="close-cart" aria-label="Cerrar carrito">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <h2>Tu Carrito</h2>
+    <div class="cart-items">
+      <div id="carrito-contenido"></div>
     </div>
-
-    <div class="promo-card">
-      <h3>Cerveza Corona 330ml</h3>
-      <p>Antes: $8.000</p>
-      <strong>Ahora: $6.500</strong>
+    <div class="cart-actions">
+      <p id="total-price">Total: $0</p>
+      <a class="cart-page-link" href="/carrito"><i class="fa-solid fa-up-right-from-square"></i> Ver carrito completo</a>
+      <button id="btn-pagar">Pagar</button>
+      <button id="btn-vaciar">Vaciar Carrito</button>
+      <button id="btn-seguir">Seguir Comprando</button>
     </div>
+  </aside>
 
-  </section>
+  <main class="inicio-shell">
+    <section class="hero-tienda">
+      <div class="hero-copy">
+        <span class="hero-kicker">Tienda BacoApp</span>
+        <h1>Las mejores ofertas en licores y antojos para celebrar.</h1>
+        <p>Busca, compara y agrega al carrito desde una sola pagina de inicio.</p>
+      </div>
 
+      <form class="search" role="search">
+        <label for="product-search">Buscar productos</label>
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="product-search" type="search" placeholder="Whisky, ron, cerveza..." autocomplete="off">
+          <button type="button" id="clear-search" aria-label="Limpiar busqueda">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="featured-strip" aria-label="Promociones destacadas">
+      <article>
+        <span>Hoy</span>
+        <strong>Promociones especiales</strong>
+      </article>
+      <article>
+        <span>Entrega</span>
+        <strong>Carrito listo en segundos</strong>
+      </article>
+      <article>
+        <span>Catalogo</span>
+        <strong>Todo desde Inicio</strong>
+      </article>
+    </section>
+
+    <section class="catalog-section">
+      <div class="section-heading">
+        <div>
+          <h2>Productos mas vendidos</h2>
+          <p id="search-status">Explora lo mas vendido de la tienda.</p>
+        </div>
+      </div>
+
+      <div id="contenedor-productos" class="product-grid">
+        <% if (productosLista.length) { %>
+          <% productosLista.forEach(producto => { %>
+            <article
+              class="product-card"
+              data-product-card
+              data-search="<%= `${producto.Nombre || ''} ${producto.Descripcion || ''}`.toLowerCase() %>"
+            >
+              <div class="product-icon">
+                <i class="fa-solid fa-wine-bottle"></i>
+              </div>
+              <div class="product-body">
+                <h3><%= producto.Nombre %></h3>
+                <% if (producto.Descripcion) { %>
+                  <p><%= producto.Descripcion %></p>
+                <% } else { %>
+                  <p>Producto seleccionado de BacoApp.</p>
+                <% } %>
+              </div>
+              <div class="product-actions">
+                <strong class="precio">$<%= producto.Precio %></strong>
+                <button class="btn-agregar" data-nombre="<%= producto.Nombre %>" data-precio="<%= producto.Precio %>">
+                  Agregar
+                </button>
+              </div>
+            </article>
+          <% }) %>
+        <% } else { %>
+          <p class="empty-products">No hay productos disponibles por ahora.</p>
+        <% } %>
+      </div>
+    </section>
+
+    
+  <section class="promo-section">
+  <div class="section-heading">
+    <div>
+      <h2>Ofertas del día</h2>
+      <p>Las promociones de tienda también viven aquí.</p>
+    </div>
+  </div>
+
+  <div class="promociones">
+
+    <% if (ofertasLista.length > 0) { %>
+
+      <% ofertasLista.forEach(oferta => { %>
+
+        <article
+          class="promo-card"
+          data-id="<%= oferta.id_oferta %>"
+          data-titulo="<%= oferta.titulo %>"
+          data-descuento="<%= oferta.descuento %>"
+          data-fecha-inicio="<%= oferta.fecha_inicio %>"
+          data-fecha-fin="<%= oferta.fecha_fin %>"
+          data-search="<%= `${oferta.titulo || ''} ${oferta.descuento || ''}`.toLowerCase() %>"
+        >
+
+         <h3><%= oferta.titulo %></h3>
+
+<p>Descuento: <%= oferta.descuento %>%</p>
+
+<p>
+  Inicio:
+  <%= new Date(oferta.fecha_inicio).toISOString().split("T")[0] %>
+</p>
+
+<p>
+  Fin:
+  <%= new Date(oferta.fecha_fin).toISOString().split("T")[0] %>
+</p>
+
+<p>Estado: <%= oferta.estado %></p>
+
+          <button class="btn-ver-mas">Ver más</button>
+
+          <button class="btn-agregar"
+            data-id="<%= oferta.id_oferta %>"
+            data-titulo="<%= oferta.titulo %>"
+            data-descuento="<%= oferta.descuento %>">
+            Agregar
+          </button>
+
+        </article>
+
+      <% }) %>
+
+    <% } else { %>
+      <p class="empty-promos">No hay ofertas disponibles por ahora.</p>
+    <% } %>
+
+  </div>
+</section>
+  </main>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/inicio.js"></script>
+  <script src="/js/cart.js"></script>
 </body>
 </html>

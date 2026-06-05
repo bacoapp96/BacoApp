@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuenta admin - BacoApp</title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/cuenta-admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="admin-page">
+  <%- include("partials/admin-sidebar", { active: "cuenta-admin" }) %>
+
+  <main class="admin-account-main">
+    <section class="admin-account-hero">
+      <div class="admin-avatar">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+
+      <div>
+        <span class="eyebrow">Cuenta administrativa</span>
+        <h1>Administrador BacoApp</h1>
+        <p>Panel de datos, seguridad y permisos principales de la cuenta admin.</p>
+
+        <div class="account-badges">
+          <span><i class="fa-solid fa-circle-check"></i> Activo</span>
+          <span><i class="fa-solid fa-key"></i> Acceso total</span>
+          <span><i class="fa-solid fa-shield-halved"></i> 2FA activado</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="admin-account-alert" id="admin-account-alert" role="status" aria-live="polite"></div>
+
+    <section class="admin-account-grid">
+      <article class="account-card profile-card">
+        <div class="card-title">
+          <h2>Datos del admin</h2>
+          <i class="fa-solid fa-id-card"></i>
+        </div>
+
+        <form class="admin-account-form" id="admin-account-form">
+          <div class="field-grid">
+          <label>
+            Nombre
+            <input type="text" name="nombre" value="Administrador BacoApp" autocomplete="name">
+          </label>
+
+          <label>
+            Usuario
+            <input type="text" name="usuario" value="admin" autocomplete="username">
+          </label>
+
+          <label>
+            Correo
+            <input type="email" name="correo" value="admin@bacoapp.com" autocomplete="email">
+          </label>
+
+          <label>
+            Telefono
+            <input type="text" name="telefono" value="+57 321 000 0000" autocomplete="tel">
+          </label>
+          </div>
+
+          <div class="form-actions">
+            <button class="secondary-action" id="reset-admin-account" type="button">
+              <i class="fa-solid fa-rotate-left"></i>
+              Restaurar
+            </button>
+            <button class="primary-action" type="submit">
+              <i class="fa-solid fa-floppy-disk"></i>
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="account-card">
+        <div class="card-title">
+          <h2>Seguridad</h2>
+          <i class="fa-solid fa-lock"></i>
+        </div>
+
+        <div class="security-row">
+          <div>
+            <h3>Contrasena</h3>
+            <p>Actualizada hace 12 dias</p>
+          </div>
+          <button class="security-action" data-action="password" type="button">Cambiar</button>
+        </div>
+
+        <div class="security-row">
+          <div>
+            <h3>Dispositivos</h3>
+            <p>2 sesiones activas</p>
+          </div>
+          <button class="security-action" data-action="devices" type="button">Ver</button>
+        </div>
+
+        <div class="security-row danger">
+          <div>
+            <h3>Cierre de sesion</h3>
+            <p>Salir de todos los dispositivos</p>
+          </div>
+          <button class="security-action" data-action="logout" type="button">Cerrar</button>
+        </div>
+      </article>
+
+      <article class="account-card">
+        <div class="card-title">
+          <h2>Permisos</h2>
+          <i class="fa-solid fa-user-gear"></i>
+        </div>
+
+        <div class="permission-list">
+          <span><i class="fa-solid fa-check"></i> Gestion de inventario</span>
+          <span><i class="fa-solid fa-check"></i> Reportes y ventas</span>
+          <span><i class="fa-solid fa-check"></i> Clientes y proveedores</span>
+          <span><i class="fa-solid fa-check"></i> Configuracion del sistema</span>
+        </div>
+      </article>
+
+      <article class="account-card">
+        <div class="card-title">
+          <h2>Actividad reciente</h2>
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+
+        <div class="activity-list">
+          <div>
+            <strong>Inventario actualizado</strong>
+            <span>Hoy, 9:20 a. m.</span>
+          </div>
+          <div>
+            <strong>Reporte revisado</strong>
+            <span>28/05/2026</span>
+          </div>
+          <div>
+            <strong>Proveedor agregado</strong>
+            <span>27/05/2026</span>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/cuenta-admin.js"></script>
+</body>
+</html>

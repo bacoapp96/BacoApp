@@ -1,136 +1,459 @@
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Categorías - BacoApp</title>
 
-  <link rel="stylesheet" href="./css/categorias.css">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Categorías - BacoApp
+    </title>
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/categorias.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
+
 <body>
+    <script src="/js/theme.js"></script>
 
-<div class="search">
-    <input type="text" placeholder="Buscar productos...">
-    <button class="search-btn">🔍</button>
-</div>
+    <!-- BOTÓN MENÚ -->
 
+    <button id="menu-btn" class="menu-btn">
+        ☰
+    </button>
 
-  <button id="menu-btn" class="menu-btn">☰</button>
+    <!-- OVERLAY -->
 
-  
-  <aside id="sidebar" class="sidebar">
-    <button id="close-btn" class="close-btn">✕</button>
+    <div id="overlay" class="overlay"></div>
 
-    <h2 class="brand">BacoApp</h2>
-    
-    <nav class="nav">
-      <ul>
-        <li><a href="/Inicio">Inicio</a></li>
-        <li><a href="/Categorias">Categorías</a></li>
-        <li><a href="#carrito">Carrito</a></li>
-        <li><a href="#">Cuenta</a></li>
-        <li><a href="/Index">Cerrar sesión</a></li>
-      </ul>
-    </nav>
-    
-  </aside>
+    <!-- SIDEBAR -->
 
-  <aside id="cart-sidebar" class="cart-sidebar">
+    <aside id="sidebar" class="sidebar">
 
-  <button class="close-cart">✕</button>
+        <div class="sidebar-top">
 
-  <h2>Tu Carrito</h2>
+            <h2 class="brand">
+                BacoApp
+            </h2>
 
-  <div class="cart-items">
-    <div id="carrito-contenido"></div>
-    
-  </div>
+            <button id="close-btn" class="close-btn">
+                ✕
+            </button>
 
-  <div class="cart-actions">
-    <p id="total-price">Total: $0</p>
-    <button id="btn-pagar">Pagar</button>
-    <button id="btn-vaciar">Vaciar Carrito</button>
-    <button id="btn-seguir">Seguir Comprando</button>
-  </div>
+        </div>
 
-</aside>
+        <nav class="nav">
+
+            <ul>
+
+                <li>
+                    <a href="/Inicio">
+                        <i class="fa-solid fa-house"></i> Inicio
+                    </a>
+                </li>
+
+                <li class="active">
+                    <a href="/Categorias">
+                        <i class="fa-solid fa-wine-bottle"></i> Categorias
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#carrito">
+                        <i class="fa-solid fa-cart-shopping"></i> Carrito <span data-cart-count>0</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Cuenta">
+                        <i class="fa-solid fa-user"></i> Cuenta
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Index">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </aside>
+
+    <!-- CARRITO -->
+
+    <aside id="cart-sidebar" class="cart-sidebar">
+
+        <button class="close-cart">
+            ✕
+        </button>
+
+        <h2>
+            Tu Carrito
+        </h2>
+
+        <div class="cart-items">
+
+            <div id="carrito-contenido"></div>
+
+        </div>
+
+        <div class="cart-actions">
+
+            <p id="total-price">
+                Total: $0
+            </p>
+
+            <a class="cart-page-link" href="/carrito">
+                <i class="fa-solid fa-up-right-from-square"></i> Ver carrito completo
+            </a>
+
+            <button id="btn-pagar">
+                Pagar
+            </button>
+
+            <button id="btn-vaciar">
+                Vaciar Carrito
+            </button>
+
+            <button id="btn-seguir">
+                Seguir Comprando
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
     <main class="categories-main">
 
-   
-    <h1>Selecciona tu categoria de preferencia y disfruta de nuestros productos.</h1>
+        <!-- HEADER -->
 
-   
-    <section class="category" aria-label="Lista de categorías">
+        <section class="categories-header">
 
-      <a class="category-card" href="categoria-vinos.html" aria-label="Vinos">
-        <img src="img/vinosSeleccionados.jpg" alt="Vinos seleccionados" loading="lazy">
-        <h3>Vinos</h3>
-      </a>
+            <h1>
+                Explora nuestras categorías
+            </h1>
 
-      <a class="category-card" href="categoria-whisky.html" aria-label="Whiskys">
-        <img src="img/whiskys.jpg" alt="Whiskys" loading="lazy">
-        <h3>Whiskys</h3>
-      </a>
+            <p>
+                Encuentra bebidas premium y productos exclusivos.
+            </p>
 
-      <a class="category-card" href="categoria-rones.html" aria-label="Rones">
-        <img src="img/rones.jpg" alt="Rones" loading="lazy">
-        <h3>Rones</h3>
-      </a>
+        </section>
 
-      <a class="category-card" href="categoria-cervezas.html" aria-label="Cervezas">
-        <img src="img/cervezas.jpg" alt="Cervezas" loading="lazy">
-        <h3>Cervezas</h3>
-      </a>
+        <!-- SEARCH -->
 
-      <a class="category-card" href="categoria-tequilas.html" aria-label="Tequilas">
-        <img src="img/tequilas.jpg" alt="Tequilas" loading="lazy">
-        <h3>Tequilas</h3>
-      </a>
+        <div class="search">
 
-      <a class="category-card" href="categoria-aguardientes.html" aria-label="Aguardientes">
-        <img src="img/aguardientes.jpg" alt="Aguardientes" loading="lazy">
-        <h3>Aguardientes</h3>
-      </a>
+            <input
+                type="text"
+                placeholder="Buscar categorías..."
+            >
 
-      <a class="category-card" href="categoria-gaseosas.html" aria-label="Gaseosas">
-        <img src="img/gaseosas.jpg" alt="Gaseosas" loading="lazy">
-        <h3>Gaseosas</h3>
-      </a>
+            <button class="search-btn">
+                🔍
+            </button>
 
-      <a class="category-card" href="categoria-jugos.html" aria-label="Jugos">
-        <img src="img/jugos.jpg" alt="Jugos" loading="lazy">
-        <h3>Jugos</h3>
-      </a>
+        </div>
 
-      <a class="category-card" href="categoria-vodkas.html" aria-label="Vodkas">
-        <img src="img/vodkas.jpg" alt="Vodkas" loading="lazy">
-        <h3>Vodkas</h3>
-      </a>
+        <!-- GRID -->
 
-      <a class="category-card" href="categoria-ginebras.html" aria-label="Ginebras">
-        <img src="img/ginebras.jpg" alt="Ginebras" loading="lazy">
-        <h3>Ginebras</h3>
-      </a>
+        <section class="category">
 
-      <a class="category-card" href="categoria-desechables.html" aria-label="Desechables">
-        <img src="img/desechables.jpg" alt="Desechables" loading="lazy">
-        <h3>Desechables</h3>
-      </a>
+            <!-- VINOS -->
 
-      <a class="category-card" href="categoria-dulces.html" aria-label="Dulces">
-        <img src="img/dulces.jpg" alt="Dulces" loading="lazy">
-        <h3>Dulces</h3>
-      </a>
+            <a class="category-card" href="categoria-vinos.html">
 
-      <a class="category-card" href="categoria-accesorios.html" aria-label="Accesorios">
-        <img src="img/accesorios.jpg" alt="Accesorios" loading="lazy">
-        <h3>Accesorios</h3>
-      </a>
+                <img
+                    src="img/vinosSeleccionados.jpg"
+                    alt="Vinos"
+                >
 
-    </section>
+                <div class="card-info">
 
-  </main>
+                    <h3>Vinos</h3>
 
-  <script src="./js/categorias.js"></script>
+                    <span>
+                        Premium Selection
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- WHISKYS -->
+
+            <a class="category-card" href="categoria-whisky.html">
+
+                <img
+                    src="img/whiskys.jpg"
+                    alt="Whiskys"
+                >
+
+                <div class="card-info">
+
+                    <h3>Whiskys</h3>
+
+                    <span>
+                        Top Brands
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- RONES -->
+
+            <a class="category-card" href="categoria-rones.html">
+
+                <img
+                    src="img/rones.jpg"
+                    alt="Rones"
+                >
+
+                <div class="card-info">
+
+                    <h3>Rones</h3>
+
+                    <span>
+                        Ediciones Especiales
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- CERVEZAS -->
+
+            <a class="category-card" href="categoria-cervezas.html">
+
+                <img
+                    src="img/cervezas.jpg"
+                    alt="Cervezas"
+                >
+
+                <div class="card-info">
+
+                    <h3>Cervezas</h3>
+
+                    <span>
+                        Importadas
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- TEQUILAS -->
+
+            <a class="category-card" href="categoria-tequilas.html">
+
+                <img
+                    src="img/tequilas.jpg"
+                    alt="Tequilas"
+                >
+
+                <div class="card-info">
+
+                    <h3>Tequilas</h3>
+
+                    <span>
+                        Premium Drinks
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- AGUARDIENTES -->
+
+            <a class="category-card" href="categoria-aguardientes.html">
+
+                <img
+                    src="img/aguardientes.jpg"
+                    alt="Aguardientes"
+                >
+
+                <div class="card-info">
+
+                    <h3>Aguardientes</h3>
+
+                    <span>
+                        Tradición Colombiana
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- GASEOSAS -->
+
+            <a class="category-card" href="categoria-gaseosas.html">
+
+                <img
+                    src="img/gaseosas.jpg"
+                    alt="Gaseosas"
+                >
+
+                <div class="card-info">
+
+                    <h3>Gaseosas</h3>
+
+                    <span>
+                        Refrescantes
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- JUGOS -->
+
+            <a class="category-card" href="categoria-jugos.html">
+
+                <img
+                    src="img/jugos.jpg"
+                    alt="Jugos"
+                >
+
+                <div class="card-info">
+
+                    <h3>Jugos</h3>
+
+                    <span>
+                        Sabores Naturales
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- VODKAS -->
+
+            <a class="category-card" href="categoria-vodkas.html">
+
+                <img
+                    src="img/vodkas.jpg"
+                    alt="Vodkas"
+                >
+
+                <div class="card-info">
+
+                    <h3>Vodkas</h3>
+
+                    <span>
+                        Luxury Collection
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- GINEBRAS -->
+
+            <a class="category-card" href="categoria-ginebras.html">
+
+                <img
+                    src="img/ginebras.jpg"
+                    alt="Ginebras"
+                >
+
+                <div class="card-info">
+
+                    <h3>Ginebras</h3>
+
+                    <span>
+                        Botánicos Premium
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- DESECHABLES -->
+
+            <a class="category-card" href="categoria-desechables.html">
+
+                <img
+                    src="img/desechables.jpg"
+                    alt="Desechables"
+                >
+
+                <div class="card-info">
+
+                    <h3>Desechables</h3>
+
+                    <span>
+                        Todo para tus eventos
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- DULCES -->
+
+            <a class="category-card" href="categoria-dulces.html">
+
+                <img
+                    src="img/dulces.jpg"
+                    alt="Dulces"
+                >
+
+                <div class="card-info">
+
+                    <h3>Dulces</h3>
+
+                    <span>
+                        Snacks y golosinas
+                    </span>
+
+                </div>
+
+            </a>
+
+            <!-- ACCESORIOS -->
+
+            <a class="category-card" href="categoria-accesorios.html">
+
+                <img
+                    src="img/accesorios.jpg"
+                    alt="Accesorios"
+                >
+
+                <div class="card-info">
+
+                    <h3>Accesorios</h3>
+
+                    <span>
+                        Complementos premium
+                    </span>
+
+                </div>
+
+            </a>
+
+        </section>
+
+    </main>
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/cart.js"></script>
+
+    <script src="/js/categorias.js"></script>
+
 </body>
+
 </html>

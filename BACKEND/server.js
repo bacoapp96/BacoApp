@@ -11,6 +11,7 @@ import detallesVentaRoutes from './app/routes/routes.detalle_venta.js';
 import inventarioRoutes from './app/routes/routes.inventario.js';
 import usuarioRoutes from './app/routes/routes.usuario.js';
 import venta from './app/routes/routes.venta.js';
+import ofertasRoutes from './app/routes/routes.ofertas.js';
 
 
 const app = express();
@@ -32,7 +33,7 @@ app.use('/api/detalle_venta', detallesVentaRoutes);
 app.use('/api/inventario', inventarioRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/ventas', venta);
-
+app.use('/api/ofertas', ofertasRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

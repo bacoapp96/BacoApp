@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta 
+        name="viewport" 
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Reportes</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/reportes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="admin-page">
+
+    <%- include("partials/admin-sidebar", { active: "reportes" }) %>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+        <div class="top-header">
+
+            <h1>📈 Reportes</h1>
+
+            <div class="admin">
+                👤 Administrador
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             CARDS PRINCIPALES
+        ========================== -->
+
+        <div class="reportes-cards">
+
+            <div class="reporte-card" id="cardVentas">
+
+                <h3>Ventas del mes</h3>
+
+                <p>$8.500.000</p>
+
+            </div>
+
+
+            <div class="reporte-card" id="cardProductos">
+
+                <h3>Productos vendidos</h3>
+
+                <p>245</p>
+
+            </div>
+
+
+            <div class="reporte-card" id="cardGanancias">
+
+                <h3>Ganancias</h3>
+
+                <p>$2.300.000</p>
+
+            </div>
+
+
+            <div class="reporte-card" id="cardTop">
+
+                <h3>Producto top</h3>
+
+                <p>Ron Medellín</p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             KPI CARDS
+        ========================== -->
+
+        <div class="kpi-container">
+
+
+            <div class="kpi-card">
+
+                <h3>🏆 Mejor vendedor</h3>
+
+                <p>Carlos Ramírez</p>
+
+                <span>
+                    58 ventas esta semana
+                </span>
+
+            </div>
+
+
+
+            <div class="kpi-card">
+
+                <h3>🥃 Producto top semanal</h3>
+
+                <p>Ron Medellín</p>
+
+                <span>
+                    120 unidades vendidas
+                </span>
+
+            </div>
+
+
+
+            <div class="kpi-card">
+
+                <h3>👥 Clientes nuevos</h3>
+
+                <p>34</p>
+
+                <span>
+                    registrados este mes
+                </span>
+
+            </div>
+
+
+
+            <div class="kpi-card">
+
+                <h3>💎 Cliente premium</h3>
+
+                <p>Juan Pérez</p>
+
+                <span>
+                    $1.850.000 en compras
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             GRAFICA
+        ========================== -->
+
+        <div class="grafica-container">
+
+            <h2>Ventas semanales</h2>
+
+            <div class="grafica">
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:120px;"
+                    ></div>
+
+                    <span>Lun</span>
+
+                </div>
+
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:200px;"
+                    ></div>
+
+                    <span>Mar</span>
+
+                </div>
+
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:160px;"
+                    ></div>
+
+                    <span>Mié</span>
+
+                </div>
+
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:250px;"
+                    ></div>
+
+                    <span>Jue</span>
+
+                </div>
+
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:180px;"
+                    ></div>
+
+                    <span>Vie</span>
+
+                </div>
+
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:220px;"
+                    ></div>
+
+                    <span>Sáb</span>
+
+                </div>
+
+
+
+                <div class="dia">
+
+                    <div 
+                        class="barra"
+                        style="height:300px;"
+                    ></div>
+
+                    <span>Dom</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             DETALLE REPORTES
+        ========================== -->
+
+        <div class="detalle-reportes">
+
+            <h2 id="tituloReporte">
+                Detalle del reporte
+            </h2>
+
+            <div id="listaReportes">
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             TABLA
+        ========================== -->
+
+        <div class="tabla-container">
+
+            <h2>Últimas ventas</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Producto</th>
+
+                        <th>Cliente</th>
+
+                        <th>Fecha</th>
+
+                        <th>Total</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>Whisky Old Parr</td>
+
+                        <td>Juan Pérez</td>
+
+                        <td>28/05/2026</td>
+
+                        <td>$120.000</td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Ron Medellín</td>
+
+                        <td>Laura Gómez</td>
+
+                        <td>28/05/2026</td>
+
+                        <td>$80.000</td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Tequila José Cuervo</td>
+
+                        <td>Carlos Ruiz</td>
+
+                        <td>28/05/2026</td>
+
+                        <td>$150.000</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =========================
+         JS
+    ========================== -->
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/reportes.js"></script>
+
+</body>
+
+</html>

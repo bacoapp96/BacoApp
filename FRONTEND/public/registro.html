@@ -3,61 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro clientes</title>
-
-    <link rel="stylesheet" href="./css/registro.css">
-
-    
-    
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/registro.css">
+    <title>Registro</title>
 </head>
 <body>
+    <div class="container" style="display:flex; justify-content:center; align-items:center; min-height:100vh; padding: 40px 0;">
+        <div class="card" style="width: 400px; padding: 30px;">
+            <h1 style="font-size: 28px; margin-bottom: 20px;">Registro de Usuario</h1>
+            <form id="registro-form" style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+                
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <label for="username" style="font-size: 14px; color: var(--gray);">Nombre:</label>
+                    <input type="text" id="username" class="input" name="username" required>
+                </div>
 
-    
-    <h1>Tipo de registro</h1>
-    <select id="TipoRegistro" name="Tipo de registro">
-        <option value="">Seleccione una opcion</option>
-        <option value="Negocio">Negocio</option>
-        <option value="PersonaNatural">Persona natural</option>
-        
-    </select>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <label for="user" style="font-size: 14px; color: var(--gray);">Usuario:</label>
+                    <input type="text" id="user" class="input" name="user" required>
+                </div>
 
-    
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <label for="email" style="font-size: 14px; color: var(--gray);">Correo Electrónico:</label>
+                    <input type="email" id="email" class="input" name="email" required>
+                </div>
 
-    <div><form id="formNegocio" style="display:none;">
-        <input type="text" id="NombreNegocio" placeholder="Nombre del Negocio" >
-        <input type="text" id="NIT" placeholder="NIT o RUT" >
-        <input type="text" id="Direccion" placeholder="Direccion" >
-        <input type="number" id="Telefono" placeholder="Telefono" >
-        <input type="email" id="Email" placeholder="Email" >
-        <input type="text" id="Usuario" placeholder="Usuario" >
-        <input type="password" id="Password" placeholder="Password" >
-        <button type="submit" class="btn" id="btn-registrarse">Registrarse</button>
-    </form>
-    </div>
-    
-    <div><form id="formPersona" style="display:none;">
-        <input type="text" id="NombreCompleto" placeholder="Nombre completo" >
-        <input type="number" id="DocumentoIdentidad" placeholder="Documento de identidad" >
-        <input type="text y number" id="Direccion" placeholder="Direccion" >
-        <input type="number" id="Telefono" placeholder="Telefono" >
-        <input type="email" id="Email" placeholder="Email" >
-        <input type="text" id="Usuario" placeholder="Usuario" >
-        <input type="password" id="Password" placeholder="Password" >
-        <button type="submit" class="btn" id="btn-registrarse">Registrarse</button>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <label for="password" style="font-size: 14px; color: var(--gray);">Contraseña:</label>
+                    <input type="password" id="password" class="input" name="password" required>
+                </div>
 
-    </form>
-    </div>
-    
-    
-    
-<div class="extra">
-        ¿Ya tienes cuenta? <a href="login.html?rol=cliente">Inicia sesión aquí</a>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <label for="celular" style="font-size: 14px; color: var(--gray);">Celular:</label>
+                    <input type="text" id="celular" class="input" name="celular" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 10px;">Registrar</button>
+            </form>
+            <div style="margin-top: 20px; font-size: 14px; text-align: center;">
+                <p style="color: var(--gray);">¿Ya tienes una cuenta? <a href="login.html" style="color: var(--gold); text-decoration: underline; font-weight: bold;">Inicia sesión aquí</a></p>
+            </div>
         </div>
+    </div>
 
-        <script src="./js/registro.js"></script>
+    <script src="/js/registro.js"></script>
 </body>
-
-
-
-
 </html>

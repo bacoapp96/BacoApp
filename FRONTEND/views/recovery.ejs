@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recuperar Contraseña</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/recovery.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <h1>Recuperar Contraseña</h1>
+
+            <p>
+                Ingresa tu correo electrónico y te enviaremos
+                instrucciones para restablecer tu contraseña.
+            </p>
+
+            <form id="recoveryForm" style="margin-top: 20px;">
+
+                <div class="input-group" style="text-align: left; margin-bottom: 20px;">
+                    <label for="email" style="display: block; margin-bottom: 8px; color: var(--gray);">Correo Electrónico</label>
+
+                    <input 
+                        type="email"
+                        id="email"
+                        class="input"
+                        placeholder="ejemplo@gmail.com"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Enviar Enlace
+                </button>
+
+             
+
+            </form>
+
+        <div class="back-button" style="margin-top: 15px;">
+                <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='/login.html'">
+                    Volver
+                </button>
+        </div>
+
+
+            <p id="message"></p>
+
+        </div>
+
+
+    </div>
+
+  
+    
+
+    <!-- JS -->
+    <script src="js/recovery.js"></script>
+
+</body>
+</html>

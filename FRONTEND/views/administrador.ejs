@@ -3,42 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BACOAPP-Menú Principal</title>
+  <title>BacoApp - Administrador</title>
 
-
-  <link rel="stylesheet" href="./css/administrador.css">
-
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/administrador.css">
 </head>
 
-<body>
+<body class="admin-page">
+  <aside class="sidebar">
+    <h2>BacoApp</h2>
 
-  <div class="titulo-container">
-    <h1 class="neon-title">BACOAPP</h1>
-    <div class="version-label">BACOAPP V1.0</div>
-  </div>
-
-  <section class="mensaje-bienvenida">
-    <h2>MENÚ PRINCIPAL</h2>
-  </section>
-  <div class="subtexto">
-    <h1>¿Qué deseas gestionar hoy?</h1>
-  </div>
-
-  <section>
-  <nav class="navbar">
     <ul>
-      <li><a class="menu-link">📦 INVENTARIO</a></li>
-      <li><a class="menu-link">👥 CLIENTES</a></li>
-      <li><a class="menu-link">📈 REPORTES</a></li>
-      <li><a class="menu-link">📊 DASHBOARD</a></li>
-      <li><a class="menu-link">📤 PROVEEDORES</a></li>
-      <li><a class="menu-link">⚙️ CONFIGURACIÓN</a></li>
-      <li><a class="menu-link">❓ AYUDA</a></li>
-      <li><a class="menu-link">👤 Cuenta</a></li>
-      <li><a class="menu-link">🔒Cerrar Sesión</a></li>
-      
+      <li class="active"><a class="menu-link" href="/administrador">Menu principal</a></li>
+      <li><a class="menu-link" href="/dashboard">Dashboard</a></li>
+      <li><a class="menu-link" href="/inventario">Inventario</a></li>
+      <li><a class="menu-link" href="/cliente">Clientes</a></li>
+      <li><a class="menu-link" href="/reportes">Reportes</a></li>
+      <li><a class="menu-link" href="/proveedores">Proveedores</a></li>
+      <li><a class="menu-link" href="/configuracion">Configuracion</a></li>
+      <li><a class="menu-link" href="/ayuda">Ayuda</a></li>
+      <li><a class="menu-link" href="/cuenta">Cuenta</a></li>
+      <li><a class="menu-link" href="/index">Cerrar sesion</a></li>
     </ul>
-  </nav>
-  </section>
+  </aside>
+
+  <main class="admin-main">
+    <section class="admin-hero">
+      <div class="admin-hero-card">
+        <h1>BACOAPP</h1>
+        <h2>Menu principal</h2>
+        <p>Gestiona inventario, clientes, reportes y configuracion desde un solo panel.</p>
+
+        <div class="admin-shortcuts">
+          <a class="admin-shortcut" href="/dashboard">
+            <strong>Dashboard</strong>
+            <span>Resumen del sistema</span>
+          </a>
+
+          <a class="admin-shortcut" href="/inventario">
+            <strong>Inventario</strong>
+            <span>Productos y stock</span>
+          </a>
+
+          <a class="admin-shortcut" href="/cliente">
+            <strong>Clientes</strong>
+            <span>Gestion comercial</span>
+          </a>
+
+          <a class="admin-shortcut" href="/reportes">
+            <strong>Reportes</strong>
+            <span>Ventas y actividad</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/sidebar.js"></script>
 </body>
 </html>

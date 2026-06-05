@@ -1,62 +1,104 @@
-    
-const menuBtn = document.getElementById("menu-btn");
-const sidebar = document.getElementById("sidebar");
-const closeBtn = document.getElementById("close-btn");
-const searchInput = document.querySelector(".search input");
-const categoryCards = document.querySelectorAll(".category-card");
-const cartSidebar = document.getElementById("cart-sidebar");
-const closeCartBtn = document.querySelector(".close-cart");
-const btnCarrito = document.querySelector('a[href="#carrito"]');
 
+document.addEventListener("DOMContentLoaded", () => {
 
-if (btnCarrito && cartSidebar) {
-  btnCarrito.addEventListener("click", () => {
-    cartSidebar.classList.add("open");
-  });
-}
+    /* =========================
+       MENU
+    ========================= */
 
+    const menuBtn =
+    document.getElementById("menu-btn");
 
-if (closeCartBtn && cartSidebar) {
-  closeCartBtn.addEventListener("click", () => {
-    cartSidebar.classList.remove("open");
-  });
-}
+    const sidebar =
+    document.getElementById("sidebar");
 
-menuBtn.addEventListener("click", () => {
-    sidebar.classList.add("open");
-});
+    const closeBtn =
+    document.getElementById("close-btn");
 
+    const overlay =
+    document.getElementById("overlay");
 
-closeBtn.addEventListener("click", () => {
-    sidebar.classList.remove("open");
-});
+    function abrirMenu(){
 
+        sidebar.classList.add("active");
 
-document.addEventListener("click", (e) => {
-    if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-        sidebar.classList.remove("open");
+        overlay.classList.add("active");
+
+        menuBtn.classList.add("hide");
+
     }
-});
 
+    function cerrarMenu(){
 
-document.querySelectorAll(".nav a").forEach(link => {
-    link.addEventListener("click", () => {
-        sidebar.classList.remove("open");
-    });
-});
+        sidebar.classList.remove("active");
 
-searchInput.addEventListener("input", () => {
-    const texto = searchInput.value.toLowerCase().trim();
+        overlay.classList.remove("active");
 
-    categoryCards.forEach(card => {
-        const nombre = card.querySelector("h3").textContent.toLowerCase();
+        menuBtn.classList.remove("hide");
 
-        if (nombre.includes(texto)) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
+    }
+
+    menuBtn.addEventListener(
+        "click",
+        abrirMenu
+    );
+
+    closeBtn.addEventListener(
+        "click",
+        cerrarMenu
+    );
+
+    overlay.addEventListener(
+        "click",
+        cerrarMenu
+    );
+
+    document.addEventListener("keydown", (e) => {
+
+        if(e.key === "Escape"){
+
+            cerrarMenu();
+
         }
-    });
-});
 
+    });
+
+    /* =========================
+       SEARCH CATEGORÍAS
+    ========================= */
+
+    const searchInput =
+    document.querySelector(".search input");
+
+    const categoryCards =
+    document.querySelectorAll(".category-card");
+
+    searchInput.addEventListener("input", () => {
+
+        const texto =
+        searchInput.value
+        .toLowerCase()
+        .trim();
+
+        categoryCards.forEach(card => {
+
+            const nombre =
+            card.querySelector("h3")
+            .textContent
+            .toLowerCase();
+
+            if(nombre.includes(texto)){
+
+                card.style.display = "block";
+
+            }else{
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+    });
+
+});
 

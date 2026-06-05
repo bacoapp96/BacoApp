@@ -1,27 +1,57 @@
-import {Router} from "express";
-import {    getIndex,
-            getLogin,
-            getTienda,
-            getBusqueda,
-            getRegistro,
-            getRegistroAdmin,
-            getCategoria,
-            getInicio,
-            getAdministrador
-         } from "../controller/controller.views.js";
+import { Router } from "express";
+import {
+    getIndex,
+    getLogin,
+    getTienda,
+    getBusqueda,
+    getRegistro,
+    getCarrito,
+    getCategoria,
+    getInicio,
+    getAdministrador,
+    getCuenta,
+    getCliente,
+    getRecovery,
+    getInventario,
+    getReportes,
+    getProveedores,
+    getConfiguracion,
+    getDashboard,
+    getRegistroAdmin,
+    getAyuda,
+    getCuentaAdmin
+    
+} from "../controller/controller.views.js";
 
 
 const router = Router();
 
-router.get("/Index", getIndex);
-router.get("/Login", getLogin);
-router.get("/Tienda", getTienda);
-router.get("/Busqueda", getBusqueda);
-router.get("/Registro", getRegistro);
-router.get("/RegistroAdmin", getRegistroAdmin);
-router.get("/Categorias", getCategoria);
-router.get("/Inicio", getInicio);
-router.get("/Administrador", getAdministrador);
-   
+const viewRoutes = [
+    ["/index", getIndex],
+    ["/login", getLogin],
+    ["/tienda", getTienda],
+    ["/carrito", getCarrito],
+    ["/busqueda", getBusqueda],
+    ["/registro", getRegistro],
+    ["/registroadmin", getRegistroAdmin],
+    ["/categorias", getCategoria],
+    ["/inicio", getInicio],
+    ["/administrador", getAdministrador],
+    ["/cuenta", getCuenta],
+    ["/cuenta-admin", getCuentaAdmin],
+    ["/cliente", getCliente],
+    ["/recovery", getRecovery],
+    ["/inventario", getInventario],
+    ["/reportes", getReportes],
+    ["/proveedores", getProveedores],
+    ["/configuracion", getConfiguracion],
+    ["/dashboard", getDashboard],
+    ["/ayuda", getAyuda]
+];
+
+viewRoutes.forEach(([path, controller]) => {
+    router.get(path, controller);
+});
+
 
 export default router;

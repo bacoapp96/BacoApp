@@ -1,8 +1,21 @@
-document.getElementById("form-login").addEventListener("submit", async (e) => {
-    e.preventDefault();
+const formLogin = document.getElementById("form-login");
+const loginMessage = document.getElementById("login-message");
 
-    const Usuario = document.getElementById("Usuario").value;
-    const password = document.getElementById("password").value;
+const showMessage = (message, isError = false) => {
+    if (!loginMessage) return;
+    loginMessage.textContent = message;
+    loginMessage.classList.toggle("error", isError);
+};
+
+formLogin.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const Usuario = document.getElementById("Usuario").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const submitBtn = formLogin.querySelector("button[type='submit']");
+
+    showMessage("Validando acceso...");
+    submitBtn.disabled = true;
 
     try {
         const res = await fetch("http://localhost:3000/api/usuarios/login", {
@@ -10,40 +23,25 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                Usuario,
-                password
-            })
+            body: JSON.stringify({ Usuario, password })
         });
 
-       
-        console.log("STATUS:", res.status);
-
         const data = await res.json();
-        console.log("DATA:", data);
 
-    
-    if (data.ok && data.user) {
+        if (data.ok && data.user) {
+            showMessage("Login correcto. Redirigiendo...");
+            localStorage.setItem("bacoUser", JSON.stringify(data.user));
 
-    console.log("ROL QUE LLEGA:", data.user.rol);
-
-    alert("Login correcto");
-
-    const rol = data.user.rol?.trim().toLowerCase();
-
-    if (rol === "admin") {
-    window.location.href = "http://localhost:4000/Administrador";
-    } else {
-    window.location.href = "http://localhost:4000/Tienda";
-}
-
-}
-    else {
-            alert(data.message || "Error en login");
+            const rol = data.user.rol?.trim().toLowerCase();
+            window.location.href = rol === "admin" ? "/Dashboard" : "/Inicio";
+            return;
         }
 
+        showMessage(data.message || "Error en login", true);
     } catch (error) {
         console.error(error);
-        alert("Error en el servidor");
+        showMessage("No se pudo conectar con el servidor de usuarios.", true);
+    } finally {
+        submitBtn.disabled = false;
     }
 });

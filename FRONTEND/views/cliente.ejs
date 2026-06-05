@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gestion de Clientes | BacoApp</title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/cliente.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body class="admin-page">
+  <%- include("partials/admin-sidebar", { active: "cliente" }) %>
+
+  <main class="main-content clientes-admin">
+    <header class="clientes-header">
+      <div>
+        <span class="section-kicker">CRM administrativo</span>
+        <h1>Gestion de Clientes</h1>
+        <p>Administra perfiles, creditos, fidelizacion y acciones comerciales sin salir de esta pagina.</p>
+      </div>
+
+      <div class="admin-profile">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>Administrador</span>
+      </div>
+    </header>
+
+    <section class="quick-stats" aria-label="Estadisticas rapidas de clientes">
+      <article class="stat-card">
+        <i class="fa-solid fa-users"></i>
+        <div>
+          <span>Total clientes</span>
+          <strong id="statTotal">0</strong>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <i class="fa-solid fa-crown"></i>
+        <div>
+          <span>Clientes VIP</span>
+          <strong id="statVip">0</strong>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+          <span>Activos</span>
+          <strong id="statActivos">0</strong>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <i class="fa-solid fa-wallet"></i>
+        <div>
+          <span>Credito total</span>
+          <strong id="statCredito">$0</strong>
+        </div>
+      </article>
+    </section>
+
+    <section class="client-toolbar" aria-label="Herramientas de busqueda y filtros">
+      <label class="search-box" for="searchInput">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, correo, telefono o nivel...">
+      </label>
+
+      <div class="filters" id="filters">
+        <button class="filter-btn active" type="button" data-filter="Todos">Todos</button>
+        <button class="filter-btn" type="button" data-filter="VIP">VIP</button>
+        <button class="filter-btn" type="button" data-filter="Bloqueado">Bloqueados</button>
+        <button class="filter-btn" type="button" data-filter="Suspendido">Suspendidos</button>
+        <button class="filter-btn" type="button" data-filter="Activo">Activos</button>
+      </div>
+    </section>
+
+    <section class="clientes-container" id="clientesContainer" aria-live="polite"></section>
+  </main>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/cliente.js"></script>
+</body>
+</html>

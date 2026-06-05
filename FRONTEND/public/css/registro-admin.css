@@ -1,8 +1,4 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(180deg, #0bd71f, #0b0b0b);
-    color: #fff;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -12,85 +8,8 @@ body {
     padding: 60px 0;               
 }
 
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 300px;
-    margin: 20px auto;
-}
-
-input, select {
-    padding: 10px;
-    border: 1px solid #aaa;
-    border-radius: 6px;
-}
-
-
-.btn {
-    padding: 10px;
-    background-color: #5b63f5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-.btn:hover {
-    background-color: #4050d8;
-}
-
-
-#formAdmin {
-    background: linear-gradient(135deg, #1c1f4a, #4a4ee8);
-    padding: 30px;
-    border-radius: 20px;
-    width: 350px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    backdrop-filter: blur(5px);
-}
-
-
-#formAdmin input,
-#formAdmin select {
-    background-color: #ffffff20;
-    color: white;
-    border: 1px solid #ffffff50;
-}
-
-#formAdmin input::placeholder {
-    color: #dddddd;
-}
-
-
-#formAdmin .btn {
-    background-color: #ffca28;
-    color: #000;
-    font-weight: bold;
-}
-#formAdmin .btn:hover {
-    background-color: #ffb300;
-}
-
-
-.field {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    margin-bottom: 12px;
-    width: 100%;
-}
-.field label {
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #fff;
-}
-.field input {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ffffff50;
-    background: #ffffff20;
-    color: white;
+header {
+    margin-bottom: 20px;
 }
 
 #mensaje {
@@ -110,4 +29,3 @@ input, select {
     background-color: #f87171;
     color: #7f1d1d;
 }
-
