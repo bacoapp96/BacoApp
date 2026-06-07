@@ -60,4 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
       closeSidebar();
     }
   });
+
+  // Limpiar localStorage al cerrar sesión
+  const logoutLinks = document.querySelectorAll('a[href="/Index"], a[href="/index"]');
+  logoutLinks.forEach(link => {
+    link.addEventListener("click", async (event) => {
+      event.preventDefault();
+      await fetch("/api/logout", { method: "POST" });
+      localStorage.removeItem("bacoUser");
+      window.location.href = "/login";
+    });
+  });
 });

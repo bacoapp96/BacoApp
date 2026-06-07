@@ -3,6 +3,7 @@ import {
     listarUsuarios,
     obtenerUsuario,
     crearUsuario,
+    crearAdministrador,
     actualizarUsuario,
     eliminarUsuario,
     login
@@ -12,12 +13,11 @@ const router = Router();
 
 // CRUD
 router.get('/', listarUsuarios);
+router.post('/login', login);
+router.post('/admin', crearAdministrador);
 router.get('/:id', obtenerUsuario);
 router.post('/', crearUsuario);
 router.put('/:id', actualizarUsuario);
 router.delete('/:id', eliminarUsuario);
-
-//LOGIN API
-router.post('/login', login);
 
 export default router;

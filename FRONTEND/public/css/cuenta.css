@@ -1,7 +1,7 @@
 .cuenta-container{
     min-height:100vh;
     margin-left:280px;
-    padding:36px;
+    padding:36px max(28px, calc((100vw - 280px - 1180px) / 2));
     background:
         radial-gradient(circle at top right, rgba(200,155,60,.12), transparent 32%),
         var(--bg);
@@ -240,6 +240,10 @@
     gap:7px;
 }
 
+.campo-full{
+    grid-column:1 / -1;
+}
+
 .campo input{
     min-height:44px;
     border:1px solid var(--border);
@@ -257,6 +261,12 @@
 
 .btn-guardar{
     margin-top:16px;
+}
+
+.btn-guardar:disabled{
+    opacity:.72;
+    cursor:wait;
+    transform:none;
 }
 
 .direccion-card,

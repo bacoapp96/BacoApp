@@ -4,6 +4,7 @@ import cors from 'cors';
 
 
 
+
 // Rutas API
 import productoRoutes from './app/routes/routes.producto.js';
 import clienteRoutes from './app/routes/routes.cliente.js';
@@ -20,9 +21,21 @@ const PORT = 3000;
 // Middleware
 app.use(express.json());
 app.use(cors());
+import session from 'express-session';
 
 //para recibir datos de formularios
 app.use(express.urlencoded({ extended: true }));
+app.use(
+    session({
+        secret: "bacoapp_secret",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: false,
+            maxAge: 24 * 60 * 60 * 1000
+        }
+    })
+);
 
 
 
@@ -44,4 +57,29 @@ app.get('/', (req, res) => {
 // Servidor
 app.listen(PORT, () => {
     console.log(`Backend corriendo en http://localhost:${PORT}`);
+});
+
+
+
+// Configuración de la sesión
+function verificarLogin(req, res, next) {
+    if (!req.session.usuario) {
+        return res.redirect("/login");
+    }
+    next();
+}
+
+app.get("/api/session", (req, res) => {
+
+    if (!req.session.usuario) {
+        return res.status(401).json({
+            ok: false,
+            message: "No autenticado"
+        });
+    }
+
+    res.json({
+        ok: true,
+        usuario: req.session.usuario
+    });
 });

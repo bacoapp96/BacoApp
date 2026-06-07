@@ -1,31 +1,37 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const storageKey = "bacoAccount";
+document.addEventListener("DOMContentLoaded", async () => {
     const fields = {
-        name: document.getElementById("accountName"),
+        nombre: document.getElementById("accountName"),
         email: document.getElementById("accountEmail"),
-        phone: document.getElementById("accountPhone"),
-        document: document.getElementById("accountDocument")
+        telefono: document.getElementById("accountPhone"),
+        documento: document.getElementById("accountDocument"),
+        direccion: document.getElementById("accountAddress")
     };
     const profileName = document.getElementById("profileName");
     const profileTier = document.getElementById("profileTier");
     const addressCard = document.getElementById("addressCard");
     const paymentCard = document.getElementById("paymentCard");
     const themeSelector = document.getElementById("clientThemeSelector");
+    const saveButton = document.getElementById("saveAccount");
 
-    const defaultData = {
-        name: fields.name?.value || "Juan Perez",
-        email: fields.email?.value || "juan@gmail.com",
-        phone: fields.phone?.value || "3210000000",
-        document: fields.document?.value || "CC 1000000000",
-        address: "Calle 20 # 10 - 30",
-        payment: "**** 4589",
-        tier: "Cliente Premium"
-    };
-
-    const loadAccount = () => ({
-        ...defaultData,
-        ...JSON.parse(localStorage.getItem(storageKey) || "{}")
+    const accountFromFields = () => ({
+        nombre: fields.nombre?.value.trim() || "",
+        email: fields.email?.value.trim() || "",
+        telefono: fields.telefono?.value.trim() || "",
+        documento: fields.documento?.value.trim() || "",
+        direccion: fields.direccion?.value.trim() || ""
     });
+
+    const renderAccount = (account = accountFromFields()) => {
+        if (fields.nombre) fields.nombre.value = account.nombre || "";
+        if (fields.email) fields.email.value = account.email || "";
+        if (fields.telefono) fields.telefono.value = account.telefono || "";
+        if (fields.documento) fields.documento.value = account.documento || "";
+        if (fields.direccion) fields.direccion.value = account.direccion || "";
+        if (profileName) profileName.textContent = account.nombre || "Mi cuenta";
+        if (profileTier) profileTier.textContent = account.rol === "admin" ? "Administrador" : "Cliente";
+        if (addressCard) addressCard.querySelector("p").textContent = account.direccion || "Sin direccion registrada";
+        if (paymentCard) paymentCard.querySelector("span").textContent = "Sin metodo registrado";
+    };
 
     const renderThemeButtons = () => {
         const currentTheme = window.BacoTheme?.get?.() || "dark";
@@ -34,36 +40,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    const renderAccount = () => {
-        const account = loadAccount();
-        if (fields.name) fields.name.value = account.name;
-        if (fields.email) fields.email.value = account.email;
-        if (fields.phone) fields.phone.value = account.phone;
-        if (fields.document) fields.document.value = account.document;
-        if (profileName) profileName.textContent = account.name;
-        if (profileTier) profileTier.textContent = account.tier;
-        if (addressCard) addressCard.querySelector("p").textContent = account.address;
-        if (paymentCard) paymentCard.querySelector("span").textContent = account.payment;
-        renderThemeButtons();
+    const saveAccount = async () => {
+        const account = accountFromFields();
+
+        saveButton.disabled = true;
+        saveButton.classList.add("is-loading");
+
+        try {
+            const response = await fetch("/api/cuenta", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(account)
+            });
+            const data = await response.json();
+
+            if (response.status === 401) {
+                window.location.href = "/login";
+                return;
+            }
+
+            if (!response.ok || !data.ok) {
+                throw new Error(data.message || "No se pudo guardar el perfil.");
+            }
+
+            localStorage.setItem("bacoUser", JSON.stringify(data.usuario));
+            renderAccount(data.usuario);
+            alert("Cambios guardados correctamente.");
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            saveButton.disabled = false;
+            saveButton.classList.remove("is-loading");
+        }
     };
 
-    const saveAccount = (patch = {}) => {
-        const account = {
-            ...loadAccount(),
-            name: fields.name.value.trim(),
-            email: fields.email.value.trim(),
-            phone: fields.phone.value.trim(),
-            document: fields.document.value.trim(),
-            ...patch
-        };
-
-        localStorage.setItem(storageKey, JSON.stringify(account));
-        renderAccount();
-        alert("Cambios guardados correctamente.");
-    };
-
-    document.getElementById("editProfile")?.addEventListener("click", () => fields.name?.focus());
-    document.getElementById("saveAccount")?.addEventListener("click", () => saveAccount());
+    document.getElementById("editProfile")?.addEventListener("click", () => fields.nombre?.focus());
+    saveButton?.addEventListener("click", saveAccount);
 
     themeSelector?.addEventListener("click", (event) => {
         const button = event.target.closest("[data-theme-option]");
@@ -75,35 +87,47 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("bacoapp:themechange", renderThemeButtons);
 
     document.getElementById("changePassword")?.addEventListener("click", () => {
-        const password = prompt("Nueva contrasena:");
-        if (password && password.length >= 6) {
-            alert("Contrasena actualizada localmente.");
-        } else if (password) {
-            alert("La contrasena debe tener minimo 6 caracteres.");
-        }
+        alert("La actualizacion de contrasena debe hacerse desde recuperacion de acceso.");
     });
 
     document.getElementById("showDevices")?.addEventListener("click", () => {
-        alert("Dispositivos conectados: navegador actual, sesion web BacoApp.");
+        alert("Sesion web activa en este navegador.");
     });
 
-    document.getElementById("addAddress")?.addEventListener("click", () => {
-        const address = prompt("Direccion:", loadAccount().address);
-        if (address) saveAccount({ address });
-    });
+    document.getElementById("addAddress")?.addEventListener("click", () => fields.direccion?.focus());
 
     document.getElementById("addPayment")?.addEventListener("click", () => {
-        const payment = prompt("Ultimos 4 digitos de la tarjeta:", loadAccount().payment.replace("**** ", ""));
-        if (payment) saveAccount({ payment: `**** ${payment.slice(-4)}` });
+        alert("Metodo de pago no configurado en esta version.");
     });
 
-    document.getElementById("deleteAccount")?.addEventListener("click", () => {
-        if (confirm("Seguro que deseas eliminar tu cuenta local?")) {
-            localStorage.removeItem(storageKey);
-            localStorage.removeItem("bacoUser");
-            window.location.href = "/Index";
-        }
+    document.getElementById("deleteAccount")?.addEventListener("click", async () => {
+        if (!confirm("Seguro que deseas cerrar la sesion?")) return;
+        await fetch("/api/logout", { method: "POST" });
+        localStorage.removeItem("bacoUser");
+        window.location.href = "/login";
     });
 
     renderAccount();
+    renderThemeButtons();
+
+    try {
+        const response = await fetch("/api/session");
+        const data = await response.json();
+
+        if (!data.ok) {
+            window.location.href = "/login";
+            return;
+        }
+
+        renderAccount({
+            nombre: data.usuario.Nombre || data.usuario.nombre || "",
+            email: data.usuario.Email || data.usuario.email || "",
+            telefono: data.usuario.Celular || data.usuario.telefono || data.usuario.Telefono || "",
+            documento: data.usuario.Documento || data.usuario.documento || "",
+            direccion: data.usuario.Direccion || data.usuario.direccion || "",
+            rol: data.usuario.rol || data.usuario.Rol || ""
+        });
+    } catch (error) {
+        console.error("Error al cargar la sesion:", error);
+    }
 });

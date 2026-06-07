@@ -1,5 +1,9 @@
 import pool from "../config/db.js";
 
+const usuarioSinPassword = (usuario) => {
+    const { Password, password, ...datosUsuario } = usuario;
+    return datosUsuario;
+};
 
 
 export const login = async (req, res) => {
@@ -12,17 +16,24 @@ export const login = async (req, res) => {
             [Usuario, password]
         );
 
-        if (rows.length > 0) {
+       if (rows.length > 0) {
 
-            return res.json({
-                ok: true,
-                user: {
-                    Usuario: rows[0].Usuario,
-                    rol: rows[0].rol
-                }
-            });
+            req.session.usuario = {
+            Id_usuario: rows[0].Id_usuario,
+            Nombre: rows[0].Nombre,
+            Usuario: rows[0].Usuario,
+            Email: rows[0].Email,
+            Celular: rows[0].Celular,
+            Documento: rows[0].Documento,
+            Direccion: rows[0].Direccion,
+            rol: rows[0].rol || rows[0].Rol
+    };
 
-        }
+    return res.json({
+        ok: true,
+        user: req.session.usuario
+    });
+}
 
         return res.json({
             ok: false,
@@ -30,7 +41,7 @@ export const login = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             error: error.message
         });
@@ -41,10 +52,10 @@ export const login = async (req, res) => {
 export const listarUsuarios = async (req, res) => {
     try {
         const [rows] = await pool.query(
-            "SELECT Id_usuario, Nombre, Usuario, Email, rol FROM usuario"
+            "SELECT * FROM usuario"
         );
 
-        res.json(rows);
+        res.json(rows.map(usuarioSinPassword));
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -55,7 +66,7 @@ export const listarUsuarios = async (req, res) => {
 export const obtenerUsuario = async (req, res) => {
     try {
         const [rows] = await pool.query(
-            "SELECT Id_usuario, Nombre, Usuario, Email, rol FROM usuario WHERE Id_usuario = ?",
+            "SELECT * FROM usuario WHERE Id_usuario = ?",
             [req.params.id]
         );
 
@@ -63,7 +74,7 @@ export const obtenerUsuario = async (req, res) => {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
 
-        res.json(rows[0]);
+        res.json(usuarioSinPassword(rows[0]));
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -73,14 +84,26 @@ export const obtenerUsuario = async (req, res) => {
 // CREAR
 export const crearUsuario = async (req, res) => {
     try {
-        const { nombre, usuario, email, password, celular} = req.body;
+        const { nombre, usuario, email, password, celular } = req.body;
+        const [columnas] = await pool.query("SHOW COLUMNS FROM usuario");
+        const columnasValidas = new Set(columnas.map((columna) => columna.Field));
+        const camposPermitidos = {
+            Nombre: nombre,
+            Usuario: usuario,
+            Email: email,
+            Password: password,
+            Celular: celular,
+            Rol: "cliente",
+            rol: "cliente"
+        };
+        const campos = Object.entries(camposPermitidos)
+            .filter(([campo]) => columnasValidas.has(campo))
+            .filter(([, value]) => value !== undefined && value !== "");
 
-        const query = `
-            INSERT INTO usuario (Nombre, Usuario, Email, Password, Celular, Rol)
-            VALUES (?, ?, ?, ?, ?, 'cliente')
-        `;
-
-        await pool.query(query, [nombre, usuario, email, password, celular]);
+        await pool.query(
+            `INSERT INTO usuario (${campos.map(([campo]) => campo).join(", ")}) VALUES (${campos.map(() => "?").join(", ")})`,
+            campos.map(([, value]) => value)
+        );
 
         res.json({ message: "Usuario registrado correctamente" });
 
@@ -90,15 +113,87 @@ export const crearUsuario = async (req, res) => {
     }
 };
 
+export const crearAdministrador = async (req, res) => {
+    try {
+        const {
+            nombre,
+            usuario,
+            email,
+            password,
+            celular,
+            documento,
+            direccion
+        } = req.body;
+
+        if (!nombre || !usuario || !email || !password) {
+            return res.status(400).json({ message: "Nombre, usuario, correo y contrasena son obligatorios" });
+        }
+
+        const [columnas] = await pool.query("SHOW COLUMNS FROM usuario");
+        const columnasValidas = new Set(columnas.map((columna) => columna.Field));
+        const camposPermitidos = {
+            Nombre: nombre,
+            Usuario: usuario,
+            Email: email,
+            Password: password,
+            Celular: celular,
+            Documento: documento,
+            Direccion: direccion,
+            Rol: "admin",
+            rol: "admin"
+        };
+
+        const campos = Object.entries(camposPermitidos)
+            .filter(([campo]) => columnasValidas.has(campo))
+            .filter(([, value]) => value !== undefined && value !== "");
+
+        const [result] = await pool.query(
+            `INSERT INTO usuario (${campos.map(([campo]) => campo).join(", ")}) VALUES (${campos.map(() => "?").join(", ")})`,
+            campos.map(([, value]) => value)
+        );
+
+        res.status(201).json({
+            message: "Administrador registrado correctamente",
+            id: result.insertId
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al registrar administrador", error: error.message });
+    }
+};
+
 // ACTUALIZAR
 export const actualizarUsuario = async (req, res) => {
     try {
-        const { Nombre, Usuario, Email, Password, rol } = req.body;
         const id = req.params.id;
+        const camposPermitidos = {
+            Nombre: req.body.Nombre,
+            Usuario: req.body.Usuario,
+            Email: req.body.Email,
+            Password: req.body.Password || req.body.password,
+            Celular: req.body.Celular,
+            Documento: req.body.Documento,
+            Direccion: req.body.Direccion,
+            Rol: req.body.Rol || req.body.rol,
+            rol: req.body.rol
+        };
+
+        const [columnas] = await pool.query("SHOW COLUMNS FROM usuario");
+        const columnasValidas = new Set(columnas.map((columna) => columna.Field));
+
+        const campos = Object.entries(camposPermitidos)
+            .filter(([campo]) => columnasValidas.has(campo))
+            .filter(([, value]) => value !== undefined)
+            .map(([campo, value]) => ({ campo, value }));
+
+        if (campos.length === 0) {
+            return res.status(400).json({ error: "No hay datos para actualizar" });
+        }
 
         const [result] = await pool.query(
-            "UPDATE usuario SET Nombre = ?, Usuario = ?, Email = ?, Password = ?, rol = ? WHERE Id_usuario = ?",
-            [Nombre, Usuario, Email, Password, rol, id]
+            `UPDATE usuario SET ${campos.map(({ campo }) => `${campo} = ?`).join(", ")} WHERE Id_usuario = ?`,
+            [...campos.map(({ value }) => value), id]
         );
 
         if (result.affectedRows === 0) {

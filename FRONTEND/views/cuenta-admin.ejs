@@ -20,8 +20,8 @@
 
       <div>
         <span class="eyebrow">Cuenta administrativa</span>
-        <h1>Administrador BacoApp</h1>
-        <p>Panel de datos, seguridad y permisos principales de la cuenta admin.</p>
+        <h1 id="adminProfileName"><%= usuario.nombre || "Administrador BacoApp" %></h1>
+        <p id="adminProfileEmail"><%= usuario.email || "Panel de datos, seguridad y permisos principales de la cuenta admin." %></p>
 
         <div class="account-badges">
           <span><i class="fa-solid fa-circle-check"></i> Activo</span>
@@ -44,24 +44,42 @@
           <div class="field-grid">
           <label>
             Nombre
-            <input type="text" name="nombre" value="Administrador BacoApp" autocomplete="name">
+            <input type="text" name="nombre" value="<%= usuario.nombre || "" %>" autocomplete="name">
           </label>
 
           <label>
             Usuario
-            <input type="text" name="usuario" value="admin" autocomplete="username">
+            <input type="text" name="usuario" value="<%= usuario.usuario || "" %>" autocomplete="username">
           </label>
 
           <label>
             Correo
-            <input type="email" name="correo" value="admin@bacoapp.com" autocomplete="email">
+            <input type="email" name="email" value="<%= usuario.email || "" %>" autocomplete="email">
           </label>
 
           <label>
             Telefono
-            <input type="text" name="telefono" value="+57 321 000 0000" autocomplete="tel">
+            <input type="text" name="telefono" value="<%= usuario.telefono || "" %>" autocomplete="tel">
+          </label>
+        
+
+          <label>
+            Documento
+            <input type="text" name="documento" value="<%= usuario.documento || "" %>">
+          </label>
+
+          <label>
+            Password
+            <input type="password" name="password" autocomplete="new-password" placeholder="Nueva contrasena">
+          </label>
+
+          <label>
+            Direccion
+            <input type="text" name="direccion" value="<%= usuario.direccion || "" %>">
           </label>
           </div>
+
+          
 
           <div class="form-actions">
             <button class="secondary-action" id="reset-admin-account" type="button">
@@ -71,6 +89,60 @@
             <button class="primary-action" type="submit">
               <i class="fa-solid fa-floppy-disk"></i>
               Guardar cambios
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="account-card new-admin-card">
+        <div class="card-title">
+          <h2>Nuevo administrador</h2>
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+
+        <form class="admin-account-form" id="new-admin-form">
+          <div class="field-grid">
+            <label>
+              Nombre
+              <input type="text" name="nombre" autocomplete="name" required>
+            </label>
+
+            <label>
+              Usuario
+              <input type="text" name="usuario" autocomplete="username" required>
+            </label>
+
+            <label>
+              Correo
+              <input type="email" name="email" autocomplete="email" required>
+            </label>
+
+            <label>
+              Telefono
+              <input type="text" name="celular" autocomplete="tel">
+            </label>
+
+            <label>
+              Documento
+              <input type="text" name="documento">
+            </label>
+
+            <label>
+              Password
+              <input type="password" name="password" autocomplete="new-password" required>
+            </label>
+
+             <label>
+              Direccion
+              <input type="text" name="direccion" value="<%= usuario.direccion || "" %>">
+            </label>
+            
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-action" type="submit">
+              <i class="fa-solid fa-user-plus"></i>
+              Crear administrador
             </button>
           </div>
         </form>

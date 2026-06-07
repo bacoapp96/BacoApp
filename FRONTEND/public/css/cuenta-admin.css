@@ -1,8 +1,7 @@
 .admin-account-main{
     min-height:100vh;
     margin-left:280px;
-    width:calc(100% - 280px);
-    padding:36px;
+    padding:36px max(28px, calc((100vw - 280px - 1180px) / 2));
     background:
         linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0) 260px),
         var(--bg);
@@ -98,6 +97,10 @@
 .account-card:hover{
     border-color:rgba(200,155,60,.48);
     transform:translateY(-2px);
+}
+
+.new-admin-card{
+    grid-column:1 / -1;
 }
 
 .card-title{
@@ -288,7 +291,6 @@
 @media(max-width:900px){
     .admin-account-main{
         margin-left:0;
-        width:100%;
         padding:88px 20px 28px;
     }
 }

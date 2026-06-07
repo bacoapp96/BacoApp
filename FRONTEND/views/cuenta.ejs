@@ -20,8 +20,8 @@
             </div>
             <div>
                 <span class="account-kicker">Cuenta cliente</span>
-                <h1 id="profileName">Juan Perez</h1>
-                <p id="profileTier">Cliente Premium</p>
+                <h1 id="profileName"><%= usuario.nombre || "Mi cuenta" %></h1>
+                <p id="profileTier"><%= usuario.rol === "admin" ? "Administrador" : "Cliente" %></p>
                 <div class="perfil-badges">
                     <span><i class="fa-solid fa-circle-check"></i> Activo</span>
                     <span><i class="fa-solid fa-bag-shopping"></i> +12 pedidos</span>
@@ -79,22 +79,27 @@
             <div class="form-grid">
                 <div class="campo">
                     <label for="accountName">Nombre</label>
-                    <input type="text" id="accountName" value="Juan Perez">
+                    <input type="text" id="accountName" value="<%= usuario.nombre || "" %>">
                 </div>
 
                 <div class="campo">
                     <label for="accountEmail">Email</label>
-                    <input type="email" id="accountEmail" value="juan@gmail.com">
+                    <input type="email" id="accountEmail" value="<%= usuario.email || "" %>">
                 </div>
 
                 <div class="campo">
                     <label for="accountPhone">Telefono</label>
-                    <input type="text" id="accountPhone" value="3210000000">
+                    <input type="text" id="accountPhone" value="<%= usuario.telefono || "" %>">
                 </div>
 
                 <div class="campo">
                     <label for="accountDocument">Documento</label>
-                    <input type="text" id="accountDocument" value="CC 1000000000">
+                    <input type="text" id="accountDocument" value="<%= usuario.documento || "" %>">
+                </div>
+
+                <div class="campo campo-full">
+                    <label for="accountAddress">Direccion</label>
+                    <input type="text" id="accountAddress" value="<%= usuario.direccion || "" %>">
                 </div>
             </div>
 
@@ -152,7 +157,7 @@
 
             <div class="direccion-card" id="addressCard">
                 <h3>Casa</h3>
-                <p>Calle 20 # 10 - 30</p>
+                <p><%= usuario.direccion || "Sin direccion registrada" %></p>
             </div>
 
             <button class="btn-agregar" id="addAddress" type="button">

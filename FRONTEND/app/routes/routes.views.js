@@ -19,12 +19,22 @@ import {
     getDashboard,
     getRegistroAdmin,
     getAyuda,
-    getCuentaAdmin
-    
+    getCuentaAdmin,
+    postLogin,
+    putCuenta,
+    postLogout,
+    postAdministrador,
+    getSession
 } from "../controller/controller.views.js";
 
 
 const router = Router();
+
+router.post("/api/login", postLogin);
+router.put("/api/cuenta", putCuenta);
+router.post("/api/administradores", postAdministrador);
+router.post("/api/logout", postLogout);
+router.get("/api/session", getSession);
 
 const viewRoutes = [
     ["/index", getIndex],
