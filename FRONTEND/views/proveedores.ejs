@@ -91,30 +91,6 @@
 
         </div>
 
-
-
-        <!-- ALERTAS -->
-
-        <div class="alertas">
-
-            <div class="alerta warning">
-
-                ⚠️ Whisky Old Parr está próximo a agotarse
-
-            </div>
-
-
-            <div class="alerta danger"
-                 id="pedidoAtrasado">
-
-                🚫 Pedido #204 lleva retraso de 3 días
-
-            </div>
-
-        </div>
-
-
-
         <!-- TABLA -->
 
         <div class="tabla-container">
@@ -271,81 +247,128 @@
         </div>
 
 
+<!-- MODAL -->
 
-        <!-- MODAL -->
+<!-- MODAL -->
 
-        <div class="modal" id="modalProveedor">
+<div class="modal" id="modalProveedor">
 
-            <div class="modal-content">
+    <div class="modal-content">
 
-                <div class="modal-header">
+        <h2 id="tituloModal">
+            Nuevo proveedor
+        </h2>
 
-                    <h2 id="tituloModal">
-                        Nuevo proveedor
-                    </h2>
+        <form id="formProveedor">
 
-                    <span id="cerrarModal">
-                        ✖
-                    </span>
+            <input type="hidden" id="id_proveedor">
 
-                </div>
+            <label>
+                Nombre del proveedor
+            </label>
 
+            <input
+                type="text"
+                id="nombreProveedor"
+                placeholder="Ej: AndesLiquor"
+                required
+            >
 
-                <div class="modal-body">
+            <label>
+                Teléfono
+            </label>
 
-                    <input type="text"
-                           id="nombreProveedor"
-                           placeholder="Nombre del proveedor">
+            <input
+                type="text"
+                id="telefonoProveedor"
+                placeholder="Ej: 3215559988"
+                required
+            >
 
-                    <input type="text"
-                           id="telefonoProveedor"
-                           placeholder="Teléfono">
+            <label>
+                Correo
+            </label>
 
-                    <input type="email"
-                           id="correoProveedor"
-                           placeholder="Correo">
+            <input
+                type="email"
+                id="correoProveedor"
+                placeholder="Ej: proveedor@gmail.com"
+                required
+            >
 
-                    <input type="text"
-                           id="direccionProveedor"
-                           placeholder="Dirección">
+            <label>
+                Dirección
+            </label>
 
-                    <input type="text"
-                           id="ciudadProveedor"
-                           placeholder="Ciudad">
+            <input
+                type="text"
+                id="direccionProveedor"
+                placeholder="Ej: Calle 80 # 20-30"
+            >
 
-                    <input type="text"
-                           id="nitProveedor"
-                           placeholder="NIT">
+            <label>
+                Ciudad
+            </label>
 
-                    <input type="text"
-                           id="contactoProveedor"
-                           placeholder="Contacto principal">
+            <input
+                type="text"
+                id="ciudadProveedor"
+                placeholder="Ej: Bogotá"
+            >
 
-                    <textarea id="notasProveedor"
-                              placeholder="Notas del proveedor"></textarea>
+            <label>
+                NIT
+            </label>
 
-                </div>
+            <input
+                type="text"
+                id="nitProveedor"
+                placeholder="Ej: 900123456-7"
+            >
 
+            <label>
+                Contacto principal
+            </label>
 
-                <button id="guardarProveedor">
+            <input
+                type="text"
+                id="contactoProveedor"
+                placeholder="Nombre del contacto"
+            >
 
-                    Guardar proveedor
+            <label>
+                Notas
+            </label>
 
+            <textarea
+                id="notasProveedor"
+                placeholder="Información adicional del proveedor"
+            ></textarea>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="cerrarModal"
+                    class="btn-secondary">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    id="guardarProveedor"
+                    class="btn-primary">
+                    Guardar
                 </button>
 
             </div>
 
-        </div>
+        </form>
 
-    </main>
+    </div>
 
+</div>
 
+<script src="/js/sidebar.js"></script>
 
-    <!-- JS -->
-
-    <script src="/js/sidebar.js"></script>
-    <script src="/js/proveedores.js"></script>
-
-</body>
-
-</html>
+<script src="/js/proveedores.js"></script>

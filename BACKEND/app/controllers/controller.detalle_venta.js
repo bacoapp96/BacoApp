@@ -52,6 +52,15 @@ export const crearDetallesVenta = async (req, res) => {
             [id_venta, id_producto, cantidad, precio]
         );
 
+        // Descontar inventario
+        await pool.query(
+             `UPDATE productos
+             SET stock = stock - ?
+             WHERE id = ? `,
+             [cantidad, id_producto]
+
+        )
+
         res.json({
             mensaje: "Detalle creado",
             id: result.insertId

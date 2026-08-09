@@ -12,6 +12,8 @@
 
 <%- include("partials/client-sidebar", { active: "cuenta" }) %>
 
+
+
 <main class="cuenta-container">
     <section class="account-hero">
         <div class="profile-card">
@@ -20,13 +22,13 @@
             </div>
             <div>
                 <span class="account-kicker">Cuenta cliente</span>
+              
                 <h1 id="profileName"><%= usuario.nombre || "Mi cuenta" %></h1>
                 <p id="profileTier"><%= usuario.rol === "admin" ? "Administrador" : "Cliente" %></p>
-                <div class="perfil-badges">
-                    <span><i class="fa-solid fa-circle-check"></i> Activo</span>
-                    <span><i class="fa-solid fa-bag-shopping"></i> +12 pedidos</span>
-                    <span><i class="fa-solid fa-coins"></i> 1.250 puntos</span>
-                </div>
+                  <P>cliente
+                    <strong><%= usuario.nivel %></strong>
+                </P>
+                
             </div>
         </div>
 
@@ -44,26 +46,36 @@
     </section>
 
     <section class="account-dashboard">
-        <article class="metric-card">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <span>Pedidos</span>
-            <strong>12</strong>
-        </article>
-        <article class="metric-card">
-            <i class="fa-solid fa-heart"></i>
-            <span>Favoritos</span>
-            <strong>24</strong>
-        </article>
-        <article class="metric-card">
-            <i class="fa-solid fa-coins"></i>
-            <span>Puntos</span>
-            <strong>1.250</strong>
-        </article>
+
+
         <article class="metric-card">
             <i class="fa-solid fa-crown"></i>
             <span>Nivel</span>
-            <strong>Premium</strong>
+            <strong><%= usuario.nivel || "Bronce" %></strong>
         </article>
+
+        <article class="metric-card">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Total gastado</span>
+            <strong>
+                $<%= Number(usuario.totalGastado || 0).toLocaleString("es-CO") %>
+            </strong>
+        </article>
+
+        <article class="metric-card">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Estado</span>
+            <strong><%= usuario.estado %></strong>
+        </article>
+
+        <article class="metric-card">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Cupo</span>
+            <strong>
+                $<%= Number(usuario.cupoCredito || 0).toLocaleString("es-CO") %>
+            </strong>
+        </article>
+
     </section>
 
     <section class="cuenta-grid">
@@ -126,91 +138,6 @@
             </div>
         </article>
 
-        <article class="card-cuenta">
-            <div class="card-header">
-                <div>
-                    <h2>Seguridad</h2>
-                    <p>Acceso y dispositivos.</p>
-                </div>
-                <i class="fa-solid fa-lock"></i>
-            </div>
-
-            <button class="btn-secundario" id="changePassword" type="button">
-                <i class="fa-solid fa-key"></i> Cambiar contrasena
-            </button>
-            <button class="btn-secundario" id="showDevices" type="button">
-                <i class="fa-solid fa-desktop"></i> Ver dispositivos conectados
-            </button>
-            <button class="btn-danger" id="deleteAccount" type="button">
-                <i class="fa-solid fa-triangle-exclamation"></i> Eliminar cuenta
-            </button>
-        </article>
-
-        <article class="card-cuenta">
-            <div class="card-header">
-                <div>
-                    <h2>Direccion principal</h2>
-                    <p>Usada para calcular entregas.</p>
-                </div>
-                <i class="fa-solid fa-location-dot"></i>
-            </div>
-
-            <div class="direccion-card" id="addressCard">
-                <h3>Casa</h3>
-                <p><%= usuario.direccion || "Sin direccion registrada" %></p>
-            </div>
-
-            <button class="btn-agregar" id="addAddress" type="button">
-                <i class="fa-solid fa-plus"></i> Actualizar direccion
-            </button>
-        </article>
-
-        <article class="card-cuenta">
-            <div class="card-header">
-                <div>
-                    <h2>Metodo de pago</h2>
-                    <p>Pago favorito para compras rapidas.</p>
-                </div>
-                <i class="fa-solid fa-credit-card"></i>
-            </div>
-
-            <div class="pago-card" id="paymentCard">
-                <i class="fa-brands fa-cc-visa"></i>
-                <span>**** 4589</span>
-            </div>
-
-            <button class="btn-agregar" id="addPayment" type="button">
-                <i class="fa-solid fa-plus"></i> Actualizar tarjeta
-            </button>
-        </article>
-    </section>
-
-    <section class="historial-card">
-        <div class="card-header">
-            <div>
-                <h2>Historial y actividad</h2>
-                <p>Seguimiento rapido de pedidos recientes.</p>
-            </div>
-            <i class="fa-solid fa-clock-rotate-left"></i>
-        </div>
-
-        <div class="pedido-list">
-            <div class="pedido-item">
-                <div>
-                    <h3>Pedido #2045</h3>
-                    <p>24 Mayo 2026 - Whisky premium y snacks</p>
-                </div>
-                <span class="estado entregado">Entregado</span>
-            </div>
-
-            <div class="pedido-item">
-                <div>
-                    <h3>Pedido #2046</h3>
-                    <p>27 Mayo 2026 - Ron, gaseosas y hielo</p>
-                </div>
-                <span class="estado proceso">En proceso</span>
-            </div>
-        </div>
     </section>
 </main>
 

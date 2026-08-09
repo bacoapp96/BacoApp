@@ -1,4 +1,10 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
+
+    // =========================
+    // ELEMENTOS DEL DOM
+    // =========================
+
     const fields = {
         nombre: document.getElementById("accountName"),
         email: document.getElementById("accountEmail"),
@@ -6,12 +12,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         documento: document.getElementById("accountDocument"),
         direccion: document.getElementById("accountAddress")
     };
-    const profileName = document.getElementById("profileName");
-    const profileTier = document.getElementById("profileTier");
-    const addressCard = document.getElementById("addressCard");
-    const paymentCard = document.getElementById("paymentCard");
-    const themeSelector = document.getElementById("clientThemeSelector");
-    const saveButton = document.getElementById("saveAccount");
+
+    const profileName =
+        document.getElementById("profileName");
+
+    const profileTier =
+        document.getElementById("profileTier");
+
+    const themeSelector =
+        document.getElementById("clientThemeSelector");
+
+    const saveButton =
+        document.getElementById("saveAccount");
+
+    const editButton =
+        document.getElementById("editProfile");
+
+
+    // =========================
+    // OBTENER DATOS DEL FORMULARIO
+    // =========================
 
     const accountFromFields = () => ({
         nombre: fields.nombre?.value.trim() || "",
@@ -21,113 +41,297 @@ document.addEventListener("DOMContentLoaded", async () => {
         direccion: fields.direccion?.value.trim() || ""
     });
 
-    const renderAccount = (account = accountFromFields()) => {
-        if (fields.nombre) fields.nombre.value = account.nombre || "";
-        if (fields.email) fields.email.value = account.email || "";
-        if (fields.telefono) fields.telefono.value = account.telefono || "";
-        if (fields.documento) fields.documento.value = account.documento || "";
-        if (fields.direccion) fields.direccion.value = account.direccion || "";
-        if (profileName) profileName.textContent = account.nombre || "Mi cuenta";
-        if (profileTier) profileTier.textContent = account.rol === "admin" ? "Administrador" : "Cliente";
-        if (addressCard) addressCard.querySelector("p").textContent = account.direccion || "Sin direccion registrada";
-        if (paymentCard) paymentCard.querySelector("span").textContent = "Sin metodo registrado";
+
+    // =========================
+    // MOSTRAR DATOS DEL USUARIO
+    // =========================
+
+    const renderAccount = (account = {}) => {
+
+        if (fields.nombre) {
+            fields.nombre.value = account.nombre || "";
+        }
+
+        if (fields.email) {
+            fields.email.value = account.email || "";
+        }
+
+        if (fields.telefono) {
+            fields.telefono.value = account.telefono || "";
+        }
+
+        if (fields.documento) {
+            fields.documento.value = account.documento || "";
+        }
+
+        if (fields.direccion) {
+            fields.direccion.value = account.direccion || "";
+        }
+
+        if (profileName) {
+            profileName.textContent =
+                account.nombre || "Mi cuenta";
+        }
+
+        if (profileTier) {
+            profileTier.textContent =
+                account.rol === "admin"
+                    ? "Administrador"
+                    : "Cliente";
+        }
     };
+
+
+    // =========================
+    // TEMAS
+    // =========================
 
     const renderThemeButtons = () => {
-        const currentTheme = window.BacoTheme?.get?.() || "dark";
-        themeSelector?.querySelectorAll("[data-theme-option]").forEach((button) => {
-            button.classList.toggle("active", button.dataset.themeOption === currentTheme);
-        });
+
+        const currentTheme =
+            window.BacoTheme?.get?.() || "dark";
+
+        themeSelector
+            ?.querySelectorAll("[data-theme-option]")
+            .forEach((button) => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.themeOption === currentTheme
+                );
+
+            });
     };
 
+
+    // =========================
+    // GUARDAR CAMBIOS
+    // =========================
+
     const saveAccount = async () => {
+
+        if (!saveButton) return;
+
         const account = accountFromFields();
 
         saveButton.disabled = true;
         saveButton.classList.add("is-loading");
 
         try {
-            const response = await fetch("/api/cuenta", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(account)
-            });
+
+            const response = await fetch(
+                "/api/cuenta",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(account)
+                }
+            );
+
             const data = await response.json();
 
+
+            // Sesión expirada
+
             if (response.status === 401) {
+
                 window.location.href = "/login";
+
                 return;
             }
 
+
+            // Error al guardar
+
             if (!response.ok || !data.ok) {
-                throw new Error(data.message || "No se pudo guardar el perfil.");
+
+                throw new Error(
+                    data.message ||
+                    "No se pudo guardar el perfil."
+                );
+
             }
 
-            localStorage.setItem("bacoUser", JSON.stringify(data.usuario));
+
+            // Guardar usuario actualizado
+
+            localStorage.setItem(
+                "bacoUser",
+                JSON.stringify(data.usuario)
+            );
+
+
+            // Actualizar información en pantalla
+
             renderAccount(data.usuario);
-            alert("Cambios guardados correctamente.");
+
+
+            alert(
+                "Cambios guardados correctamente."
+            );
+
+
         } catch (error) {
+
+            console.error(
+                "Error al guardar la cuenta:",
+                error
+            );
+
             alert(error.message);
+
+
         } finally {
+
             saveButton.disabled = false;
             saveButton.classList.remove("is-loading");
+
         }
     };
 
-    document.getElementById("editProfile")?.addEventListener("click", () => fields.nombre?.focus());
-    saveButton?.addEventListener("click", saveAccount);
 
-    themeSelector?.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-theme-option]");
-        if (!button) return;
-        window.BacoTheme?.set?.(button.dataset.themeOption);
-        renderThemeButtons();
-    });
+    // =========================
+    // BOTÓN EDITAR PERFIL
+    // =========================
 
-    document.addEventListener("bacoapp:themechange", renderThemeButtons);
+    editButton?.addEventListener(
+        "click",
+        () => {
 
-    document.getElementById("changePassword")?.addEventListener("click", () => {
-        alert("La actualizacion de contrasena debe hacerse desde recuperacion de acceso.");
-    });
+            fields.nombre?.focus();
 
-    document.getElementById("showDevices")?.addEventListener("click", () => {
-        alert("Sesion web activa en este navegador.");
-    });
+        }
+    );
 
-    document.getElementById("addAddress")?.addEventListener("click", () => fields.direccion?.focus());
 
-    document.getElementById("addPayment")?.addEventListener("click", () => {
-        alert("Metodo de pago no configurado en esta version.");
-    });
+    // =========================
+    // BOTÓN GUARDAR
+    // =========================
 
-    document.getElementById("deleteAccount")?.addEventListener("click", async () => {
-        if (!confirm("Seguro que deseas cerrar la sesion?")) return;
-        await fetch("/api/logout", { method: "POST" });
-        localStorage.removeItem("bacoUser");
-        window.location.href = "/login";
-    });
+    saveButton?.addEventListener(
+        "click",
+        saveAccount
+    );
 
-    renderAccount();
-    renderThemeButtons();
+
+    // =========================
+    // CAMBIO DE TEMA
+    // =========================
+
+    themeSelector?.addEventListener(
+        "click",
+        (event) => {
+
+            const button =
+                event.target.closest(
+                    "[data-theme-option]"
+                );
+
+            if (!button) return;
+
+            window.BacoTheme?.set?.(
+                button.dataset.themeOption
+            );
+
+            renderThemeButtons();
+
+        }
+    );
+
+
+    // Actualizar botones si el tema
+    // cambia desde otro lugar
+
+    document.addEventListener(
+        "bacoapp:themechange",
+        renderThemeButtons
+    );
+
+
+    // =========================
+    // CARGAR SESIÓN
+    // =========================
 
     try {
-        const response = await fetch("/api/session");
-        const data = await response.json();
+
+        const response =
+            await fetch("/api/session");
+
+        const data =
+            await response.json();
+
+
+        // Usuario no autenticado
 
         if (!data.ok) {
+
             window.location.href = "/login";
+
             return;
         }
 
+
+        const usuario = data.usuario;
+
+
+        // Normalizar nombres de campos
+        // provenientes de la base de datos
+
         renderAccount({
-            nombre: data.usuario.Nombre || data.usuario.nombre || "",
-            email: data.usuario.Email || data.usuario.email || "",
-            telefono: data.usuario.Celular || data.usuario.telefono || data.usuario.Telefono || "",
-            documento: data.usuario.Documento || data.usuario.documento || "",
-            direccion: data.usuario.Direccion || data.usuario.direccion || "",
-            rol: data.usuario.rol || data.usuario.Rol || ""
+
+            nombre:
+                usuario.Nombre ||
+                usuario.nombre ||
+                "",
+
+            email:
+                usuario.Email ||
+                usuario.email ||
+                "",
+
+            telefono:
+                usuario.Celular ||
+                usuario.telefono ||
+                usuario.Telefono ||
+                "",
+
+            documento:
+                usuario.Documento ||
+                usuario.documento ||
+                "",
+
+            direccion:
+                usuario.Direccion ||
+                usuario.direccion ||
+                "",
+
+            rol:
+                usuario.rol ||
+                usuario.Rol ||
+                ""
+
         });
+
+
     } catch (error) {
-        console.error("Error al cargar la sesion:", error);
+
+        console.error(
+            "Error al cargar la sesión:",
+            error
+        );
+
     }
+
+
+    // =========================
+    // INICIALIZAR TEMA
+    // =========================
+
+    renderThemeButtons();
+
 });
+

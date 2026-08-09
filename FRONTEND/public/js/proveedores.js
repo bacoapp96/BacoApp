@@ -3,67 +3,64 @@
 // DATA
 // =========================
 
-let proveedores = [
+let proveedores = [];
 
-    {
-        nombre:"AndesLiquor",
-        telefono:"3215559988",
-        correo:"andes@gmail.com",
-        direccion:"Bogotá",
-        descripcion:"Proveedor premium de whisky y ron.",
-        pedidos:15,
-        estado:"Activo",
-        deuda:850000,
+async function cargarProveedores() {
 
-        detallePedido:{
-            numero:"#204",
-            fecha:"28/05/2026",
-            total:2500000,
+    try {
 
-            productos:[
-                {
-                    nombre:"Whisky Old Parr",
-                    cantidad:10
-                },
+        const respuesta = await fetch(
+            "http://localhost:3000/api/proveedores"
+        );
 
-                {
-                    nombre:"Ron Medellín",
-                    cantidad:20
-                }
-            ]
+        if (!respuesta.ok) {
+            throw new Error("Error al obtener proveedores");
         }
-    },
 
-    {
-        nombre:"Licores Premium",
-        telefono:"3108881122",
-        correo:"premium@gmail.com",
-        direccion:"Medellín",
-        descripcion:"Distribuidor nacional de tequila.",
-        pedidos:8,
-        estado:"Pendiente",
-        deuda:420000,
+        const datos = await respuesta.json();
 
-        detallePedido:{
-            numero:"#178",
-            fecha:"27/05/2026",
-            total:1800000,
+        proveedores = datos.map(proveedor => ({
+            id: proveedor.id_proveedor,
+            nombre: proveedor.nombre || "",
+            telefono: proveedor.telefono || "",
+            correo: proveedor.correo || "",
+            direccion: proveedor.direccion || "",
+            ciudad: proveedor.ciudad || "",
+            nit: proveedor.nit || "",
+            contacto: proveedor.contacto || "",
+            notas: proveedor.notas || "",
+            estado: proveedor.estado || "Activo",
 
-            productos:[
-                {
-                    nombre:"Tequila José Cuervo",
-                    cantidad:12
-                },
+            // Mientras todavía no tenemos pedidos
+            pedidos: 0,
+            deuda: 0,
 
-                {
-                    nombre:"Aguardiente Antioqueño",
-                    cantidad:25
-                }
-            ]
-        }
+            detallePedido: {
+                numero: "",
+                fecha: "",
+                total: 0,
+                productos: []
+            }
+        }));
+
+        mostrarProveedores(proveedores);
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando proveedores:",
+            error
+        );
+
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    Error al cargar los proveedores.
+                </td>
+            </tr>
+        `;
     }
-
-];
+}
 
 
 // =========================
@@ -135,7 +132,7 @@ function mostrarProveedores(lista){
 
                         <button 
                             class="btn editar"
-                            onclick="editarProveedor(${index})"
+                            onclick="editarProveedor(${proveedor.id})"
                         >
                             Editar
                         </button>
@@ -149,8 +146,7 @@ function mostrarProveedores(lista){
 
                         <button 
                             class="btn eliminar"
-                            onclick="eliminarProveedor(${index})"
-                        >
+                            onclick="eliminarProveedor(${proveedor.id})"                        >
                             Eliminar
                         </button>
 
@@ -172,42 +168,38 @@ function mostrarProveedores(lista){
 // ACTUALIZAR KPI
 // =========================
 
-function actualizarKPIs(){
+function actualizarKPIs() {
 
-    const activos =
-    proveedores.filter(p =>
-        p.estado === "Activo"
+    const activos = proveedores.filter(
+        p => p.estado === "Activo"
     ).length;
 
-    const pendientes =
-    proveedores.filter(p =>
-        p.estado === "Pendiente"
+    const pendientes = proveedores.filter(
+        p => p.estado === "Pendiente"
     ).length;
 
-    const deudaTotal =
-    proveedores.reduce((total,p) =>
-        total + p.deuda
-    ,0);
+    const deudaTotal = proveedores.reduce(
+        (total, p) => total + Number(p.deuda || 0),
+        0
+    );
 
     document
-    .querySelector("#cardActivos p")
-    .textContent = activos;
+        .querySelector("#cardActivos p")
+        .textContent = activos;
 
     document
-    .querySelector("#cardPendientes p")
-    .textContent = pendientes;
+        .querySelector("#cardPendientes p")
+        .textContent = pendientes;
 
     document
-    .querySelector("#cardEntregas p")
-    .textContent = 4;
+        .querySelector("#cardEntregas p")
+        .textContent = "0";
 
     document
-    .querySelector("#cardDeuda p")
-    .textContent =
-    `$${deudaTotal.toLocaleString()}`;
-
+        .querySelector("#cardDeuda p")
+        .textContent =
+        `$${deudaTotal.toLocaleString("es-CO")}`;
 }
-
 
 // =========================
 // VER PROVEEDOR
@@ -239,7 +231,7 @@ function verProveedor(index){
             <p>📌 Estado: ${proveedor.estado}</p>
 
             <p>
-                📝 ${proveedor.descripcion}
+                📝 ${proveedor.notas}
             </p>
 
         </div>
@@ -251,15 +243,48 @@ function verProveedor(index){
 }
 
 
+
+
 // =========================
-// DETALLE PEDIDO
+// DETALLE COMPLETO DEL PEDIDO
 // =========================
 
-function mostrarDetallePedido(proveedor){
+function mostrarDetallePedido(proveedor) {
+
+    const pedido = proveedor.detallePedido;
+
+    if (!pedido || !pedido.productos || pedido.productos.length === 0) {
+
+        detalleCompleto.innerHTML = `
+
+            <div class="pedido-detalle-card">
+
+                <h3>Sin pedidos registrados</h3>
+
+                <p>
+                    🚚 Proveedor:
+                    ${proveedor.nombre}
+                </p>
+
+                <p>
+                    Este proveedor todavía no tiene pedidos registrados.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    // =========================
+    // PRODUCTOS
+    // =========================
 
     let productosHTML = "";
 
-    proveedor.detallePedido.productos.forEach(producto => {
+    pedido.productos.forEach(producto => {
 
         productosHTML += `
 
@@ -279,24 +304,32 @@ function mostrarDetallePedido(proveedor){
 
     });
 
+
+    // =========================
+    // MOSTRAR DETALLE
+    // =========================
+
     detalleCompleto.innerHTML = `
 
         <div class="pedido-detalle-card">
 
             <h3>
-                Pedido ${proveedor.detallePedido.numero}
+                Pedido ${pedido.numero}
             </h3>
 
             <p>
-                🚚 ${proveedor.nombre}
+                🚚 Proveedor:
+                ${proveedor.nombre}
             </p>
 
             <p>
-                📅 ${proveedor.detallePedido.fecha}
+                📅 Fecha:
+                ${pedido.fecha}
             </p>
 
             <p>
-                📌 ${proveedor.estado}
+                📌 Estado:
+                ${proveedor.estado}
             </p>
 
             <hr>
@@ -310,10 +343,8 @@ function mostrarDetallePedido(proveedor){
             <hr>
 
             <h4>
-
                 💰 Total:
-                $${proveedor.detallePedido.total.toLocaleString()}
-
+                $${Number(pedido.total).toLocaleString("es-CO")}
             </h4>
 
         </div>
@@ -321,66 +352,83 @@ function mostrarDetallePedido(proveedor){
     `;
 }
 
-
 // =========================
-// EDITAR
+// EDITAR PROVEEDOR
 // =========================
 
-function editarProveedor(index){
 
-    const proveedor =
-    proveedores[index];
+async function editarProveedor(id) {
 
-    const nuevoNombre =
-    prompt(
-        "Nombre:",
-        proveedor.nombre
-    );
+    try {
 
-    if(!nuevoNombre) return;
+        // Buscar proveedor en la BD
+        const respuesta = await fetch(
+            `http://localhost:3000/api/proveedores/${id}`
+        );
 
-    const nuevoTelefono =
-    prompt(
-        "Teléfono:",
-        proveedor.telefono
-    );
+        const proveedor = await respuesta.json();
 
-    const nuevoCorreo =
-    prompt(
-        "Correo:",
-        proveedor.correo
-    );
+        if (!respuesta.ok) {
 
-    const nuevaDireccion =
-    prompt(
-        "Dirección:",
-        proveedor.direccion
-    );
+            throw new Error(
+                proveedor.error ||
+                "No se pudo obtener el proveedor"
+            );
 
-    const nuevaDescripcion =
-    prompt(
-        "Descripción:",
-        proveedor.descripcion
-    );
+        }
 
-    proveedor.nombre =
-    nuevoNombre;
 
-    proveedor.telefono =
-    nuevoTelefono;
+        // Cambiar título del modal
+        tituloModal.textContent = "Editar proveedor";
 
-    proveedor.correo =
-    nuevoCorreo;
 
-    proveedor.direccion =
-    nuevaDireccion;
+        // Guardar ID
+        document.getElementById("id_proveedor").value =
+            proveedor.id_proveedor;
 
-    proveedor.descripcion =
-    nuevaDescripcion;
 
-    mostrarProveedores(proveedores);
+        // Cargar datos
+        document.getElementById("nombreProveedor").value =
+            proveedor.nombre || "";
 
-    verProveedor(index);
+        document.getElementById("telefonoProveedor").value =
+            proveedor.telefono || "";
+
+        document.getElementById("correoProveedor").value =
+            proveedor.correo || "";
+
+        document.getElementById("direccionProveedor").value =
+            proveedor.direccion || "";
+
+        document.getElementById("ciudadProveedor").value =
+            proveedor.ciudad || "";
+
+        document.getElementById("nitProveedor").value =
+            proveedor.nit || "";
+
+        document.getElementById("contactoProveedor").value =
+            proveedor.contacto || "";
+
+        document.getElementById("notasProveedor").value =
+            proveedor.notas || "";
+
+
+        // Abrir modal
+        modalProveedor.style.display = "flex";
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando proveedor:",
+            error
+        );
+
+        alert(
+            "No se pudo cargar la información del proveedor."
+        );
+
+    }
 
 }
 
@@ -412,25 +460,59 @@ function cancelarPedido(index){
 // ELIMINAR
 // =========================
 
-function eliminarProveedor(index){
+async function eliminarProveedor(id) {
 
-    const confirmar =
-    confirm("¿Eliminar proveedor?");
+    const confirmar = confirm(
+        "¿Estás seguro de eliminar este proveedor?"
+    );
 
-    if(confirmar){
+    if (!confirmar) return;
 
-        proveedores.splice(index,1);
+    try {
 
-        mostrarProveedores(proveedores);
+        const respuesta = await fetch(
+            `http://localhost:3000/api/proveedores/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
 
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                resultado.error ||
+                "No se pudo eliminar el proveedor"
+            );
+
+        }
+
+        alert(
+            "Proveedor eliminado correctamente."
+        );
+
+        // Recargar desde la BD
+        await cargarProveedores();
+
+        // Limpiar detalles
         detallePedidos.innerHTML = "";
-
         detalleCompleto.innerHTML = "";
 
+    } catch (error) {
+
+        console.error(
+            "Error eliminando proveedor:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "No se pudo eliminar el proveedor."
+        );
+
     }
-
 }
-
 
 // =========================
 // BUSCADOR
@@ -533,90 +615,281 @@ document
 });
 
 
+
 // =========================
-// PEDIDO ATRASADO
+// MODAL PROVEEDOR
 // =========================
 
-document
-.getElementById("pedidoAtrasado")
-.addEventListener("click", () => {
+const btnNuevo = document.getElementById("btnNuevo");
+const modalProveedor = document.getElementById("modalProveedor");
+const formProveedor = document.getElementById("formProveedor");
+const cerrarModal = document.getElementById("cerrarModal");
 
-    detallePedidos.innerHTML = `
+const tituloModal = document.getElementById("tituloModal");
 
-        <div class="pedido-card">
 
-            <h3>
-                🚫 Pedido atrasado
-            </h3>
+// =========================
+// ABRIR MODAL
+// =========================
 
-            <p>
-                AndesLiquor
-            </p>
+btnNuevo.addEventListener("click", () => {
 
-            <p>
-                Retraso de 3 días
-            </p>
+    tituloModal.textContent = "Nuevo proveedor";
 
-        </div>
+    formProveedor.reset();
 
-    `;
+    document.getElementById("id_proveedor").value = "";
+
+    modalProveedor.style.display = "flex";
 
 });
 
 
 // =========================
-// NUEVO PROVEEDOR
+// CERRAR MODAL
 // =========================
 
-document
-.getElementById("btnNuevo")
-.addEventListener("click", () => {
+cerrarModal.addEventListener("click", () => {
 
-    const nombre =
-    prompt("Nombre del proveedor:");
+    modalProveedor.style.display = "none";
 
-    if(!nombre) return;
+});
 
-    const telefono =
-    prompt("Teléfono:");
 
-    const correo =
-    prompt("Correo:");
+// =========================
+// CERRAR AL HACER CLICK AFUERA
+// =========================
 
-    const direccion =
-    prompt("Dirección:");
+modalProveedor.addEventListener("click", (event) => {
 
-    const descripcion =
-    prompt("Descripción:");
+    if (event.target === modalProveedor) {
 
-    proveedores.push({
+        modalProveedor.style.display = "none";
 
-        nombre,
-        telefono,
-        correo,
-        direccion,
-        descripcion,
+    }
 
-        pedidos:0,
-        estado:"Activo",
-        deuda:0,
+});
 
-        detallePedido:{
-            numero:"#000",
-            fecha:"Sin pedidos",
-            total:0,
-            productos:[]
+
+
+
+
+// =========================
+// EDITAR PROVEEDOR
+// =========================
+
+async function editarProveedor(id) {
+
+    try {
+
+        const respuesta = await fetch(
+            `http://localhost:3000/api/proveedores/${id}`
+        );
+
+        const proveedor = await respuesta.json();
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                proveedor.error ||
+                "No se pudo obtener el proveedor"
+            );
+
         }
 
-    });
 
-    mostrarProveedores(proveedores);
+        // =========================
+        // TITULO
+        // =========================
+
+        tituloModal.textContent = "Editar proveedor";
+
+
+        // =========================
+        // ID
+        // =========================
+
+        document.getElementById("id_proveedor").value =
+            proveedor.id_proveedor;
+
+
+        // =========================
+        // DATOS
+        // =========================
+
+        document.getElementById("nombreProveedor").value =
+            proveedor.nombre ?? "";
+
+        document.getElementById("telefonoProveedor").value =
+            proveedor.telefono ?? "";
+
+        document.getElementById("correoProveedor").value =
+            proveedor.correo ?? "";
+
+        document.getElementById("direccionProveedor").value =
+            proveedor.direccion ?? "";
+
+        document.getElementById("ciudadProveedor").value =
+            proveedor.ciudad ?? "";
+
+        document.getElementById("nitProveedor").value =
+            proveedor.nit ?? "";
+
+        document.getElementById("contactoProveedor").value =
+            proveedor.contacto ?? "";
+
+        document.getElementById("notasProveedor").value =
+            proveedor.notas ?? "";
+
+
+        // =========================
+        // ABRIR MODAL
+        // =========================
+
+        modalProveedor.style.display = "flex";
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando proveedor:",
+            error
+        );
+
+        alert(
+            "No se pudo cargar la información del proveedor."
+        );
+
+    }
+
+}
+
+// =========================
+// GUARDAR / ACTUALIZAR
+// =========================
+
+formProveedor.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const id =
+        document.getElementById("id_proveedor").value.trim();
+
+    // Verificar que estamos editando un proveedor
+    if (!id) {
+        alert("No se encontró el proveedor que deseas editar.");
+        console.error("ID proveedor vacío");
+        return;
+    }
+
+    const datos = {
+
+        nombre:
+            document.getElementById("nombreProveedor").value.trim(),
+
+        telefono:
+            document.getElementById("telefonoProveedor").value.trim(),
+
+        correo:
+            document.getElementById("correoProveedor").value.trim(),
+
+        direccion:
+            document.getElementById("direccionProveedor").value.trim(),
+
+        ciudad:
+            document.getElementById("ciudadProveedor").value.trim(),
+
+        nit:
+            document.getElementById("nitProveedor").value.trim(),
+
+        contacto:
+            document.getElementById("contactoProveedor").value.trim(),
+
+        notas:
+            document.getElementById("notasProveedor").value.trim()
+
+    };
+
+
+    console.log("Actualizando proveedor:", id);
+    console.log("Datos enviados:", datos);
+
+
+    try {
+
+        const respuesta = await fetch(
+            `http://localhost:3000/api/proveedores/${id}`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(datos)
+            }
+        );
+
+
+        const resultado =
+            await respuesta.json();
+
+
+        console.log("Respuesta del servidor:", resultado);
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                resultado.error ||
+                "No se pudo actualizar el proveedor"
+            );
+
+        }
+
+
+        alert(
+            "Proveedor actualizado correctamente."
+        );
+
+
+        // Cerrar modal
+        modalProveedor.style.display = "none";
+
+
+        // Limpiar formulario
+        formProveedor.reset();
+
+        document.getElementById(
+            "id_proveedor"
+        ).value = "";
+
+
+        // Volver al título de nuevo proveedor
+        tituloModal.textContent =
+            "Nuevo proveedor";
+
+
+        // Recargar datos desde BD
+        await cargarProveedores();
+
+
+    } catch (error) {
+
+        console.error(
+            "Error actualizando proveedor:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "No se pudo actualizar el proveedor."
+        );
+
+    }
 
 });
 
 
-// =========================
-// INICIO
-// =========================
+cargarProveedores();
 
-mostrarProveedores(proveedores);

@@ -30,7 +30,25 @@
 
                 <div style="display:flex; flex-direction:column; gap:5px;">
                     <label for="password" style="font-size: 14px; color: var(--gray);">Contraseña:</label>
-                    <input type="password" id="password" class="input" name="password" required>
+                    <input
+                            type="password"
+                            id="password"
+                            class="input"
+                            name="password"
+                            required
+                            minlength="8"
+                            title="Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.">
+
+                            <small style="color: var(--gray);">
+                                La contraseña debe tener:
+                                <ul style="margin-left:20px; margin-top:5px;">
+                                    <li>Mínimo 8 caracteres.</li>
+                                    <li>Una letra mayúscula.</li>
+                                    <li>Una letra minúscula.</li>
+                                    <li>Un número.</li>
+                                    <li>Un carácter especial (@, #, $, %, !, etc.).</li>
+                                </ul>
+                                </small>
                 </div>
 
                 <div style="display:flex; flex-direction:column; gap:5px;">

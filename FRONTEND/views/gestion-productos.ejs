@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion productos</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/gestion-productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="admin-page">
+     <%- include("partials/admin-sidebar", { active: "gestion-productos" }) %>
+    
+    <main class="main">
+    <section id="gestion-productos" class="dashboard-hero">
+        <div>
+            <span class="eyebrow">BACOAPP</span>
+            <h1>Gestión de Productos</h1>
+            <p>Administra el inventario, precios, categorías y stock de la tienda.</p>
+        </div>
+
+        <button id="btnNuevoProducto" class="refresh-btn" type="button">
+            <i class="fa-solid fa-plus"></i>
+            Nuevo Producto
+        </button>
+    </section>
+
+    
+    
+<section class="panel">
+
+    <div class="panel-header">
+        <h2>Agregar Producto</h2>
+    </div>
+
+    <form
+        class="product-form"
+        id="formProducto"
+        enctype="multipart/form-data"
+    >
+
+        <div class="form-grid">
+
+            <div class="input-group">
+                <label for="nombre">Nombre</label>
+
+                <input
+                    type="text"
+                    name="nombre"
+                    id="nombre"
+                    required
+                >
+            </div>
+    <div class="input-group">
+        <label for="marca">Marca</label>
+        <input
+            type="text"
+            name="marca"
+            id="marca"
+            required
+        >
+    </div>
+
+    <div class="input-group">
+        <label for="precio">Precio</label>
+        <input
+            type="number"
+            name="precio"
+            id="precio"
+            min="0"
+            required
+        >
+    </div>
+
+    <div class="input-group">
+        <label for="stock">Stock</label>
+        <input
+            type="number"
+            name="stock"
+            id="stock"
+            min="0"
+            required
+        >
+    </div>
+
+    <div class="input-group">
+        <label for="categoria">Categoría</label>
+
+        <select
+            name="categoria"
+            id="categoria"
+            required
+        >
+            <option value="">Seleccionar categoría</option>
+            <option value="Cervezas">Cervezas</option>
+            <option value="Vinos">Vinos</option>
+            <option value="Whiskys">Whiskys</option>
+            <option value="Rones">Rones</option>
+            <option value="Tequilas">Tequilas</option>
+            <option value="Aguardientes">Aguardientes</option>
+            <option value="Gaseosas">Gaseosas</option>
+            <option value="Jugos">Jugos</option>
+            <option value="Vodkas">Vodkas</option>
+            <option value="Ginebras">Ginebras</option>
+            <option value="Desechables">Desechables</option>
+            <option value="Dulces">Dulces</option>
+            <option value="Accesorios">Accesorios</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label for="tipo">Tipo</label>
+
+        <input
+            type="text"
+            name="tipo"
+            id="tipo"
+            required
+            placeholder="Ej: Lager, Tinto, Añejo..."
+        >
+    </div>
+
+    <div class="input-group">
+        <label for="pais">País</label>
+
+        <input
+            type="text"
+            name="pais"
+            id="pais"
+            required
+            placeholder="Ej: Colombia"
+        >
+    </div>
+
+    <div class="input-group">
+        <label for="material">Material</label>
+
+        <input
+            type="text"
+            name="material"
+            id="material"
+            required
+            placeholder="Ej: Vidrio, Plástico..."
+        >
+    </div>
+
+    <div class="input-group">
+        <label for="imagen">Imagen</label>
+
+        <input
+            type="file"
+            name="imagen"
+            id="imagen"
+            accept="image/jpeg,image/png,image/webp"
+        >
+    </div>
+
+        </div>
+
+            <div class="input-group full">
+                <label>Descripción</label>
+                <textarea name="descripcion" id="descripcion" required></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="reset" class="btn-secondary">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="btn-primary">
+                    Guardar Producto
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <h2>Productos Registrados</h2>
+        </div>
+
+        <div class="table-container">
+
+            <table class="products-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Marca</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Categoría</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaProductos">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+            <script src="/js/gestion-productos.js"></script>
+            <script src="/js/sidebar.js"></script>
+</body>
+</html>

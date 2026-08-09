@@ -15,37 +15,38 @@
 
 
     <!-- CONTENIDO -->
-    <main class="main-content">
+   <main class="main">
+      <section class="dashboard-hero">
+        <div>
+          <span class="eyebrow">BACOAPP</span>
+          <h1>Inventario BacoApp</h1>
+          <p>Desde aqui podras gestionar todo el inventario de BacoApp.</p>
+        </div>
+        </section>
 
-        <!-- HEADER -->
-        <header class="top-header">
-
-            <div class="admin">
-                👤 Administrador
-            </div>
-
-        </header>
-
-
-        <!-- INVENTARIO -->
-        <section class="inventario-container">
-
-            <!-- TITULO Y BUSCADOR -->
-            <div class="inventario-header">
-
-                <h1>Inventario</h1>
-
-                <div class="buscador">
+                <section class="buscador">
                     <input 
                         type="text" 
                         id="inputBuscar"
                         placeholder="Buscar producto..."
                     >
 
+                    <select id="filtroCategoria">
+                        <option value="">Todas</option>
+                    </select>
+
+                    <select id="ordenStock">
+
+                    <option value="">Ordenar</option>
+                    <option value="menor">Menor stock</option>
+                    <option value="mayor">Mayor stock</option>
+                    </select>
+
                     <button id="btnBuscar">
                         Buscar
                     </button>
-                </div>
+                
+                </section>
 
             </div>
 
@@ -87,6 +88,8 @@
                             <th>Precio</th>
                             <th>Stock</th>
                             <th>Categoría</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
 

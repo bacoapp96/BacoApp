@@ -38,9 +38,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }).format(Number(value) || 0);
   }
 
-  function normalizePrice(value) {
-    return Number(String(value || "0").replace(/[^\d]/g, "")) || 0;
-  }
+function normalizePrice(value) {
+  if (value === null || value === undefined) return 0;
+
+  return parseFloat(
+    String(value)
+      .replace(/\$/g, "")
+      .replace(/\s/g, "")
+      .replace(/,/g, "")
+  ) || 0;
+}
 
   function getSummary() {
     const subtotal = cart.reduce((acc, item) => acc + (Number(item.precio) || 0) * (Number(item.cantidad) || 1), 0);
@@ -52,39 +59,107 @@ document.addEventListener("DOMContentLoaded", () => {
     return { subtotal, quantity, discount, shipping, total };
   }
 
-  function getProductData(button) {
-    const name = button.dataset.nombre || button.dataset.titulo || button.closest("[data-product-card], .promo-card, .result-item")?.querySelector("h3")?.textContent;
-    const price = normalizePrice(button.dataset.precio || button.dataset.price || button.dataset.descuento || 0);
-
-    if (button.dataset.descuento && !button.dataset.precio) {
-      return {
-        nombre: `Promocion: ${name}`,
-        precio: 0,
-        tipo: "Promocion"
-      };
-    }
+  function getCheckoutPayload() {
+    const { subtotal, discount, shipping, total } = getSummary();
 
     return {
-      nombre: name?.trim(),
-      precio: price,
-      tipo: button.dataset.tipo || "Producto"
+      items: cart.map((item) => ({
+        id_producto: Number(item.id),
+        cantidad: Number(item.cantidad) || 1,
+        precio_unitario: Number(item.precio) || 0
+      })),
+      resumen: { subtotal, descuento: discount, envio: shipping, total },
+      cupon: coupon || null
     };
   }
 
-  function addItem(item) {
-    if (!item.nombre) return;
+function getProductData(button) {
 
-    const existingItem = cart.find((cartItem) => cartItem.nombre === item.nombre);
+    const id = Number(
+        button.dataset.id ||
+        button.dataset.idProducto ||
+        0
+    );
+
+    const name =
+        button.dataset.nombre ||
+        button.dataset.titulo ||
+        button.closest("[data-product-card], .promo-card, .result-item")
+            ?.querySelector("h3")
+            ?.textContent;
+
+    const price = normalizePrice(
+        button.dataset.precio ||
+        button.dataset.price ||
+        0
+    );
+
+    const tipo =
+        button.dataset.tipo ||
+        "Producto";
+
+    console.log("=================================");
+    console.log("PRODUCTO PARA CARRITO");
+    console.log("ID:", id);
+    console.log("Nombre:", name);
+    console.log("Precio:", price);
+    console.log("Tipo:", tipo);
+    console.log("=================================");
+
+    if (!id) {
+        console.error("Este producto no tiene ID:", id);
+        alert("No se pudo identificar el producto.");
+        return null;
+    }
+
+    if (!name) {
+        console.error("Este producto no tiene nombre.");
+        alert("No se pudo identificar el producto.");
+        return null;
+    }
+
+    if (price <= 0) {
+        console.error("Este producto no tiene un precio válido:", price);
+        alert("El producto no tiene un precio válido.");
+        return null;
+    }
+
+    return {
+        id: id,
+        nombre: name.trim(),
+        precio: price,
+        tipo: tipo
+    };
+}
+
+function addItem(item) {
+
+    if (!item) return;
+
+    const existingItem = cart.find(
+        (cartItem) => Number(cartItem.id) === Number(item.id)
+    );
+
     if (existingItem) {
-      existingItem.cantidad += 1;
+
+        existingItem.cantidad += 1;
+
     } else {
-      cart.push({ ...item, cantidad: 1 });
+
+        cart.push({
+            id: item.id,
+            nombre: item.nombre,
+            precio: item.precio,
+            tipo: item.tipo,
+            cantidad: 1
+        });
+
     }
 
     saveCart();
     renderCart();
     openCart();
-  }
+}
 
   function renderCart() {
     const { subtotal, quantity, discount, shipping, total } = getSummary();
@@ -184,9 +259,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   closeCartBtn?.addEventListener("click", closeCart);
 
-  document.querySelectorAll(".btn-agregar").forEach((button) => {
-    button.addEventListener("click", () => addItem(getProductData(button)));
-  });
+document.querySelectorAll("button.btn-agregar").forEach((button) => {
+
+    button.addEventListener("click", () => {
+
+        const producto = getProductData(button);
+
+        if (!producto) return;
+
+        addItem(producto);
+
+    });
+
+});
 
   document.addEventListener("click", (event) => {
     const actionButton = event.target.closest(".btn-aumentar, .btn-disminuir, .btn-eliminar");
@@ -236,14 +321,166 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCart();
   });
 
-  document.getElementById("btn-pagar")?.addEventListener("click", () => {
+document.getElementById("btn-pagar")?.addEventListener("click", async () => {
+
     if (!cart.length) {
-      alert("Tu carrito esta vacio.");
-      return;
+        alert("Tu carrito está vacío.");
+        return;
     }
 
-    alert("Pedido preparado. El siguiente paso recomendado es conectar checkout, metodo de pago y direccion de entrega.");
-  });
+    try {
 
-  renderCart();
+        // ==============================
+        // OBTENER SESIÓN
+        // ==============================
+
+        const sessionResponse = await fetch("/api/session", {
+            credentials: "include"
+        });
+
+        if (!sessionResponse.ok) {
+            alert("Debes iniciar sesión para realizar la compra.");
+            window.location.href = "/login";
+            return;
+        }
+
+        const sessionData = await sessionResponse.json();
+
+        if (!sessionData.ok || !sessionData.usuario) {
+            alert("Debes iniciar sesión para realizar la compra.");
+            window.location.href = "/login";
+            return;
+        }
+
+        const usuario = sessionData.usuario;
+
+        const idCliente = Number(usuario.Id_cliente);
+        const idUsuario = Number(usuario.Id_usuario);
+
+        console.log("USUARIO PARA CHECKOUT:", usuario);
+        console.log("ID CLIENTE:", idCliente);
+        console.log("ID USUARIO:", idUsuario);
+
+        if (!idCliente || !idUsuario) {
+            alert("No se pudo identificar el cliente o usuario.");
+            return;
+        }
+
+
+        // ==============================
+        // PRODUCTOS
+        // ==============================
+
+            const productos = cart.map(item => ({
+            idProducto: Number(item.id),
+            nombre: item.nombre,
+            cantidad: Number(item.cantidad),
+            precio: Number(item.precio)
+        }));
+
+
+        // ==============================
+        // CALCULAR TOTAL
+        // ==============================
+
+        const subtotal = productos.reduce(
+            (total, item) =>
+                total + (item.precio * item.cantidad),
+            0
+        );
+
+        const descuento =
+            coupon.toUpperCase() === "BACO10"
+                ? Math.round(subtotal * 0.10)
+                : 0;
+
+        const envio =
+            subtotal === 0 || subtotal >= 250000
+                ? 0
+                : 12000;
+
+        const total = Math.max(
+            subtotal - descuento + envio,
+            0
+        );
+
+
+        // ==============================
+        // PAYLOAD PARA MERCADO PAGO
+        // ==============================
+
+        const payload = {
+            id_cliente: idCliente,
+            id_usuario: idUsuario,
+            productos: productos,
+            subtotal: subtotal,
+            envio: envio,
+            total: total,
+            
+        };
+
+        console.log("ENVIANDO A MERCADO PAGO:", payload);
+
+
+        // ==============================
+        // CREAR PREFERENCIA
+        // ==============================
+
+const response = await fetch(
+    "http://localhost:3000/api/pagos/crear-preferencia",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(payload)
+    }
+);
+
+        const data = await response.json();
+
+        console.log("RESPUESTA MERCADO PAGO:", data);
+
+        if (!response.ok) {
+
+            alert(
+                data.error ||
+                data.message ||
+                "No se pudo iniciar el pago."
+            );
+
+            return;
+        }
+
+
+        // ==============================
+        // REDIRECCIÓN A MERCADO PAGO
+        // ==============================
+
+if (data.ok && data.initPoint) {
+    window.location.href = data.initPoint;
+} else {
+    console.error("Respuesta Mercado Pago:", data);
+
+    alert(
+        data.message ||
+        "No se recibió el enlace de pago."
+    );
+}
+    } catch (error) {
+
+        console.error(
+            "Error iniciando Mercado Pago:",
+            error
+        );
+
+        alert(
+            "Ocurrió un error al iniciar el pago."
+        );
+
+    }
+
+});
+
 });

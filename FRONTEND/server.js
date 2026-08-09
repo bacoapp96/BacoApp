@@ -1,7 +1,15 @@
 import express from 'express';
 import ejs from "ejs";
 import crypto from "crypto";
+import path from "path";
+import { fileURLToPath } from "url";
 import routes from "./app/routes/routes.views.js";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 
 
 const app = express();
@@ -49,7 +57,7 @@ app.use((req, res, next) => {
 });
 
 //archivos estaticos
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 //configuracion de ejs
 app.set("view engine", "ejs");

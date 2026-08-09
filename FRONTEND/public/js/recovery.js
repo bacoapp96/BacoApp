@@ -5,38 +5,74 @@ const form = document.getElementById("recoveryForm");
 const message = document.getElementById("message");
 
 // Evento submit
-form.addEventListener("submit", function(event){
+form.addEventListener("submit", async (event) => {
 
     // Evita que la página se recargue
     event.preventDefault();
 
-    // Capturamos el email
-    const email = document.getElementById("email").value;
+    // Capturamos el correo
+    const email = document.getElementById("email").value.trim();
 
     // Validación simple
-    if(email === ""){
+    if (email === "") {
 
-        message.textContent = "Por favor ingresa un correo";
-
+        message.textContent = "Por favor ingresa un correo.";
         message.style.color = "red";
-
         return;
+
     }
 
     // Validación de formato
-    if(!email.includes("@")){
+    if (!email.includes("@")) {
 
-        message.textContent = "Correo inválido";
-
+        message.textContent = "Correo inválido.";
         message.style.color = "red";
-
         return;
+
     }
 
-    // Simulación de envío
-    message.textContent =
-    "Se envió un enlace de recuperación a tu correo";
+    try {
 
-    message.style.color = "green";
+        // Enviar el correo al backend
+        const response = await fetch("http://localhost:3000/api/password/forgot", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                email
+            })
+
+        });
+
+        const data = await response.json();
+
+        // Mostrar el mensaje recibido del backend
+        message.textContent = data.message;
+
+        if (data.ok) {
+
+            message.style.color = "green";
+
+            // Limpia el formulario
+            form.reset();
+
+        } else {
+
+            message.style.color = "red";
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent = "No fue posible conectar con el servidor.";
+        message.style.color = "red";
+
+    }
 
 });

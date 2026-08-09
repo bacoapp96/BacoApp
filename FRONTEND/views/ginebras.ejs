@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ginebras</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/ginebras.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+     <script src="/js/theme.js"></script>
+     
+
+
+    <%- include("partials/client-sidebar", { active: "ginebras" }) %>
+    
+   
+
+   
+
+  <aside id="cart-sidebar" class="cart-sidebar">
+    <button class="close-cart" aria-label="Cerrar carrito">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <h2>Tu Carrito</h2>
+    <div class="cart-items">
+      <div id="carrito-contenido"></div>
+    </div>
+    <div class="cart-actions">
+      <p id="total-price">Total: $0</p>
+      <a class="cart-page-link" href="/carrito"><i class="fa-solid fa-up-right-from-square"></i> Ver carrito completo</a>
+      <button id="btn-pagar">Pagar</button>
+      <button id="btn-vaciar">Vaciar Carrito</button>
+      <button id="btn-seguir">Seguir Comprando</button>
+    </div>
+  </aside>
+
+    <main class="ginebras-container">
+        <div class="ginebras">
+            <h1>Ginebras</h1>
+            <p>¡Explora nuestra selección de ginebras y escoge el que mas sea de tu agrado!</p>
+        </div>
+
+       
+    </main>
+     <div class="filtros">
+           
+                <div class="filtros-grid">
+            <h2>Filtrar por</h2>
+
+    <div class="filtro-item">
+        <button class="filtro-btn" id ="btn-todos">Todos</button>
+        
+    </div>
+
+    <div class="filtro-item">
+        <button class="filtro-btn">Tipo</button>
+        <div id ="dropdown-tipo" class="dropdown"></div>
+    </div>
+
+    <div class="filtro-item">
+        <button class="filtro-btn">Pais</button>
+        <div id ="dropdown-pais" class="dropdown"></div>
+    </div>
+
+     <div class="filtro-item">
+        <button class="filtro-btn">Marca</button>
+        <div id ="dropdown-marca" class="dropdown"></div>
+    </div>
+    </div>
+
+    </div>
+
+<div class="productos-grid">
+
+    
+<% if (ginebras && ginebras.length > 0) { %>
+
+<div class="productos-grid">
+
+    <% ginebras.forEach(ginebras => { %>
+
+        <div
+            class="producto-card"
+            data-tipo="<%= ginebras.tipo || '' %>"
+            data-pais="<%= ginebras.pais || '' %>"
+            data-marca="<%= ginebras.marca || '' %>"
+        >
+
+            <!-- IMAGEN -->
+            <div class="producto-imagen">
+
+                <% if (ginebras.imagen) { %>
+
+                    <img
+                         src="http://localhost:3000<%= ginebras.imagen %>"
+                        alt="<%= ginebras.nombre %>"
+                    >
+
+                <% } else { %>
+
+                    <div class="sin-imagen">
+                        <i class="fa-solid fa-image"></i>
+                        <span>Sin imagen</span>
+                    </div>
+
+                <% } %>
+
+            </div>
+
+
+            <!-- INFORMACIÓN -->
+            <div class="producto-info">
+
+                <h2>
+                    <%= ginebras.nombre %>
+                </h2>
+
+                <p>
+                    Precio: $<%= ginebras.precio %>
+                </p>
+
+                <p>
+                    Categoría: <%= ginebras.categoria %>
+                </p>
+
+                <p>
+                    Marca: <%= ginebras.marca %>
+                </p>
+
+                <p>
+                    Stock: <%= ginebras.stock %>
+                </p>
+
+
+                <!-- AGREGAR -->
+                <div class="btn-agregar">
+
+   <button
+        class="btn-agregar"
+        data-id="<%= ginebras.id %>"
+        data-nombre="<%= ginebras.nombre %>"
+        data-precio="<%= ginebras.precio %>"
+        
+    >
+        Agregar al carrito
+    </button>
+
+                </div>
+
+
+                <!-- DETALLES -->
+                <div class="btn-detalles">
+
+                    <button
+                        class="btn-ver-mas"
+                        data-id="<%= ginebras.id %>"
+                    >
+                        Ver detalles
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    <% }) %>
+
+</div>
+
+<% } else { %>
+
+    <p>No hay ginebras disponibles.</p>
+
+<% } %>
+</div>
+    
+    <!-- Modal -->
+
+    <div id="modal-ginebras" class="modal">
+
+      
+    <div class="modal-content">
+        <span class="cerrar">&times;</span>
+
+        <h2>Información del ginebra</h2>
+
+        <div class="info-ginebras">
+            <p><strong>Id:</strong> <span id="id"></span></p>
+            <p><strong>nombre:</strong> <span id="nombre"></span></p>
+            <p><strong>descripcion:</strong> <span id="descripcion"></span></p>
+            <p><strong>precio:</strong> <span id="precio"></span></p>
+            <p><strong>stock:</strong> <span id="stock"></span></p>
+            <p><strong>categoria:</strong> <span id="categoria"></span></p>
+            <p><strong>marca:</strong> <span id="marca"></span></p>
+            <p><strong>ventas:</strong> <span id="ventas"></span></p>
+            <p><strong>tipo:</strong> <span id="tipo"></span></p>
+            <p><strong>pais:</strong> <span id="pais"></span></p>
+            <p><strong>fecha creacion:</strong> <span id="fecha_creacion"></span></p>
+            
+          
+        </div>
+    </div>
+</div>
+
+
+
+</main>
+<script src="/js/sidebar.js"></script>
+<script src="/js/inicio.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/ginebras.js"></script>
+        
+</body>
+</html>

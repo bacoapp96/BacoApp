@@ -57,7 +57,7 @@
 
                 <h3>Ventas del mes</h3>
 
-                <p>$8.500.000</p>
+                <p id="ventasMes">$0</p>
 
             </div>
 
@@ -66,7 +66,7 @@
 
                 <h3>Productos vendidos</h3>
 
-                <p>245</p>
+                <p id="productosVendidos">0</p>
 
             </div>
 
@@ -84,7 +84,7 @@
 
                 <h3>Producto top</h3>
 
-                <p>Ron Medellín</p>
+                <p id="productoTop">Sin ventas</p>
 
             </div>
 
@@ -99,56 +99,45 @@
         <div class="kpi-container">
 
 
-            <div class="kpi-card">
+           <div class="kpi-card" id="kpiMejorVendedor">
 
                 <h3>🏆 Mejor vendedor</h3>
 
-                <p>Carlos Ramírez</p>
+                <p id="mejorVendedor">
+                     Sin ventas
+                </p>
 
-                <span>
-                    58 ventas esta semana
+                <span id="ventasMejorVendedor">
+                    0 ventas este mes
                 </span>
 
             </div>
 
 
+    <div class="kpi-card" id="kpiProductoTop">
 
-            <div class="kpi-card">
+        <h3>🥃 Producto top semanal</h3>
 
-                <h3>🥃 Producto top semanal</h3>
+        <p id="productoTopSemanal">
+            Sin ventas
+        </p>
 
-                <p>Ron Medellín</p>
+        <span id="unidadesProductoTop">
+            0 unidades vendidas
+        </span>
 
-                <span>
-                    120 unidades vendidas
-                </span>
-
-            </div>
+    </div>
 
 
 
-            <div class="kpi-card">
+            <div class="kpi-card" id="kpiClientesNuevos">
 
                 <h3>👥 Clientes nuevos</h3>
 
-                <p>34</p>
+                <p id="clientesNuevos">0</p>
 
                 <span>
                     registrados este mes
-                </span>
-
-            </div>
-
-
-
-            <div class="kpi-card">
-
-                <h3>💎 Cliente premium</h3>
-
-                <p>Juan Pérez</p>
-
-                <span>
-                    $1.850.000 en compras
                 </span>
 
             </div>
@@ -160,112 +149,54 @@
         <!-- =========================
              GRAFICA
         ========================== -->
+<div class="grafica-container">
 
-        <div class="grafica-container">
+    <h2>Ventas semanales</h2>
 
-            <h2>Ventas semanales</h2>
+    <div class="grafica">
 
-            <div class="grafica">
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:120px;"
-                    ></div>
-
-                    <span>Lun</span>
-
-                </div>
-
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:200px;"
-                    ></div>
-
-                    <span>Mar</span>
-
-                </div>
-
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:160px;"
-                    ></div>
-
-                    <span>Mié</span>
-
-                </div>
-
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:250px;"
-                    ></div>
-
-                    <span>Jue</span>
-
-                </div>
-
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:180px;"
-                    ></div>
-
-                    <span>Vie</span>
-
-                </div>
-
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:220px;"
-                    ></div>
-
-                    <span>Sáb</span>
-
-                </div>
-
-
-
-                <div class="dia">
-
-                    <div 
-                        class="barra"
-                        style="height:300px;"
-                    ></div>
-
-                    <span>Dom</span>
-
-                </div>
-
-            </div>
-
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Lun</span>
         </div>
 
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Mar</span>
+        </div>
+
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Mié</span>
+        </div>
+
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Jue</span>
+        </div>
+
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Vie</span>
+        </div>
+
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Sáb</span>
+        </div>
+
+        <div class="dia">
+            <div class="barra"></div>
+            <span>Dom</span>
+        </div>
+
+    </div>
+
+</div>
 
 
-        <!-- =========================
-             DETALLE REPORTES
-        ========================== -->
+
+       
 
         <div class="detalle-reportes">
 
@@ -287,80 +218,30 @@
 
         <div class="tabla-container">
 
-            <h2>Últimas ventas</h2>
+    <h2>Últimas ventas</h2>
 
-            <table>
+    <table>
 
-                <thead>
+        <thead>
 
-                    <tr>
+            <tr>
 
-                        <th>Producto</th>
+                <th>Producto</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
 
-                        <th>Cliente</th>
+            </tr>
 
-                        <th>Fecha</th>
+        </thead>
 
-                        <th>Total</th>
+        <tbody id="ultimasVentas">
 
-                    </tr>
+        </tbody>
 
-                </thead>
+    </table>
 
-
-                <tbody>
-
-                    <tr>
-
-                        <td>Whisky Old Parr</td>
-
-                        <td>Juan Pérez</td>
-
-                        <td>28/05/2026</td>
-
-                        <td>$120.000</td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>Ron Medellín</td>
-
-                        <td>Laura Gómez</td>
-
-                        <td>28/05/2026</td>
-
-                        <td>$80.000</td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>Tequila José Cuervo</td>
-
-                        <td>Carlos Ruiz</td>
-
-                        <td>28/05/2026</td>
-
-                        <td>$150.000</td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </main>
-
-
-
-    <!-- =========================
-         JS
-    ========================== -->
+</div>
 
     <script src="/js/sidebar.js"></script>
     <script src="/js/reportes.js"></script>

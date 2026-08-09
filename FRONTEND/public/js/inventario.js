@@ -2,42 +2,13 @@
 // ARRAY DE PRODUCTOS
 // ==========================
 
-const productos = [
+let productos = [];
 
-    {
-        nombre: "Whisky Old Parr",
-        precio: 120000,
-        stock: 10,
-        categoria: "Whisky",
-        ventas: 25
-    },
+const filtroCategoria =
+document.getElementById("filtroCategoria");
 
-    {
-        nombre: "Ron Medellín",
-        precio: 80000,
-        stock: 3,
-        categoria: "Ron",
-        ventas: 50
-    },
-
-    {
-        nombre: "Tequila José Cuervo",
-        precio: 150000,
-        stock: 0,
-        categoria: "Tequila",
-        ventas: 5
-    },
-
-    {
-        nombre: "Vodka Absolut",
-        precio: 95000,
-        stock: 2,
-        categoria: "Vodka",
-        ventas: 15
-    }
-
-];
-
+const ordenStock =
+    document.getElementById("ordenStock");
 
 // ==========================
 // ELEMENTOS HTML
@@ -48,6 +19,29 @@ const tablaBody = document.getElementById("tablaBody");
 const buscador = document.getElementById("inputBuscar");
 
 const btnBuscar = document.getElementById("btnBuscar");
+
+async function cargarProductos(){
+    try {
+
+        const respuesta = await fetch(
+            "http://localhost:3000/api/productos"
+        );
+
+        productos = await respuesta.json();
+        
+        mostrarProductos(productos);
+
+        cargarCategorias();
+
+        actualizarStats();
+    
+    }catch (error){
+        console.error(
+            "Error al cargar productos",
+            error
+        );
+    }
+}
 
 
 // CARDS
@@ -85,21 +79,59 @@ function mostrarProductos(lista){
     // RECORRER PRODUCTOS
     lista.forEach(producto => {
 
-        tablaBody.innerHTML += `
-            <tr>
+    let estado = "";
+    let claseEstado = "";
 
-                <td>${producto.nombre}</td>
+    if (producto.stock === 0) {
+        estado = "🔴 Agotado";
+        claseEstado = "estado-agotado";
+    } else if (producto.stock <= 5) {
+        estado = "🟡 Bajo";
+        claseEstado = "estado-bajo";
+    } else {
+        estado = "🟢 Disponible";
+        claseEstado = "estado-disponible";
+    }
 
-                <td>
-                    $${producto.precio.toLocaleString()}
-                </td>
+    tablaBody.innerHTML += `
+        <tr>
 
-                <td>${producto.stock}</td>
+            <td>${producto.nombre}</td>
 
-                <td>${producto.categoria}</td>
+            <td>
+                $${Number(producto.precio).toLocaleString("es-CO")}
+            </td>
 
-            </tr>
-        `;
+            <td>${producto.stock}</td>
+
+            <td>${producto.categoria}</td>
+
+            <td>
+                <span class="${claseEstado}">
+                    ${estado}
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="btn-stock btn-mas"
+                    onclick="cambiarStock(${producto.id},1)">
+                    +
+                </button>
+
+                <button
+                    class="btn-stock btn-menos"
+                    onclick="cambiarStock(${producto.id},-1)">
+                    -
+                </button>
+
+            </td>
+
+        </tr>
+    `;
+
+
     });
 }
 
@@ -123,16 +155,22 @@ function actualizarStats(){
 
 
     // MÁS VENDIDO
-    const productoMasVendido = productos.reduce((max, producto) =>
+    if (productos.length > 0){
 
-        producto.ventas > max.ventas
-            ? producto
-            : max
+        const productoMasVendido = productos.reduce(
+            (max, producto)=>
+                producto.ventas > max.ventas
+        ? producto
+        : max
 
-    );
+        );
 
-    masVendido.textContent = productoMasVendido.nombre;
+        masVendido.textContent =
+            productoMasVendido.nombre;
 
+    }else {
+        masVendido.textContent = "N/A";
+    }
 
     // AGOTADOS
     const productosAgotados = productos.filter(producto =>
@@ -205,6 +243,11 @@ document
 .getElementById("cardVendidos")
 .addEventListener("click", () => {
 
+      if (productos.length === 0) {
+        mostrarProductos([]);
+        return;
+    }
+
     const maxVentas = Math.max(
 
         ...productos.map(producto => producto.ventas)
@@ -242,6 +285,111 @@ document
 // INICIAR
 // ==========================
 
-mostrarProductos(productos);
+async function cambiarStock(id, cantidad) {
 
-actualizarStats();
+    try {
+
+        const response = await fetch(
+            `http://localhost:3000/api/productos/${id}/stock`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cantidad
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            return;
+        }
+
+        // Recargar inventario
+        cargarProductos();
+
+    } catch (error) {
+
+        console.error("Error actualizando stock:", error);
+
+    }
+
+}
+
+function cargarCategorias() {
+
+    const categorias = [
+        ...new Set(
+            productos.map(producto => producto.categoria)
+        )
+    ];
+
+    filtroCategoria.innerHTML =
+        '<option value="">Todas</option>';
+
+    categorias.forEach(categoria => {
+
+        filtroCategoria.innerHTML += `
+            <option value="${categoria}">
+                ${categoria}
+            </option>
+        `;
+
+    });
+
+}
+
+function filtrarCategoria() {
+
+    const categoria = filtroCategoria.value;
+
+    if (categoria === "") {
+
+        mostrarProductos(productos);
+        return;
+
+    }
+
+    const filtrados = productos.filter(producto =>
+        producto.categoria === categoria
+    );
+
+    mostrarProductos(filtrados);
+
+}
+
+function ordenarStock() {
+
+    let lista = [...productos];
+
+    if (ordenStock.value === "menor") {
+
+        lista.sort((a, b) => a.stock - b.stock);
+
+    } else if (ordenStock.value === "mayor") {
+
+        lista.sort((a, b) => b.stock - a.stock);
+
+    }
+
+    mostrarProductos(lista);
+
+}
+
+window.cambiarStock = cambiarStock;
+
+filtroCategoria.addEventListener(
+    "change",
+    filtrarCategoria
+);
+
+ordenStock.addEventListener(
+    "change",
+    ordenarStock
+);
+
+cargarProductos();

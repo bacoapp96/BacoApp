@@ -13,6 +13,11 @@
 <body class="inicio-page">
   <script src="/js/theme.js"></script>
   <%
+  const masVendidosLista =
+    typeof masVendidos !== "undefined" &&
+    Array.isArray(masVendidos)
+    ? masVendidos
+    : [];
     const productosLista = typeof productos !== "undefined" && Array.isArray(productos) ? productos : [];
     const ofertasLista = typeof ofertas !== "undefined" && Array.isArray(ofertas)
       ? ofertas.filter(oferta => oferta && oferta.titulo)
@@ -96,48 +101,8 @@
       </article>
     </section>
 
-    <section class="catalog-section">
-      <div class="section-heading">
-        <div>
-          <h2>Productos mas vendidos</h2>
-          <p id="search-status">Explora lo mas vendido de la tienda.</p>
-        </div>
-      </div>
-
-      <div id="contenedor-productos" class="product-grid">
-        <% if (productosLista.length) { %>
-          <% productosLista.forEach(producto => { %>
-            <article
-              class="product-card"
-              data-product-card
-              data-search="<%= `${producto.Nombre || ''} ${producto.Descripcion || ''}`.toLowerCase() %>"
-            >
-              <div class="product-icon">
-                <i class="fa-solid fa-wine-bottle"></i>
-              </div>
-              <div class="product-body">
-                <h3><%= producto.Nombre %></h3>
-                <% if (producto.Descripcion) { %>
-                  <p><%= producto.Descripcion %></p>
-                <% } else { %>
-                  <p>Producto seleccionado de BacoApp.</p>
-                <% } %>
-              </div>
-              <div class="product-actions">
-                <strong class="precio">$<%= producto.Precio %></strong>
-                <button class="btn-agregar" data-nombre="<%= producto.Nombre %>" data-precio="<%= producto.Precio %>">
-                  Agregar
-                </button>
-              </div>
-            </article>
-          <% }) %>
-        <% } else { %>
-          <p class="empty-products">No hay productos disponibles por ahora.</p>
-        <% } %>
-      </div>
-    </section>
-
-    
+ 
+<!-- tarjetas de promociones -->
   <section class="promo-section">
   <div class="section-heading">
     <div>
@@ -148,54 +113,340 @@
 
   <div class="promociones">
 
-    <% if (ofertasLista.length > 0) { %>
+  
 
-      <% ofertasLista.forEach(oferta => { %>
+  <% if (ofertas && ofertas.length > 0) { %>
 
-        <article
-          class="promo-card"
-          data-id="<%= oferta.id_oferta %>"
-          data-titulo="<%= oferta.titulo %>"
-          data-descuento="<%= oferta.descuento %>"
-          data-fecha-inicio="<%= oferta.fecha_inicio %>"
-          data-fecha-fin="<%= oferta.fecha_fin %>"
-          data-search="<%= `${oferta.titulo || ''} ${oferta.descuento || ''}`.toLowerCase() %>"
-        >
+    <% ofertas.forEach(oferta => { %>
 
-         <h3><%= oferta.titulo %></h3>
+       <div class="producto-grid">
 
-<p>Descuento: <%= oferta.descuento %>%</p>
+        <div class="producto-card">
 
-<p>
-  Inicio:
-  <%= new Date(oferta.fecha_inicio).toISOString().split("T")[0] %>
-</p>
+            <!-- AQUÍ VA LA IMAGEN -->
+            <div class="producto-imagen">
 
-<p>
-  Fin:
-  <%= new Date(oferta.fecha_fin).toISOString().split("T")[0] %>
-</p>
+                <% if (oferta.imagen) { %>
 
-<p>Estado: <%= oferta.estado %></p>
+                    <img
+                        src="http://localhost:3000<%= oferta.imagen %>"
+                        alt="<%= oferta.nombre %>"
+                    >
 
-          <button class="btn-ver-mas">Ver más</button>
+                <% } else { %>
 
-          <button class="btn-agregar"
-            data-id="<%= oferta.id_oferta %>"
-            data-titulo="<%= oferta.titulo %>"
-            data-descuento="<%= oferta.descuento %>">
-            Agregar
-          </button>
+                    <div class="sin-imagen">
+                        <i class="fa-solid fa-image"></i>
+                        <span>Sin imagen</span>
+                    </div>
 
-        </article>
+                <% } %>
 
-      <% }) %>
+            </div>
 
-    <% } else { %>
-      <p class="empty-promos">No hay ofertas disponibles por ahora.</p>
-    <% } %>
+            <!-- AQUÍ VA LA INFORMACIÓN -->
+            <div class="producto-info">
+
+                <h2><%= oferta.producto %></h2>
+
+                <p>Precio: $<%= oferta.precio %></p>
+
+                <p>Precio de oferta: $<%= Number(oferta.precio_oferta).toLocaleString("es-CO") %></p>
+
+                <p>Stock: <%= oferta.stock %></p>
+
+<div class="btn-agregar">
+    <button
+        class="btn-agregar"
+        data-id="<%= oferta.id_producto %>"
+        data-nombre="<%= oferta.producto %>"
+        data-precio="<%= oferta.precio_oferta %>"
+    >
+        Agregar al carrito
+    </button>
+</div>
+
+<div class="btn-detalles">
+
+    <button
+        type="button"
+        class="btn-ver-mas"
+        data-id-producto="<%= oferta.id_producto %>"
+    >
+        Ver detalles
+    </button>
+
+</div>
+                  
+                </div>
+
+            </div>
+
+        </div>
+
+    <% }) %>
+
+<% } %>
 
   </div>
+</section>
+
+<!-- =========================
+     QUIÉNES SOMOS
+========================== -->
+
+<section class="quienes-somos">
+
+    <div class="quienes-somos-contenido">
+
+        <div class="quienes-somos-icono">
+            <i class="fa-solid fa-wine-glass"></i>
+        </div>
+
+        <div class="quienes-somos-texto">
+
+            <span class="seccion-etiqueta">
+                CONOCE BACOAPP
+            </span>
+
+            <h2>
+                ¿Quiénes somos?
+            </h2>
+
+            <p>
+                BacoApp es una plataforma diseñada para facilitar la
+                compra y gestión de productos de una licorera de forma
+                rápida, sencilla y segura.
+            </p>
+
+            <p>
+                Queremos ofrecer una experiencia cómoda para nuestros
+                clientes, permitiéndoles explorar nuestro catálogo,
+                conocer nuestras ofertas y realizar sus compras desde
+                un solo lugar.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     MISIÓN
+========================== -->
+
+<section class="mision">
+
+    <div class="mision-contenido">
+
+        <div class="mision-texto">
+
+            <span class="seccion-etiqueta">
+                NUESTRA MISIÓN
+            </span>
+
+            <h2>
+                Facilitar una mejor experiencia de compra
+            </h2>
+
+            <p>
+                Nuestra misión es ofrecer a nuestros clientes una
+                plataforma sencilla, rápida y segura para consultar
+                productos, conocer ofertas y realizar sus compras
+                de manera cómoda.
+            </p>
+
+            <p>
+                Buscamos apoyar la gestión de la licorera mediante
+                herramientas digitales que permitan organizar mejor
+                los productos, las ventas y la atención a nuestros
+                clientes.
+            </p>
+
+        </div>
+
+        <div class="mision-icono">
+            <i class="fa-solid fa-bullseye"></i>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     VISIÓN
+========================== -->
+
+<section class="vision">
+
+    <div class="vision-contenido">
+
+        <div class="vision-icono">
+            <i class="fa-solid fa-eye"></i>
+        </div>
+
+        <div class="vision-texto">
+
+            <span class="seccion-etiqueta">
+                NUESTRA VISIÓN
+            </span>
+
+            <h2>
+                Ser una plataforma de referencia para nuestros clientes
+            </h2>
+
+            <p>
+                Nuestra visión es convertir a BacoApp en una herramienta
+                confiable y práctica para la gestión y compra de productos
+                de la licorera.
+            </p>
+
+            <p>
+                Queremos continuar mejorando la experiencia de nuestros
+                clientes mediante soluciones digitales que faciliten el
+                acceso a nuestros productos y servicios.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div id="modal-producto" class="modal">
+
+    <div class="modal-content">
+
+        <span class="cerrar">&times;</span>
+
+        <h2>Información del producto</h2>
+
+        <div class="info-producto">
+
+            <p>
+                <strong>ID:</strong>
+                <span id="detalle-id"></span>
+            </p>
+
+            <p>
+                <strong>Nombre:</strong>
+                <span id="detalle-nombre"></span>
+            </p>
+
+            <p>
+                <strong>Descripción:</strong>
+                <span id="detalle-descripcion"></span>
+            </p>
+
+            <p>
+                <strong>Precio:</strong> $
+                <span id="detalle-precio"></span>
+            </p>
+
+            <p>
+                <strong>Stock:</strong>
+                <span id="detalle-stock"></span>
+            </p>
+
+            <p>
+                <strong>Categoría:</strong>
+                <span id="detalle-categoria"></span>
+            </p>
+
+            <p>
+                <strong>Marca:</strong>
+                <span id="detalle-marca"></span>
+            </p>
+
+            <p>
+                <strong>Tipo:</strong>
+                <span id="detalle-tipo"></span>
+            </p>
+
+            <p>
+                <strong>País:</strong>
+                <span id="detalle-pais"></span>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+<section class="info-section objetivos-section">
+
+    <div class="info-icon">
+        <i class="fa-solid fa-bullseye"></i>
+    </div>
+
+    <div class="info-content">
+
+       <span class="seccion-etiquetas">
+                NUESTROS OBJETIVOS
+        </span>
+
+        <h2>Objetivos</h2>
+
+        <p>
+            Nuestro objetivo es ofrecer una plataforma digital que facilite
+            la gestión y comercialización de productos de una licorera,
+            brindando una experiencia sencilla, rápida y segura para nuestros
+            clientes.
+        </p>
+
+        <div class="objetivos-grid">
+
+            <div class="objetivo-item">
+                <i class="fa-solid fa-store"></i>
+                <div>
+                    <h3>Facilitar la compra</h3>
+                    <p>
+                        Permitir que los clientes puedan explorar productos,
+                        consultar ofertas y realizar sus compras de manera
+                        sencilla.
+                    </p>
+                </div>
+            </div>
+
+            <div class="objetivo-item">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <div>
+                    <h3>Mejorar la gestión</h3>
+                    <p>
+                        Ayudar a administrar productos, inventario, ventas,
+                        clientes y ofertas desde una sola plataforma.
+                    </p>
+                </div>
+            </div>
+
+            <div class="objetivo-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <div>
+                    <h3>Impulsar el crecimiento</h3>
+                    <p>
+                        Proporcionar herramientas que permitan conocer el
+                        comportamiento de las ventas y apoyar la toma de
+                        decisiones.
+                    </p>
+                </div>
+            </div>
+
+            <div class="objetivo-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <h3>Brindar seguridad</h3>
+                    <p>
+                        Mantener una plataforma confiable para la gestión de
+                        información, usuarios y operaciones de BacoApp.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
   </main>
 

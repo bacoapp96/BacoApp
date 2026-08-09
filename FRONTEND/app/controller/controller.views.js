@@ -1,6 +1,8 @@
 
 import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
+import { totalmem } from 'os';
+
 
 
 
@@ -10,7 +12,8 @@ export const API_URL = {
             productos: "http://localhost:3000/api/productos",
             categorias: "http://localhost:3000/api/categorias",
             busquedas: "http://localhost:3000/api/producto/busqueda",
-            ofertas: "http://localhost:3000/api/ofertas"
+            ofertas: "http://localhost:3000/api/ofertas",
+            ventas: "http://localhost:3000/api/ventas"
         
 
             
@@ -20,16 +23,36 @@ export const API_URL = {
 
 const getPath = (ruta) => fileURLToPath(new URL(ruta, import.meta.url));
 
-const normalizarUsuario = (usuario = {}) => ({
-    id: usuario.Id_usuario || usuario.id || "",
+const normalizarUsuario = (usuario = {}) => {
+    // La sesión del frontend es la fuente que consume el checkout. Conservamos
+    // explícitamente los nombres del API para no perder la relación usuario-cliente.
+    const Id_usuario = usuario.Id_usuario ?? usuario.id ?? "";
+    const Id_cliente = usuario.Id_cliente ?? usuario.id_cliente ?? "";
+
+    return {
+    Id_usuario,
+    Id_cliente,
+    // Alias existentes para no romper las vistas que ya usan estas propiedades.
+    id: Id_usuario,
     nombre: usuario.Nombre || usuario.nombre || "",
     usuario: usuario.Usuario || usuario.usuario || "",
     email: usuario.Email || usuario.email || "",
     telefono: usuario.Celular || usuario.Telefono || usuario.telefono || "",
     documento: usuario.Documento || usuario.documento || "",
     direccion: usuario.Direccion || usuario.direccion || "",
-    rol: usuario.rol || usuario.Rol || ""
-});
+    rol: usuario.rol || usuario.Rol || "",
+
+    // Datos del cliente
+    id_cliente: Id_cliente,
+    tipo: usuario.tipo || "",
+    estado: usuario.estado || "",
+    nivel: usuario.nivel || "Bronce",
+    cupoCredito: usuario.cupoCredito || 0,
+    compras: usuario.compras || 0,
+    totalGastado: usuario.totalGastado || 0,
+    observaciones: usuario.observaciones || ""
+    };
+};
 
 const requiereLogin = (req, res) => {
     if (!req.session?.usuario?.id) {
@@ -83,6 +106,11 @@ export const getSession = (req, res) => {
     if (!req.session?.usuario) {
         return res.status(401).json({ ok: false, message: "Sesion no activa" });
     }
+
+    // También repara sesiones creadas antes de que se conservaran los nombres
+    // canónicos de los identificadores.
+    req.session.usuario = normalizarUsuario(req.session.usuario);
+
     res.json({
         ok: true,
         usuario: req.session.usuario
@@ -236,6 +264,43 @@ export const getInventario = (req, res) => {
     res.render(getPath("../../views/inventario.ejs"));
 };
 
+// controlador vista de ofertas
+export const getOfertas = async (req, res) => {
+
+    if (!requiereLogin(req, res)) return;
+
+    try {
+        const [responseOfertas, responseProductos] = await Promise.all([
+            fetch(API_URL.ofertas),
+            fetch(API_URL.productos)
+        ]);
+
+        const ofertas = responseOfertas.ok
+            ? await responseOfertas.json()
+            : [];
+
+        const productos = responseProductos.ok
+            ? await responseProductos.json()
+            : [];
+
+        res.render(getPath("../../views/ofertas-admin.ejs"), {
+            ofertas,
+            productos,
+            active: "ofertas"
+        });
+
+    } catch (error) {
+
+        console.error("Error cargando ofertas o productos:", error);
+        res.render(getPath("../../views/ofertas-admin.ejs"), {
+            ofertas: [],
+            productos: [],
+            active: "ofertas"
+        });
+
+    }
+};
+
 //controlador estatico
 // controlador vista de reportes
 export const getReportes = (req, res) => {
@@ -270,8 +335,23 @@ export const getCarrito = (req, res) => {
 
 //controlador dinamico
 //controlador cliente 
-export const getCliente = (req, res) => {
-    res.render(getPath("../../views/cliente.ejs"));
+ export const getClientes = async (req, res)=> {
+    try{
+        const response = await fetch ('http://localhost:3000/api/clientes');
+        const clientes = await response.json();
+
+        console.log(clientes);
+        res.render (getPath("../../views/clientes.ejs"),{
+            clientes
+        });
+    } catch (error){
+        console.error("Error clientes:", error);
+
+        res.render (getPath("../../views/clientes.ejs"),{
+            clientes:[]
+            
+    });
+    }
 };
 
 //controlador dinamico
@@ -309,7 +389,7 @@ export const getRegistroAdmin = (req, res) => {
 export const getCategoria = async(req, res) => {
 
     try {
-        const categorias = await fetch(`${API_URL.categorias}`).then(res => res.json());
+        const categorias = { data: [] };
         res.render(getPath("../../views/categorias.ejs"), { categorias: categorias.data });
     } catch (error) {
         console.error("Datos de categorías no disponibles", error);
@@ -318,34 +398,45 @@ export const getCategoria = async(req, res) => {
 };
 
 //controlador dinamico
-//controlador para vista inicio
+// controlador vista de inicio
 export const getInicio = async (req, res) => {
 
     try {
 
-        // PRODUCTOS
-        const responseProductos = await fetch(API_URL.productos);
-        const productos = await responseProductos.json();
+        const responseProductos =
+            await fetch(API_URL.productos);
 
-        // OFERTAS
-        const responseOfertas = await fetch(API_URL.ofertas);
-        const ofertas = await responseOfertas.json();
+        const productos =
+            await responseProductos.json();
 
-        console.log("PRODUCTOS:", productos);
-        console.log("OFERTAS:", ofertas);
+        const responseOfertas =
+            await fetch(`${API_URL.ofertas}/activas`);
+
+        const ofertas =
+            await responseOfertas.json();
+
+        const responseMasVendidos =
+            await fetch(
+                `${API_URL.productos}/masvendidos`
+            );
+
+        const masVendidos =
+            await responseMasVendidos.json();
 
         res.render("inicio", {
-            productos: productos || [],
-            ofertas: ofertas || []
+            productos,
+            ofertas,
+            masVendidos
         });
 
     } catch (error) {
 
-        console.error("Error inicio:", error);
+        console.error(error);
 
         res.render("inicio", {
             productos: [],
-            ofertas: []
+            ofertas: [],
+            masVendidos: []
         });
 
     }
@@ -364,6 +455,8 @@ export const getCuenta = async (req, res) => {
 
     try {
         const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`);
+       
+   
 
         if (!response.ok) { 
             req.destroySession?.();
@@ -373,11 +466,328 @@ export const getCuenta = async (req, res) => {
         const usuario = normalizarUsuario(await response.json());
         req.session.usuario = usuario;
 
-        res.render(getPath("../../views/cuenta.ejs"), { usuario });
+        console.log("Usuario:", usuario);
+console.log("Id cliente:", usuario.id_cliente);
+
+        // obtener ventas cliente
+        const responseVentas = await fetch(
+            `${API_URL.ventas}/cliente/${usuario.id_cliente}`
+        );
+
+        const ventas = responseVentas.ok
+        ? await responseVentas.json()
+        : [];
+
+        res.render(getPath("../../views/cuenta.ejs"),
+         { usuario,
+            ventas
+          });
     } catch (error) {
         console.error("Error cuenta:", error);
         res.render(getPath("../../views/cuenta.ejs"), {
-            usuario: req.session.usuario
+            usuario: req.session.usuario,
+            ventas: []
         });
     }
+};
+
+//controlador de vista vinos
+export const getVinos = async (req, res) => {
+    try {
+        const response = await fetch('http://localhost:3000/api/productos/categoria/Vinos');
+        const vinos = await response.json();
+
+        console.log(vinos);
+
+        res.render(getPath("../../views/vinos.ejs"), {
+            vinos
+        });
+
+    } catch (error) {
+        console.error("Error vinos:", error);
+
+        res.render(getPath("../../views/vinos.ejs"), {
+            vinos: []
+        });
+    }
+};
+
+// // Controlador de vista whiskyes
+
+ export const getWhiskys = async (req, res)=> {
+    try{
+        const response = await fetch ('http://localhost:3000/api/productos/categoria/Whiskys');
+        const whiskys = await response.json();
+
+        console.log(whiskys);
+        res.render (getPath("../../views/whiskys.ejs"),{
+            whiskys
+        });
+    } catch (error){
+        console.error("Error whiskys:", error);
+
+        res.render (getPath("../../views/whiskys.ejs"),{
+            whiskys:[]
+            
+    });
+    }
+};
+
+// Controlador de vista rones
+
+ export const getRones = async (req, res)=> {
+    try{
+        const response = await fetch ('http://localhost:3000/api/productos/categoria/rones');
+        const rones = await response.json();
+
+        console.log(rones);
+        res.render (getPath("../../views/rones.ejs"),{
+            rones
+        });
+    } catch (error){
+        console.error("Error ron:", error);
+
+        res.render (getPath("../../views/rones.ejs"),{
+            rones:[]
+            
+    });
+    }
+};
+
+// controlador de vista para cervezas
+
+ export const getCervezas = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Cervezas");
+        const cervezas = await response.json();
+
+        console.log(cervezas);
+        res.render (getPath("../../views/cervezas.ejs"),{
+            cervezas
+        });
+    } catch (error){
+        console.error("Error cervezas:", error);
+
+        res.render (getPath("../../views/cervezas.ejs"),{
+            cervezas:[]
+            
+    });
+    }
+};
+
+// controlador de vista tequilas
+ export const getTequilas = async (req, res)=> {
+    try{
+        const response = await fetch ('http://localhost:3000/api/productos/categoria/tequilas');
+        const tequilas = await response.json();
+
+        console.log(tequilas);
+        res.render (getPath("../../views/tequilas.ejs"),{
+            tequilas
+        });
+    } catch (error){
+        console.error("Error tequilas:", error);
+
+        res.render (getPath("../../views/tequilas.ejs"),{
+            tequilas:[]
+            
+    });
+    }
+};
+
+// controlador de vista aguardientes
+ export const getAguardientes = async (req, res)=> {
+    try{
+        const response = await fetch ('http://localhost:3000/api/productos/categoria/aguardientes');
+        const aguardientes = await response.json();
+
+        console.log(aguardientes);
+        res.render (getPath("../../views/aguardientes.ejs"),{
+            aguardientes
+        });
+    } catch (error){
+        console.error("Error aguardientes:", error);
+
+        res.render (getPath("../../views/aguardientes.ejs"),{
+            aguardientes:[]
+            
+    });
+    }
+};
+
+// vista controlador gaseosas
+
+ export const getGaseosas = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Gaseosas");
+        const gaseosas = await response.json();
+
+        console.log(gaseosas);
+        res.render (getPath("../../views/gaseosas.ejs"),{
+            gaseosas
+        });
+    } catch (error){
+        console.error("Error gaseosas:", error);
+
+        res.render (getPath("../../views/gaseosas.ejs"),{
+            gaseosas:[]
+            
+    });
+    }
+};
+
+// controlador vista de jugos
+ export const getJugos = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Jugos");
+        const jugos = await response.json();
+
+        console.log(jugos);
+        res.render (getPath("../../views/jugos.ejs"),{
+            jugos
+        });
+    } catch (error){
+        console.error("Error jugos:", error);
+
+        res.render (getPath("../../views/jugos.ejs"),{
+            jugos:[]
+            
+    });
+    }
+};
+
+// controlador vista de vodkas
+ export const getVodkas = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Vodkas");
+        const vodkas = await response.json();
+
+        console.log(vodkas);
+        res.render (getPath("../../views/vodkas.ejs"),{
+            vodkas
+        });
+    } catch (error){
+        console.error("Error vodkas:", error);
+
+        res.render (getPath("../../views/vodkas.ejs"),{
+            vodkas:[]
+            
+    });
+    }
+};
+
+
+// controlador vista de ginebras
+ export const getGinebras = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Ginebras");
+        const ginebras = await response.json();
+
+        console.log(ginebras);
+        res.render (getPath("../../views/ginebras.ejs"),{
+            ginebras
+        });
+    } catch (error){
+        console.error("Error ginebras:", error);
+
+        res.render (getPath("../../views/ginebras.ejs"),{
+            ginebras:[]
+            
+    });
+    }
+};
+
+// controlador vista de desechables
+ export const getDesechables = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Desechables");
+        const desechables = await response.json();
+
+        console.log(desechables);
+        res.render (getPath("../../views/desechables.ejs"),{
+            desechables
+        });
+    } catch (error){
+        console.error("Error desechables:", error);
+
+        res.render (getPath("../../views/desechables.ejs"),{
+            desechables:[]
+            
+    });
+    }
+};
+
+// controlador vista de dulces
+ export const getDulces = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Dulces");
+        const dulces = await response.json();
+
+        console.log(dulces);
+        res.render (getPath("../../views/dulces.ejs"),{
+            dulces
+        });
+    } catch (error){
+        console.error("Error dulces:", error);
+
+        res.render (getPath("../../views/dulces.ejs"),{
+            dulces:[]
+            
+    });
+    }
+};
+
+// controlador vista de accesorios
+ export const getAccesorios = async (req, res)=> {
+    try{
+        const response = await fetch("http://localhost:3000/api/productos/categoria/Accesorios");
+        const accesorios = await response.json();
+
+        console.log(accesorios);
+        res.render (getPath("../../views/accesorios.ejs"),{
+            accesorios
+        });
+    } catch (error){
+        console.error("Error accesorios:", error);
+
+        res.render (getPath("../../views/accesorios.ejs"),{
+            accesorios:[]
+            
+    });
+    }
+};
+
+// controlador de vista reset
+
+ export const getReset = (req, res) => {
+
+    const { token } = req.params;
+
+    res.render(getPath("../../views/reset-password.ejs"), {
+        token,
+        error: null,
+        success: null
+    });
+
+};
+
+
+// controlador de mercado pago
+
+export const getPagoExitoso = (req, res) => {
+    res.render("pago-exitoso");
+};
+
+export const getPagoFallido = (req, res) => {
+    res.render("pago-fallido");
+};
+
+export const getPagoPendiente = (req, res) => {
+    res.render("pago-pendiente");
+};
+
+// controlador vista de gestion productos
+export const getGestionProductos = (req, res) => {
+    if (!requiereAdmin(req, res)) return;
+    res.render("gestion-productos");
 };

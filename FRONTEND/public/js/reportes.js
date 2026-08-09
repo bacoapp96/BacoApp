@@ -3,79 +3,174 @@
 // =========================
 
 const listaReportes =
-document.getElementById("listaReportes");
+    document.getElementById("listaReportes");
 
 const tituloReporte =
-document.getElementById("tituloReporte");
+    document.getElementById("tituloReporte");
+
+const cardVentas =
+    document.getElementById("cardVentas");
+
+const cardProductos =
+    document.getElementById("cardProductos");
+
+const ventasMes =
+    document.getElementById("ventasMes");
+
+const cardTop =
+    document.getElementById("cardTop");
+
+const productoTop =
+    document.getElementById("productoTop");
+
+const kpiMejorVendedor =
+    document.getElementById("kpiMejorVendedor");
+
+const mejorVendedor =
+    document.getElementById("mejorVendedor");
+
+const ventasMejorVendedor =
+    document.getElementById("ventasMejorVendedor");
+
+const kpiProductoTop =
+    document.getElementById("kpiProductoTop");
+
+const productoTopSemanal =
+    document.getElementById("productoTopSemanal");
+
+const unidadesProductoTop =
+    document.getElementById("unidadesProductoTop");
+
+const kpiClientesNuevos = 
+document.getElementById("kpiClientesNuevos"); 
+
+const clientesNuevos = 
+document.getElementById("clientesNuevos");
+
+// =========================
+// FORMATEAR MONEDA
+// =========================
+
+function formatearMoneda(valor) {
+
+    return new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0
+    }).format(valor || 0);
+
+}
 
 
 // =========================
-// BASE DE DATOS TEMPORAL
+// FORMATEAR FECHA
 // =========================
 
-const ventas = [
+function formatearFecha(fecha) {
 
-    {
-        producto:"Whisky Old Parr",
-        cliente:"Juan Pérez",
-        vendedor:"Carlos Ramírez",
-        total:120000,
-        fecha:"Lunes"
-    },
-
-    {
-        producto:"Ron Medellín",
-        cliente:"Laura Gómez",
-        vendedor:"Carlos Ramírez",
-        total:80000,
-        fecha:"Martes"
-    },
-
-    {
-        producto:"Tequila José Cuervo",
-        cliente:"Andrés Mora",
-        vendedor:"Daniel Torres",
-        total:150000,
-        fecha:"Miércoles"
-    },
-
-    {
-        producto:"Ron Medellín",
-        cliente:"Juan Pérez",
-        vendedor:"Carlos Ramírez",
-        total:95000,
-        fecha:"Jueves"
-    },
-
-    {
-        producto:"Vodka Absolut",
-        cliente:"Camila Ruiz",
-        vendedor:"Laura Castro",
-        total:180000,
-        fecha:"Viernes"
+    if (!fecha) {
+        return "Sin fecha";
     }
 
-];
+    const fechaObj = new Date(fecha);
+
+    return fechaObj.toLocaleDateString("es-CO", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+
+}
 
 
 // =========================
-// MOSTRAR LISTA
+// CARGAR VENTAS DEL MES
 // =========================
 
-function mostrarLista(lista){
+async function cargarVentasMes() {
+
+    try {
+
+const response = await fetch("http://localhost:3000/api/ventas/mes");
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log("VENTAS DEL MES:", data);
+
+
+        // =========================
+        // ACTUALIZAR TARJETA
+        // =========================
+
+        ventasMes.textContent =
+            formatearMoneda(data.totalVentas);
+
+
+        // =========================
+        // ACTUALIZAR DETALLE
+        // =========================
+
+        mostrarVentasMes(data.ventas || []);
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando ventas del mes:",
+            error
+        );
+
+        ventasMes.textContent = "$0";
+
+        tituloReporte.textContent =
+            "📈 Ventas del mes";
+
+        listaReportes.innerHTML = `
+            <div class="item-reporte">
+
+                <h3>
+                    Error cargando el reporte
+                </h3>
+
+                <p>
+                    No se pudieron obtener
+                    las ventas del mes.
+                </p>
+
+            </div>
+        `;
+    }
+}
+
+// =========================
+// MOSTRAR VENTAS DEL MES
+// =========================
+
+function mostrarVentasMes(ventas) {
+
+    tituloReporte.textContent =
+        "📈 Ventas del mes";
 
     listaReportes.innerHTML = "";
 
-    // VALIDAR
-    if(lista.length === 0){
+
+    if (!ventas || ventas.length === 0) {
 
         listaReportes.innerHTML = `
 
             <div class="item-reporte">
 
                 <h3>
-                    No hay resultados
+                    No hay ventas este mes
                 </h3>
+
+                <p>
+                    No existen ventas registradas
+                    durante el mes actual.
+                </p>
 
             </div>
 
@@ -85,228 +180,1154 @@ function mostrarLista(lista){
     }
 
 
-    // RECORRER
-    lista.forEach(item => {
+    ventas.forEach(venta => {
 
         listaReportes.innerHTML += `
 
             <div class="item-reporte">
 
                 <h3>
-                    ${item.producto}
+                    Venta #${venta.Id_venta}
                 </h3>
 
                 <p>
-                    👤 Cliente:
-                    ${item.cliente}
+                    📦 Producto:
+                    ${venta.producto || "Sin producto"}
+                </p>
+
+                <p>
+                    📦 Cantidad:
+                    ${venta.Cantidad || 0}
                 </p>
 
                 <p>
                     🧑‍💼 Vendedor:
-                    ${item.vendedor}
+                    ${venta.vendedor || "Sin vendedor"}
                 </p>
 
                 <p>
-                    📅 Día:
-                    ${item.fecha}
+                    📅 Fecha:
+                    ${formatearFecha(venta.Fecha)}
                 </p>
 
                 <p>
                     💰 Total:
-                    $${item.total.toLocaleString()}
+                    ${formatearMoneda(venta.Total)}
                 </p>
 
             </div>
 
         `;
-    });
 
+    });
+}
+
+
+
+// =========================
+// CLICK VENTAS DEL MES
+// =========================
+
+cardVentas.addEventListener("click", async () => {
+
+    tituloReporte.textContent = "📈 Ventas del mes";
+
+    listaReportes.innerHTML = `
+        <div class="item-reporte">
+            <h3>Cargando ventas...</h3>
+        </div>
+    `;
+
+    await cargarVentasMes();
+
+});
+
+// =========================
+// CARGAR PRODUCTOS VENDIDOS
+// =========================
+
+async function cargarProductosVendidos() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/ventas/productos-vendidos-mes"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Error HTTP: ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "PRODUCTOS VENDIDOS:",
+            data
+        );
+
+
+        const elemento =
+            document.getElementById(
+                "productosVendidos"
+            );
+
+
+        if (!elemento) {
+
+            console.error(
+                "No existe #productosVendidos"
+            );
+
+            return;
+        }
+
+
+        elemento.textContent =
+            data.productosVendidos;
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando productos vendidos:",
+            error
+        );
+
+
+        const elemento =
+            document.getElementById(
+                "productosVendidos"
+            );
+
+
+        if (elemento) {
+            elemento.textContent = "0";
+        }
+
+    }
+
+}
+
+cardProductos.addEventListener(
+    "click",
+    async () => {
+
+        tituloReporte.textContent =
+            "📦 Productos vendidos";
+
+        listaReportes.innerHTML = `
+
+            <div class="item-reporte">
+
+                <h3>
+                    Productos vendidos este mes
+                </h3>
+
+                <p>
+                    Total de unidades:
+                    <strong id="detalleProductosVendidos">
+                        Cargando...
+                    </strong>
+                </p>
+
+            </div>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/ventas/productos-vendidos-mes"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Error HTTP: ${response.status}`
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            document.getElementById(
+                "detalleProductosVendidos"
+            ).textContent =
+                data.productosVendidos;
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            listaReportes.innerHTML = `
+
+                <div class="item-reporte">
+
+                    <h3>
+                        Error
+                    </h3>
+
+                    <p>
+                        No se pudieron obtener
+                        los productos vendidos.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+);
+
+
+// =========================
+// CARGAR PRODUCTO TOP
+// =========================
+
+async function cargarProductoTop() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/ventas/producto-top-mes"
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Error HTTP: ${response.status}`
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "PRODUCTO TOP:",
+            data
+        );
+
+
+        if (!data.hayProducto) {
+
+            productoTop.textContent =
+                "Sin ventas";
+
+            return;
+        }
+
+
+        productoTop.textContent =
+            data.producto.nombre;
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando producto top:",
+            error
+        );
+
+        productoTop.textContent =
+            "Sin datos";
+
+    }
+
+}
+
+cardTop.addEventListener(
+    "click",
+    async () => {
+
+        tituloReporte.textContent =
+            "🏆 Producto más vendido";
+
+        listaReportes.innerHTML = `
+
+            <div class="item-reporte">
+
+                <h3>
+                    Cargando producto top...
+                </h3>
+
+            </div>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/ventas/producto-top-mes"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Error HTTP: ${response.status}`
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.hayProducto) {
+
+                listaReportes.innerHTML = `
+
+                    <div class="item-reporte">
+
+                        <h3>
+                            No hay ventas este mes
+                        </h3>
+
+                        <p>
+                            No existe un producto
+                            vendido durante el mes actual.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            listaReportes.innerHTML = `
+
+                <div class="item-reporte">
+
+                    <h3>
+                        🏆 ${data.producto.nombre}
+                    </h3>
+
+                    <p>
+                        📦 Unidades vendidas:
+                        ${data.producto.unidadesVendidas}
+                    </p>
+
+                </div>
+
+            `;
+
+
+        } catch (error) {
+
+            console.error(
+                "Error obteniendo producto top:",
+                error
+            );
+
+
+            listaReportes.innerHTML = `
+
+                <div class="item-reporte">
+
+                    <h3>
+                        Error
+                    </h3>
+
+                    <p>
+                        No se pudo obtener
+                        el producto más vendido.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+);
+
+// =========================
+// CARGAR MEJOR VENDEDOR
+// =========================
+
+async function cargarMejorVendedor() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/ventas/mejor-vendedor-mes"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Error HTTP: ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "MEJOR VENDEDOR:",
+            data
+        );
+
+
+        if (!data.hayVendedor) {
+
+            mejorVendedor.textContent =
+                "Sin ventas";
+
+            ventasMejorVendedor.textContent =
+                "0 ventas este mes";
+
+            return;
+        }
+
+
+        mejorVendedor.textContent =
+            data.vendedor.nombre;
+
+
+        ventasMejorVendedor.textContent =
+            `${data.vendedor.cantidadVentas} ventas este mes`;
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando mejor vendedor:",
+            error
+        );
+
+
+        mejorVendedor.textContent =
+            "Sin datos";
+
+        ventasMejorVendedor.textContent =
+            "No disponible";
+
+    }
+
+}
+
+kpiMejorVendedor.addEventListener(
+    "click",
+    async () => {
+
+        tituloReporte.textContent =
+            "🏆 Mejor vendedor";
+
+
+        listaReportes.innerHTML = `
+
+            <div class="item-reporte">
+
+                <h3>
+                    Cargando...
+                </h3>
+
+            </div>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/ventas/mejor-vendedor-mes"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Error HTTP: ${response.status}`
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.hayVendedor) {
+
+                listaReportes.innerHTML = `
+
+                    <div class="item-reporte">
+
+                        <h3>
+                            No hay ventas este mes
+                        </h3>
+
+                        <p>
+                            Todavía no existen ventas
+                            registradas durante este mes.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            listaReportes.innerHTML = `
+
+                <div class="item-reporte">
+
+                    <h3>
+                        🏆 ${data.vendedor.nombre}
+                    </h3>
+
+                    <p>
+                        🧾 Ventas realizadas:
+                        ${data.vendedor.cantidadVentas}
+                    </p>
+
+                    <p>
+                        💰 Total vendido:
+                        ${formatearMoneda(
+                            data.vendedor.totalVendido
+                        )}
+                    </p>
+
+                </div>
+
+            `;
+
+
+        } catch (error) {
+
+            console.error(
+                "Error obteniendo mejor vendedor:",
+                error
+            );
+
+
+            listaReportes.innerHTML = `
+
+                <div class="item-reporte">
+
+                    <h3>
+                        Error
+                    </h3>
+
+                    <p>
+                        No se pudo obtener
+                        el mejor vendedor.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+);
+
+// =========================
+// CARGAR TOP PRODUCTOS
+// =========================
+
+async function cargarProductoTopSemanal() {
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/ventas/producto-top-semanal"
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Error HTTP: ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        console.log(
+            "PRODUCTO TOP SEMANAL:",
+            data
+        );
+
+        if (!data.hayProducto) {
+
+            productoTopSemanal.textContent =
+                "Sin ventas";
+
+            unidadesProductoTop.textContent =
+                "0 unidades vendidas";
+
+            return;
+        }
+
+        productoTopSemanal.textContent =
+            data.producto.nombre;
+
+        unidadesProductoTop.textContent =
+            `${data.producto.unidadesVendidas} unidades vendidas`;
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando producto top semanal:",
+            error
+        );
+
+        productoTopSemanal.textContent =
+            "Sin datos";
+
+        unidadesProductoTop.textContent =
+            "No disponible";
+
+    }
+
+}
+// =========================
+// CLICK PRODUCTO TOP SEMANAL
+// =========================
+
+kpiProductoTop.addEventListener(
+    "click",
+    async () => {
+
+        tituloReporte.textContent =
+            "🥃 Producto top semanal";
+
+        listaReportes.innerHTML = `
+            <div class="item-reporte">
+
+                <h3>
+                    Cargando...
+                </h3>
+
+            </div>
+        `;
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/ventas/producto-top-semanal"
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Error HTTP: ${response.status}`
+                );
+
+            }
+
+            const data =
+                await response.json();
+
+            console.log(
+                "PRODUCTO TOP SEMANAL CLICK:",
+                data
+            );
+
+            if (!data.hayProducto) {
+
+                listaReportes.innerHTML = `
+                    <div class="item-reporte">
+
+                        <h3>
+                            No hay ventas esta semana
+                        </h3>
+
+                        <p>
+                            No existen productos vendidos
+                            durante los últimos 7 días.
+                        </p>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+            listaReportes.innerHTML = `
+                <div class="item-reporte">
+
+                    <h3>
+                        🥃 ${data.producto.nombre}
+                    </h3>
+
+                    <p>
+                        📦 Unidades vendidas:
+                        ${data.producto.unidadesVendidas}
+                    </p>
+
+                </div>
+            `;
+
+        } catch (error) {
+
+            console.error(
+                "Error obteniendo producto top semanal:",
+                error
+            );
+
+            listaReportes.innerHTML = `
+                <div class="item-reporte">
+
+                    <h3>
+                        Error
+                    </h3>
+
+                    <p>
+                        No se pudo obtener
+                        el producto top semanal.
+                    </p>
+
+                </div>
+            `;
+
+        }
+
+    }
+);
+
+async function cargarClientesNuevos() {
+    try {
+        const response = await fetch(
+            "http://localhost:3000/api/clientes/nuevos-mes"
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    `Error HTTP: ${response.status}`
+            ); 
+        }
+
+        const data = await response.json();
+
+        console.log( 
+            "CLIENTES NUEVOS:", 
+            data
+        );
+
+        clientesNuevos.textContent = 
+            data.cantidad;
+
+        } catch (error) { 
+            console.error( 
+                "Error cargando clientes nuevos:", 
+                error 
+            );
+        
+    
+        clientesNuevos.textContent = "0"; 
+    } 
 }
 
 
 // =========================
-// CARD VENTAS DEL MES
+// CLICK CLIENTES NUEVOS
 // =========================
 
-document
-.getElementById("cardVentas")
-.addEventListener("click", () => {
+kpiClientesNuevos.addEventListener(
+    "click",
+    async () => {
 
-    tituloReporte.textContent =
-    "📈 Ventas del mes";
+        tituloReporte.textContent =
+            "👥 Clientes nuevos";
 
-    mostrarLista(ventas);
+        listaReportes.innerHTML = `
+            <div class="item-reporte">
+                <h3>Cargando clientes...</h3>
+            </div>
+        `;
 
-});
+        try {
 
+            const response = await fetch(
+                "http://localhost:3000/api/clientes/nuevos-mes"
+            );
 
-// =========================
-// CARD PRODUCTOS VENDIDOS
-// =========================
+            if (!response.ok) {
+                throw new Error(
+                    `Error HTTP: ${response.status}`
+                );
+            }
 
-document
-.getElementById("cardProductos")
-.addEventListener("click", () => {
+            const data = await response.json();
 
-    tituloReporte.textContent =
-    "📦 Productos vendidos";
+            console.log(
+                "DETALLE CLIENTES NUEVOS:",
+                data
+            );
 
-    mostrarLista(ventas);
+            if (
+                !data.clientes ||
+                data.clientes.length === 0
+            ) {
 
-});
+                listaReportes.innerHTML = `
+                    <div class="item-reporte">
 
+                        <h3>
+                            No hay clientes nuevos
+                        </h3>
 
-// =========================
-// CARD GANANCIAS
-// =========================
+                        <p>
+                            No se han registrado
+                            clientes durante este mes.
+                        </p>
 
-document
-.getElementById("cardGanancias")
-.addEventListener("click", () => {
+                    </div>
+                `;
 
-    tituloReporte.textContent =
-    "💰 Ganancias";
+                return;
+            }
 
-    mostrarLista(ventas);
+            listaReportes.innerHTML = "";
 
-});
+            data.clientes.forEach(cliente => {
 
+                listaReportes.innerHTML += `
 
-// =========================
-// CARD PRODUCTO TOP
-// =========================
+                    <div class="item-reporte">
 
-document
-.getElementById("cardTop")
-.addEventListener("click", () => {
+                        <h3>
+                            👤 ${cliente.nombre}
+                        </h3>
 
-    tituloReporte.textContent =
-    "🏆 Producto más vendido";
+                        <p>
+                            📧 ${cliente.correo || "Sin correo"}
+                        </p>
 
+                        <p>
+                            📱 ${cliente.telefono || "Sin teléfono"}
+                        </p>
 
-    const top = ventas.filter(venta =>
+                        <p>
+                            🏷️ Tipo:
+                            ${cliente.tipo || "Sin tipo"}
+                        </p>
 
-        venta.producto ===
-        "Ron Medellín"
+                        <p>
+                            ⭐ Nivel:
+                            ${cliente.nivel || "Sin nivel"}
+                        </p>
 
-    );
+                        <p>
+                            📅 Registro:
+                            ${formatearFecha(
+                                cliente.fechaRegistro
+                            )}
+                        </p>
 
-    mostrarLista(top);
+                    </div>
 
-});
+                `;
 
+            });
 
-// =========================
-// KPI MEJOR VENDEDOR
-// =========================
+        } catch (error) {
 
-document
-.querySelectorAll(".kpi-card")[0]
-.addEventListener("click", () => {
+            console.error(
+                "Error obteniendo clientes nuevos:",
+                error
+            );
 
-    tituloReporte.textContent =
-    "🏆 Mejor vendedor";
+            listaReportes.innerHTML = `
+                <div class="item-reporte">
 
+                    <h3>
+                        Error
+                    </h3>
 
-    const vendedorTop = ventas.filter(venta =>
+                    <p>
+                        No se pudieron obtener
+                        los clientes nuevos.
+                    </p>
 
-        venta.vendedor ===
-        "Carlos Ramírez"
+                </div>
+            `;
 
-    );
-
-    mostrarLista(vendedorTop);
-
-});
-
-
-// =========================
-// KPI PRODUCTO TOP SEMANAL
-// =========================
-
-document
-.querySelectorAll(".kpi-card")[1]
-.addEventListener("click", () => {
-
-    tituloReporte.textContent =
-    "🥃 Producto top semanal";
-
-
-    const productoTop = ventas.filter(venta =>
-
-        venta.producto ===
-        "Ron Medellín"
-
-    );
-
-    mostrarLista(productoTop);
-
-});
-
-
-// =========================
-// KPI CLIENTES NUEVOS
-// =========================
-
-document
-.querySelectorAll(".kpi-card")[2]
-.addEventListener("click", () => {
-
-    tituloReporte.textContent =
-    "👥 Clientes nuevos";
-
-
-    const clientesNuevos = [
-
-        {
-            producto:"Primer compra",
-            cliente:"Camila Ruiz",
-            vendedor:"Laura Castro",
-            total:180000,
-            fecha:"Viernes"
-        },
-
-        {
-            producto:"Primer compra",
-            cliente:"Andrés Mora",
-            vendedor:"Daniel Torres",
-            total:150000,
-            fecha:"Miércoles"
         }
 
-    ];
-
-    mostrarLista(clientesNuevos);
-
-});
-
+    }
+);
 
 // =========================
-// KPI CLIENTE PREMIUM
+// CARGAR VENTAS SEMANALES
 // =========================
 
-document
-.querySelectorAll(".kpi-card")[3]
-.addEventListener("click", () => {
+async function cargarVentasSemanales() {
 
-    tituloReporte.textContent =
-    "💎 Cliente premium";
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/ventas/semana"
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Error HTTP: ${response.status}`
+            );
+
+        }
+
+        const data = await response.json();
+
+        console.log(
+            "VENTAS SEMANALES:",
+            data
+        );
+
+        const barras =
+            document.querySelectorAll(".grafica .barra");
+
+        if (barras.length !== 7) {
+
+            console.error(
+                "La gráfica debe tener exactamente 7 barras."
+            );
+
+            return;
+        }
+
+        // =========================
+        // CREAR LOS 7 DÍAS
+        // =========================
+
+        const ventas = [
+            0, // Lunes
+            0, // Martes
+            0, // Miércoles
+            0, // Jueves
+            0, // Viernes
+            0, // Sábado
+            0  // Domingo
+        ];
 
 
-    const premium = ventas.filter(venta =>
+        // =========================
+        // COLOCAR VENTAS
+        // =========================
 
-        venta.cliente ===
-        "Juan Pérez"
+        data.ventas.forEach(item => {
 
-    );
+            ventas[item.dia] =
+                Number(item.total) || 0;
 
-    mostrarLista(premium);
+        });
 
-});
+
+        console.log(
+            "VENTAS POR DÍA:",
+            ventas
+        );
+
+
+        // =========================
+        // BUSCAR LA VENTA MÁS ALTA
+        // =========================
+
+        const maxVenta =
+            Math.max(...ventas);
+
+
+        // =========================
+        // ALTURA MÁXIMA
+        // =========================
+
+        const alturaMaxima = 300;
+
+
+        // =========================
+        // ACTUALIZAR BARRAS
+        // =========================
+
+        barras.forEach((barra, index) => {
+
+            const venta =
+                ventas[index];
+
+            let altura = 0;
+
+            if (maxVenta > 0) {
+
+                altura =
+                    (venta / maxVenta) *
+                    alturaMaxima;
+
+            }
+
+            barra.style.height =
+                `${altura}px`;
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando ventas semanales:",
+            error
+        );
+
+    }
+
+}
+
+// =========================
+// CARGAR ÚLTIMAS VENTAS
+// =========================
+
+async function cargarUltimasVentas() {
+
+    const tabla =
+        document.getElementById("ultimasVentas");
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/ventas/ultimas"
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Error HTTP: ${response.status}`
+            );
+
+        }
+
+        const ventas =
+            await response.json();
+
+        console.log(
+            "ÚLTIMAS VENTAS:",
+            ventas
+        );
+
+
+        if (!ventas || ventas.length === 0) {
+
+            tabla.innerHTML = `
+                <tr>
+
+                    <td colspan="4">
+                        No hay ventas registradas.
+                    </td>
+
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        tabla.innerHTML = "";
+
+
+        ventas.forEach(venta => {
+
+            tabla.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${venta.producto || "Sin producto"}
+                    </td>
+
+                    <td>
+                        ${venta.cliente || "Sin cliente"}
+                    </td>
+
+                    <td>
+                        ${formatearFecha(venta.Fecha)}
+                    </td>
+
+                    <td>
+                        ${formatearMoneda(venta.Total)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando últimas ventas:",
+            error
+        );
+
+        tabla.innerHTML = `
+
+            <tr>
+
+                <td colspan="4">
+                    No se pudieron cargar
+                    las últimas ventas.
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
 
 
 // =========================
 // INICIO
 // =========================
 
-mostrarLista(ventas);
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        cargarVentasMes();
+        cargarProductosVendidos();
+        cargarProductoTop();
+        cargarMejorVendedor();
+        cargarProductoTopSemanal();
+        cargarClientesNuevos();
+        cargarVentasSemanales();
+        cargarUltimasVentas();
+
+    }
+);

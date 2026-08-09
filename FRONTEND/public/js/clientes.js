@@ -5,104 +5,42 @@ const filters = document.getElementById("filters");
 let activeFilter = "Todos";
 let openPanels = {};
 
-let clientes = [
-  {
-    id: 1,
-    nombre: "Carlos Perez",
-    correo: "carlos.perez@gmail.com",
-    telefono: "3001234567",
-    direccion: "Cra 15 #82-24, Bogota",
-    tipo: "Mayorista",
-    estado: "Activo",
-    fechaRegistro: "12/01/2026",
-    ultimaCompra: "28/05/2026",
-    totalGastado: 1850000,
-    compras: 18,
-    favoritos: ["Whisky premium", "Ron Medellin", "Cervezas importadas"],
-    beneficios: ["5% descuento mayorista", "Envio prioritario"],
-    nivel: "Oro",
-    cupoCredito: 900000,
-    reportado: false,
-    historial: [
-      { fecha: "28/05/2026", detalle: "Whisky premium x2", total: 420000 },
-      { fecha: "18/05/2026", detalle: "Ron Medellin x6", total: 390000 },
-      { fecha: "02/05/2026", detalle: "Cervezas importadas x24", total: 288000 }
-    ],
-    observaciones: "Cliente frecuente para eventos empresariales. Prefiere entregas en la tarde."
-  },
-  {
-    id: 2,
-    nombre: "Laura Martinez",
-    correo: "laura.martinez@correo.com",
-    telefono: "3157654321",
-    direccion: "Cl 45 #19-60, Medellin",
-    tipo: "Frecuente",
-    estado: "Activo",
-    fechaRegistro: "03/02/2026",
-    ultimaCompra: "30/05/2026",
-    totalGastado: 2450000,
-    compras: 26,
-    favoritos: ["Vino tinto", "Ginebra", "Tequila reposado"],
-    beneficios: ["Promociones premium", "Preventas especiales"],
-    nivel: "VIP",
-    cupoCredito: 1400000,
-    reportado: false,
-    historial: [
-      { fecha: "30/05/2026", detalle: "Vino tinto reserva x4", total: 520000 },
-      { fecha: "16/05/2026", detalle: "Ginebra x2", total: 310000 },
-      { fecha: "29/04/2026", detalle: "Tequila reposado x1", total: 185000 }
-    ],
-    observaciones: "Excelente historial de pago. Interesada en lanzamientos y productos premium."
-  },
-  {
-    id: 3,
-    nombre: "Distribuidora El Norte",
-    correo: "compras@elnorte.com",
-    telefono: "6015558899",
-    direccion: "Av 68 #12-40, Bogota",
-    tipo: "Corporativo",
-    estado: "Suspendido",
-    fechaRegistro: "21/11/2025",
-    ultimaCompra: "14/05/2026",
-    totalGastado: 5200000,
-    compras: 41,
-    favoritos: ["Aguardiente", "Ron anejo", "Desechables"],
-    beneficios: ["Lista mayorista", "Reserva de inventario"],
-    nivel: "Plata",
-    cupoCredito: 2200000,
-    reportado: true,
-    historial: [
-      { fecha: "14/05/2026", detalle: "Aguardiente x36", total: 1260000 },
-      { fecha: "01/05/2026", detalle: "Ron anejo x18", total: 990000 },
-      { fecha: "20/04/2026", detalle: "Desechables surtidos", total: 340000 }
-    ],
-    observaciones: "Suspension temporal por documentos pendientes. Revisar soporte antes de aprobar credito."
-  },
-  {
-    id: 4,
-    nombre: "Andres Gomez",
-    correo: "andres.gomez@mail.com",
-    telefono: "3209988776",
-    direccion: "Cl 10 #6-33, Cali",
-    tipo: "Nuevo",
-    estado: "Bloqueado",
-    fechaRegistro: "10/04/2026",
-    ultimaCompra: "19/04/2026",
-    totalGastado: 360000,
-    compras: 3,
-    favoritos: ["Vodka", "Gaseosas", "Dulces"],
-    beneficios: ["Bono bienvenida"],
-    nivel: "Bronce",
-    cupoCredito: 0,
-    reportado: true,
-    historial: [
-      { fecha: "19/04/2026", detalle: "Vodka x1", total: 135000 },
-      { fecha: "15/04/2026", detalle: "Gaseosas surtidas", total: 90000 },
-      { fecha: "10/04/2026", detalle: "Dulces y snacks", total: 65000 }
-    ],
-    observaciones: "Bloqueado por validacion administrativa. No habilitar pedidos hasta confirmar identidad."
+let clientes = [];
+
+async function cargarClientes(){
+  try {
+    const respuesta = await fetch ("http://localhost:3000/api/clientes");
+
+    const datos = await respuesta.json();
+
+    clientes = datos.map(cliente => ({
+      id: cliente.id,
+      nombre: cliente.nombre,
+      correo: cliente.correo,
+      telefono: cliente.telefono,
+      direccion : cliente.direccion,
+      tipo: cliente.tipo,
+      estado: cliente.estado || "Nuevo",
+      nivel: cliente.nivel || "Activo",
+      cupoCredito: Number(cliente.cupoCredito || 0),
+      compras: Number(cliente.compras || 0),
+      totalGastado: Number(cliente.totalGastado || 0),
+      ultimaCompra: cliente.ultimaCompra || "Sin compras registradas",
+      fechaRegistro: cliente.fechaRegistro || "Sin registro",
+      observaciones: cliente.observaciones || "",
+      favoritos: [],
+      beneficios: [],
+      historial: [],
+      reportado: false
+
+
+    }));
+
+    renderClientes();
+  }catch (error) {
+    console.error("Error cargando clientes:", error);
   }
-];
+}
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("es-CO", {
@@ -230,8 +168,8 @@ function renderCard(cliente) {
         <button class="action-btn primary" type="button" data-action="ver">
           <i class="fa-solid fa-eye"></i> Ver
         </button>
-        <button class="action-btn warning" type="button" data-action="editar">
-          <i class="fa-solid fa-pen-to-square"></i> Editar
+        <button class="action-btn warning" type="button" data-action="gestionar">
+          <i class="fa-solid fa-sliders"></i> Gestionar
         </button>
         <button class="action-btn danger" type="button" data-action="eliminar">
           <i class="fa-solid fa-trash"></i> Eliminar
@@ -257,8 +195,8 @@ function renderCard(cliente) {
 }
 
 function renderPanel(cliente, panel) {
-  if (panel === "editar") {
-    return renderEditPanel(cliente);
+  if (panel === "gestionar") {
+    return renderGestionPanel(cliente);
   }
 
   if (panel === "pedidos") {
@@ -303,82 +241,179 @@ function renderDetailPanel(cliente) {
 }
 
 function renderPedidosPanel(cliente) {
-  return `
-    <div class="panel-inner">
-      <div class="panel-title">
-        <h4>Pedidos recientes</h4>
-        <button class="close-panel" type="button" data-action="cerrar"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="history-list">
-        ${cliente.historial.map((pedido, index) => `
-          <div class="history-item">
-            <strong>Pedido #${cliente.id}${index + 1} - ${escapeHtml(pedido.detalle)}</strong>
-            <span>${escapeHtml(pedido.fecha)} - ${formatCurrency(pedido.total)}</span>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
+
+    if (!cliente.historial.length) {
+        return `
+            <div class="panel-inner">
+                <div class="panel-title">
+                    <h4>Pedidos recientes</h4>
+                    <button class="close-panel"
+                            type="button"
+                            data-action="cerrar">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <p>Este cliente todavía no tiene compras registradas.</p>
+
+            </div>
+        `;
+    }
+
+    return `
+        <div class="panel-inner">
+
+            <div class="panel-title">
+                <h4>Pedidos recientes</h4>
+
+                <button class="close-panel"
+                        type="button"
+                        data-action="cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="history-list">
+
+                ${cliente.historial.map((pedido,index)=>`
+
+                    <div class="history-item">
+
+                        <strong>
+                            Pedido #${index+1}
+                        </strong>
+
+                        <p>${pedido.detalle}</p>
+
+                        <span>${pedido.fecha}</span>
+
+                        <strong>${formatCurrency(pedido.total)}</strong>
+
+                    </div>
+
+                `).join("")}
+
+            </div>
+
+        </div>
+    `;
 }
 
-function renderEditPanel(cliente) {
-  return `
-    <div class="panel-inner">
-      <div class="panel-title">
-        <h4>Editar cliente</h4>
-        <button class="close-panel" type="button" data-action="cerrar"><i class="fa-solid fa-xmark"></i></button>
-      </div>
+function renderGestionPanel(cliente) {
 
-      <form class="edit-form" data-form-id="${cliente.id}">
+        return `
+        <div class="panel-inner">
+
+        <div class="panel-title">
+        <h4>Gestionar cliente</h4>
+
+        <button class="close-panel" type="button" data-action="cerrar">
+        <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        </div>
+
+
+        <form class="edit-form" data-form-id="${cliente.id}">
+
+
         <div class="field">
-          <label for="nombre-${cliente.id}">Nombre</label>
-          <input id="nombre-${cliente.id}" name="nombre" value="${escapeHtml(cliente.nombre)}" required>
+
+        <label>Estado</label>
+
+        <select name="estado">
+
+        ${[
+        "Activo",
+        "Inactivo",
+        "Suspendido",
+        "Bloqueado"
+        ]
+        .map(value => option(value, cliente.estado))
+        .join("")}
+
+        </select>
+
         </div>
+
+
+
         <div class="field">
-          <label for="correo-${cliente.id}">Correo</label>
-          <input id="correo-${cliente.id}" name="correo" type="email" value="${escapeHtml(cliente.correo)}" required>
+
+        <label>Nivel de fidelización</label>
+
+        <select name="nivel">
+
+        ${[
+        "Bronce",
+        "Plata",
+        "Oro",
+        "VIP"
+        ]
+        .map(value => option(value, cliente.nivel))
+        .join("")}
+
+        </select>
+
         </div>
+
+
+
         <div class="field">
-          <label for="telefono-${cliente.id}">Telefono</label>
-          <input id="telefono-${cliente.id}" name="telefono" value="${escapeHtml(cliente.telefono)}" required>
+
+        <label>Cupo de crédito</label>
+
+        <input 
+        type="number"
+        name="cupoCredito"
+        value="${cliente.cupoCredito}"
+        >
+
         </div>
+
+
+
         <div class="field">
-          <label for="direccion-${cliente.id}">Direccion</label>
-          <input id="direccion-${cliente.id}" name="direccion" value="${escapeHtml(cliente.direccion)}" required>
+
+        <label>Observaciones administrativas</label>
+
+        <textarea name="observaciones">${escapeHtml(cliente.observaciones)}</textarea>
+
         </div>
-        <div class="field">
-          <label for="tipo-${cliente.id}">Tipo de cliente</label>
-          <select id="tipo-${cliente.id}" name="tipo">
-            ${["Nuevo", "Frecuente", "Mayorista", "Corporativo"].map((value) => option(value, cliente.tipo)).join("")}
-          </select>
-        </div>
-        <div class="field">
-          <label for="estado-${cliente.id}">Estado</label>
-          <select id="estado-${cliente.id}" name="estado">
-            ${["Activo", "Inactivo", "Suspendido", "Bloqueado"].map((value) => option(value, cliente.estado)).join("")}
-          </select>
-        </div>
-        <div class="field">
-          <label for="credito-${cliente.id}">Cupo de credito</label>
-          <input id="credito-${cliente.id}" name="cupoCredito" type="number" min="0" step="50000" value="${cliente.cupoCredito}">
-        </div>
-        <div class="field">
-          <label for="nivel-${cliente.id}">Nivel de fidelizacion</label>
-          <select id="nivel-${cliente.id}" name="nivel">
-            ${["Bronce", "Plata", "Oro", "VIP"].map((value) => option(value, cliente.nivel)).join("")}
-          </select>
-        </div>
-        <div class="field full">
-          <label for="observaciones-${cliente.id}">Observaciones</label>
-          <textarea id="observaciones-${cliente.id}" name="observaciones">${escapeHtml(cliente.observaciones)}</textarea>
-        </div>
+
+
+
         <div class="form-actions">
-          <button class="cancel-btn" type="button" data-action="cerrar">Cancelar</button>
-          <button class="save-btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Guardar cambios</button>
+
+        <button 
+        type="button"
+        class="cancel-btn"
+        data-action="cerrar">
+
+        Cancelar
+
+        </button>
+
+
+        <button 
+        class="save-btn"
+        type="submit">
+
+        <i class="fa-solid fa-floppy-disk"></i>
+
+        Guardar cambios
+
+        </button>
+
+
         </div>
-      </form>
-    </div>
-  `;
+
+
+        </form>
+
+        </div>
+        `;
+
 }
 
 function option(value, current) {
@@ -412,8 +447,28 @@ function handleAction(action, card) {
   if (!cliente) return;
 
   if (action === "ver") setPanel(cliente.id, openPanels[cliente.id] === "ver" ? null : "ver");
-  if (action === "editar") setPanel(cliente.id, openPanels[cliente.id] === "editar" ? null : "editar");
-  if (action === "pedidos") setPanel(cliente.id, "pedidos");
+  if (action === "gestionar") setPanel(cliente.id, openPanels[cliente.id] === "gestionar" ? null : "gestionar");
+ if (action === "pedidos") {
+
+    fetch(`http://localhost:3000/api/clientes/${cliente.id}/pedidos`)
+        .then(res => res.json())
+        .then(pedidos => {
+
+            cliente.historial = pedidos.map(p => ({
+                detalle: `${p.nombre} x${p.Cantidad}`,
+                fecha: new Date(p.Fecha).toLocaleDateString("es-CO"),
+                total: Number(p.Precio) * Number(p.Cantidad)
+            }));
+
+            setPanel(cliente.id, "pedidos");
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("No se pudieron cargar los pedidos.");
+        });
+
+}
   if (action === "cerrar") closePanel(cliente.id);
 
   if (action === "eliminar" && confirm(`Deseas eliminar a ${cliente.nombre}?`)) {
@@ -422,17 +477,68 @@ function handleAction(action, card) {
     renderClientes();
   }
 
-  if (action === "bloquear") {
-    updateCliente(cliente.id, { estado: "Bloqueado", observaciones: `${cliente.observaciones} Cliente bloqueado por administracion.` });
-  }
+ if (action === "bloquear") {
+
+    fetch(`http://localhost:3000/api/clientes/${cliente.id}/bloquear`, {
+        method: "PUT"
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        alert(data.mensaje);
+
+        updateCliente(cliente.id, {
+            estado: "Bloqueado"
+        });
+
+    })
+    .catch(error => {
+        console.error(error);
+        alert("No se pudo bloquear el cliente.");
+    });
+
+}
 
   if (action === "suspender") {
     updateCliente(cliente.id, { estado: "Suspendido", observaciones: `${cliente.observaciones} Cuenta suspendida temporalmente.` });
   }
 
   if (action === "reportar") {
-    updateCliente(cliente.id, { reportado: true, observaciones: `${cliente.observaciones} Cliente reportado para revision interna.` });
-  }
+
+    const motivo = prompt("Escriba el motivo del reporte:");
+
+    if (!motivo) return;
+
+    fetch(`http://localhost:3000/api/clientes/${cliente.id}/reportar`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            motivo
+        })
+
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        alert(data.mensaje);
+
+        updateCliente(cliente.id, {
+            reportado: true,
+            observaciones: motivo
+        });
+
+    })
+    .catch(error => {
+        console.error(error);
+        alert("No se pudo reportar el cliente.");
+    });
+
+}
 
   if (action === "vip") {
     const beneficios = Array.from(new Set([...cliente.beneficios, "Beneficio VIP activo", "Atencion prioritaria"]));
@@ -466,26 +572,47 @@ clientesContainer.addEventListener("click", (event) => {
   handleAction(button.dataset.action, card);
 });
 
-clientesContainer.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const form = event.target.closest(".edit-form");
-  if (!form) return;
+clientesContainer.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const id = Number(form.dataset.formId);
-  const data = new FormData(form);
+    const form = event.target.closest(".edit-form");
+    if (!form) return;
 
-  updateCliente(id, {
-    nombre: data.get("nombre").trim(),
-    correo: data.get("correo").trim(),
-    telefono: data.get("telefono").trim(),
-    direccion: data.get("direccion").trim(),
-    tipo: data.get("tipo"),
-    estado: data.get("estado"),
-    cupoCredito: Number(data.get("cupoCredito") || 0),
-    observaciones: data.get("observaciones").trim(),
-    nivel: data.get("nivel")
-  });
+    const id = Number(form.dataset.formId);
+    const data = new FormData(form);
+
+    try {
+
+        const response = await fetch(`http://localhost:3000/api/clientes/${id}/admin`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                estado: data.get("estado"),
+                nivel: data.get("nivel"),
+                cupoCredito: Number(data.get("cupoCredito") || 0),
+                observaciones: data.get("observaciones").trim()
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("No se pudo actualizar");
+        }
+
+        await cargarClientes();
+
+        alert("Cliente actualizado correctamente.");
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Error al actualizar el cliente.");
+
+    }
+
 });
+
 
 searchInput.addEventListener("input", renderClientes);
 
@@ -499,4 +626,4 @@ filters.addEventListener("click", (event) => {
   renderClientes();
 });
 
-renderClientes();
+cargarClientes();

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aguardientes</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/aguardientes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+     <script src="/js/theme.js"></script>
+     
+
+
+    <%- include("partials/client-sidebar", { active: "aguardientes" }) %>
+    
+   
+
+   
+
+  <aside id="cart-sidebar" class="cart-sidebar">
+    <button class="close-cart" aria-label="Cerrar carrito">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <h2>Tu Carrito</h2>
+    <div class="cart-items">
+      <div id="carrito-contenido"></div>
+    </div>
+    <div class="cart-actions">
+      <p id="total-price">Total: $0</p>
+      <a class="cart-page-link" href="/carrito"><i class="fa-solid fa-up-right-from-square"></i> Ver carrito completo</a>
+      <button id="btn-pagar">Pagar</button>
+      <button id="btn-vaciar">Vaciar Carrito</button>
+      <button id="btn-seguir">Seguir Comprando</button>
+    </div>
+  </aside>
+
+    <main class="aguardientes-container">
+        <div class="aguardientes">
+            <h1>Aguardientes</h1>
+            <p>¡Explora nuestra selección de aguardientes y escoge el que mas sea de tu agrado!</p>
+        </div>
+
+       
+    </main>
+     <div class="filtros">
+            <div class="filtros-grid">
+            <h2>Filtrar por</h2>
+           
+       <div class="filtro-item">
+        <button class="filtro-btn" id ="btn-todos">Todos</button>
+        
+    </div>
+
+    <div class="filtro-item">
+        <button class="filtro-btn">Tipo</button>
+        <div id ="dropdown-tipo" class="dropdown"></div>
+    </div>
+
+    <div class="filtro-item">
+        <button class="filtro-btn">Pais</button>
+        <div id ="dropdown-pais" class="dropdown"></div>
+    </div>
+
+     <div class="filtro-item">
+        <button class="filtro-btn">Marca</button>
+        <div id ="dropdown-marca" class="dropdown"></div>
+    </div>
+    </div>
+
+    </div>
+
+<div class="productos-grid">
+
+    
+<% if (aguardientes && aguardientes.length > 0) { %>
+
+    <div class="productos-grid">
+
+        <% aguardientes.forEach(aguardiente => { %>
+
+            <div
+                class="producto-card"
+                data-tipo="<%= aguardiente.tipo || '' %>"
+                data-pais="<%= aguardiente.pais || '' %>"
+                data-marca="<%= aguardiente.marca || '' %>"
+            >
+
+                <!-- IMAGEN DEL PRODUCTO -->
+                <div class="producto-imagen">
+
+                    <% if (aguardiente.imagen) { %>
+
+                        <img
+                            src="http://localhost:3000<%= aguardiente.imagen %>"
+                            alt="<%= aguardiente.nombre %>"
+                        >
+
+                    <% } else { %>
+
+                        <div class="sin-imagen">
+                            <i class="fa-solid fa-image"></i>
+                            <span>Sin imagen</span>
+                        </div>
+
+                    <% } %>
+
+                </div>
+
+
+                <!-- INFORMACIÓN DEL PRODUCTO -->
+                <div class="producto-info">
+
+                    <h2>
+                        <%= aguardiente.nombre %>
+                    </h2>
+
+                    <p>
+                        Precio: $<%= aguardiente.precio %>
+                    </p>
+
+                    <p>
+                        Categoría: <%= aguardiente.categoria %>
+                    </p>
+
+                    <p>
+                        Marca: <%= aguardiente.marca %>
+                    </p>
+
+                    <p>
+                        Stock: <%= aguardiente.stock %>
+                    </p>
+
+
+                    <!-- AGREGAR AL CARRITO -->
+                  <div class="btn-agregar">
+
+    <button
+        class="btn-agregar"
+        data-id="<%= aguardiente.id %>"
+        data-nombre="<%= aguardiente.nombre %>"
+        data-precio="<%= aguardiente.precio %>"
+        
+    >
+        Agregar al carrito
+    </button>
+
+</div>
+
+
+                    <!-- VER DETALLES -->
+                    <div class="btn-detalles">
+
+                        <button
+                            class="btn-ver-mas"
+                            data-id="<%= aguardiente.id %>"
+                        >
+                            Ver detalles
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        <% }) %>
+
+    </div>
+
+<% } %>
+</div>
+    
+    <!-- Modal -->
+
+    <div id="modal-aguardientes" class="modal">
+
+      
+    <div class="modal-content">
+        <span class="cerrar">&times;</span>
+
+        <h2>Información de los aguardientes</h2>
+
+        <div class="info-aguardientes">
+            <p><strong>Id:</strong> <span id="id"></span></p>
+            <p><strong>nombre:</strong> <span id="nombre"></span></p>
+            <p><strong>descripcion:</strong> <span id="descripcion"></span></p>
+            <p><strong>precio:</strong> <span id="precio"></span></p>
+            <p><strong>stock:</strong> <span id="stock"></span></p>
+            <p><strong>categoria:</strong> <span id="categoria"></span></p>
+            <p><strong>marca:</strong> <span id="marca"></span></p>
+            <p><strong>ventas:</strong> <span id="ventas"></span></p>
+            <p><strong>tipo:</strong> <span id="tipo"></span></p>
+            <p><strong>pais:</strong> <span id="pais"></span></p>
+            <p><strong>fecha creacion:</strong> <span id="fecha_creacion"></span></p>
+            
+          
+        </div>
+    </div>
+</div>
+
+
+
+</main>
+<script src="/js/sidebar.js"></script>
+<script src="/js/inicio.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/aguardientes.js"></script>
+        
+</body>
+</html>

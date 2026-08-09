@@ -7,38 +7,51 @@
    MAIN
 ========================= */
 
-.main-content{
-  flex:1;
-  padding:25px;
+.dashboard-container{
+    min-height:100vh;
 }
+
+.main{
+    min-height:100vh;
+    padding:36px;
+}
+.dashboard-hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    margin-bottom:22px;
+    padding:34px;
+    border:1px solid rgba(200,155,60,.25);
+    border-radius:20px;
+    background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+    box-shadow:var(--shadow);
+}
+
+.eyebrow{
+    display:block;
+    color:var(--gold);
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:.4px;
+    margin-bottom:8px;
+}
+
+
 
 
 /* =========================
    HEADER SUPERIOR
 ========================= */
 
-.top-header{
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  margin-bottom:30px;
-}
 
-.admin{
-  background:#1E1E1E;
-  padding:12px 20px;
-  border-radius:12px;
-  font-weight:bold;
-}
 
 
 /* =========================
    CONTENEDOR INVENTARIO
 ========================= */
 
-.inventario-container{
-  width:100%;
-}
+
 
 
 /* =========================
@@ -54,19 +67,23 @@
   flex-wrap:wrap;
 }
 
-.inventario-header h1{
-  color:gold;
-  font-size:60px;
-}
+
 
 
 /* =========================
    BUSCADOR
 ========================= */
 
+/* =========================
+   SEPARACIÓN BUSCADOR
+========================= */
+
 .buscador{
-  display:flex;
-  gap:15px;
+    display:flex;
+    gap:15px;
+    margin-top:25px;
+    margin-bottom:35px;
+    flex-wrap:wrap;
 }
 
 .buscador input{
@@ -237,3 +254,44 @@
   }
 
 }
+
+.estado-disponible{
+    color:#22c55e;
+    font-weight:600;
+}
+
+.estado-bajo{
+    color:#f59e0b;
+    font-weight:600;
+}
+
+.estado-agotado{
+    color:#ef4444;
+    font-weight:600;
+}
+
+.btn-stock{
+    width:32px;
+    height:32px;
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:18px;
+    font-weight:bold;
+
+    margin:0 3px;
+}
+
+.btn-mas{
+    background:#22c55e;
+    color:white;
+}
+
+.btn-menos{
+    background:#ef4444;
+    color:white;
+}
+

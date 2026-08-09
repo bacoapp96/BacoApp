@@ -325,128 +325,266 @@ tr:hover{
 
 
 /* =========================
-   MODAL
+MODAL
 ========================= */
+
+/* ===========================
+   MODAL
+=========================== */
+
 
 .modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.75);
+
     display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,.7);
+
     justify-content:center;
-    align-items:center;
-    z-index:1000;
+    align-items:flex-start;
+
+    padding:40px 20px;
+
+    overflow-y:auto;
+
 }
+
+.modal.active{
+    display: flex;
+}
+
+/* ===========================
+   CONTENIDO
+=========================== */
 
 .modal-content{
-    width:450px;
-    background:#1E1E1E;
-    border-radius:18px;
-    padding:18px;
+
+    width: 100%;
+    max-width: 650px;
+
+    background: #fff;
+
+    border-radius: 20px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.25);
+
+    animation: aparecer .25s ease;
 }
 
-.modal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:14px;
-}
+@keyframes aparecer{
 
-.modal-header h2{
-    color:gold;
-    font-size:24px;
-}
+    from{
 
-#cerrarModal{
-    cursor:pointer;
-    font-size:20px;
-}
+        opacity:0;
+        transform:translateY(-20px) scale(.98);
 
-.modal-body{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
+    }
 
-.modal-body input,
-.modal-body textarea{
-    padding:11px;
-    border:none;
-    border-radius:10px;
-    background:#2a2a2a;
-    color:white;
-    outline:none;
-    font-size:13px;
-}
+    to{
 
-.modal-body textarea{
-    resize:none;
-    height:90px;
-}
+        opacity:1;
+        transform:translateY(0) scale(1);
 
-#guardarProveedor{
-    width:100%;
-    margin-top:14px;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    background:gold;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-#guardarProveedor:hover{
-    transform:scale(1.02);
-}
-
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:1100px){
-
-    .kpi-container{
-        grid-template-columns:repeat(2,1fr);
     }
 
 }
+
+.modal-content h2{
+
+    margin-bottom:25px;
+
+    color:var(--primary);
+
+    font-size:1.7rem;
+
+    font-weight:700;
+
+}
+
+/* ===========================
+   FORMULARIO
+=========================== */
+
+#formProveedor{
+
+    display:grid;
+
+    gap:18px;
+
+}
+
+#formProveedor label{
+
+    display:block;
+
+    margin-bottom:6px;
+
+    font-weight:600;
+
+    color:#444;
+
+    font-size:.95rem;
+
+}
+
+#formProveedor input,
+#formProveedor select,
+#formProveedor textarea{
+
+    width:100%;
+
+    padding:13px 16px;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    outline:none;
+
+    background:#fafafa;
+
+    transition:.25s;
+
+    font-size:.95rem;
+
+    font-family:inherit;
+
+}
+
+#formProveedor textarea{
+
+    resize:vertical;
+
+    min-height:90px;
+
+}
+
+#formProveedor input:focus,
+#formProveedor select:focus,
+#formProveedor textarea:focus{
+
+    border-color:var(--primary);
+
+    background:#fff;
+
+    box-shadow:0 0 0 4px rgba(107,33,168,.12);
+
+}
+
+/* ===========================
+   GRID
+=========================== */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+
+}
+
+.form-full{
+
+    grid-column:1/-1;
+
+}
+
+/* ===========================
+   CHECKBOX
+=========================== */
+
+.check{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-weight:500;
+
+}
+
+.check input{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:var(--primary);
+
+}
+
+/* ===========================
+   BOTONES
+=========================== */
+
+.modal-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    margin-top:10px;
+
+    padding-top:20px;
+
+    border-top:1px solid #eee;
+
+}
+
+.modal-actions button{
+
+    min-width:130px;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
 
 @media(max-width:700px){
 
-    body{
-        flex-direction:column;
-    }
-
-    .sidebar{
-        width:100%;
-    }
-
-    .top-header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .header-actions{
-        width:100%;
-        flex-direction:column;
-    }
-
-    .header-actions input{
-        width:100%;
-    }
-
-    .kpi-container{
-        grid-template-columns:1fr;
-    }
-
-    .acciones{
-        flex-direction:column;
-    }
-
     .modal-content{
-        width:90%;
+
+        padding:22px;
+
+        max-height:90vh;
+
+        overflow:auto;
+
+    }
+
+    .form-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .modal-actions{
+
+        flex-direction:column;
+
+    }
+
+    .modal-actions button{
+
+        width:100%;
+
     }
 
 }

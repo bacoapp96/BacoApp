@@ -1,57 +1,131 @@
+// ==========================================
+// VER DETALLES DE PRODUCTO
+// ==========================================
+
 document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("product-search");
-  const clearSearch = document.getElementById("clear-search");
-  const searchStatus = document.getElementById("search-status");
-  const cards = Array.from(document.querySelectorAll("[data-product-card]"));
 
-  if (!searchInput || !cards.length) return;
+    const modal = document.getElementById("modal-producto");
 
-  const noResults = document.createElement("p");
-  noResults.className = "no-results is-hidden";
-  noResults.textContent = "No encontramos productos con esa busqueda.";
-
-  const productGrid = document.getElementById("contenedor-productos");
-  if (productGrid) {
-    productGrid.appendChild(noResults);
-  }
-
-  const normalize = (value) =>
-    value
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim();
-
-  const filterProducts = () => {
-    const query = normalize(searchInput.value);
-    let visibleCount = 0;
-
-    cards.forEach((card) => {
-      const text = normalize(card.dataset.search || card.textContent);
-      const isVisible = !query || text.includes(query);
-      card.classList.toggle("is-hidden", !isVisible);
-
-      if (isVisible) {
-        visibleCount += 1;
-      }
-    });
-
-    if (searchStatus) {
-      searchStatus.textContent = query
-        ? `${visibleCount} resultado(s) para "${searchInput.value.trim()}".`
-        : "Explora lo mas vendido de la tienda.";
+    if (!modal) {
+        console.error("❌ No existe #modal-producto en el HTML");
+        return;
     }
 
-    noResults.classList.toggle("is-hidden", !query || visibleCount > 0);
-  };
+    const cerrar = modal.querySelector(".cerrar");
 
-  searchInput.addEventListener("input", filterProducts);
+    // ==========================================
+    // BOTÓN VER DETALLES
+    // ==========================================
 
-  if (clearSearch) {
-    clearSearch.addEventListener("click", () => {
-      searchInput.value = "";
-      searchInput.focus();
-      filterProducts();
+    document.addEventListener("click", async (e) => {
+
+        const btn = e.target.closest(".btn-ver-mas");
+
+        if (!btn) return;
+
+        e.preventDefault();
+
+        const id = btn.dataset.idProducto;
+
+        console.log("=================================");
+        console.log("🔎 VER DETALLES");
+        console.log("ID producto:", id);
+        console.log("=================================");
+
+        if (!id) {
+            console.error("❌ El botón no tiene data-id-producto");
+            return;
+        }
+
+        try {
+
+            const respuesta = await fetch(
+                `http://localhost:3000/api/productos/${id}`
+            );
+
+            console.log("Respuesta API:", respuesta.status);
+
+            if (!respuesta.ok) {
+                throw new Error(
+                    `No se pudo obtener el producto. Estado: ${respuesta.status}`
+                );
+            }
+
+            const producto = await respuesta.json();
+
+            console.log("✅ Producto obtenido:", producto);
+
+            // ==========================================
+            // LLENAR MODAL
+            // ==========================================
+
+            document.getElementById("detalle-id").textContent =
+                producto.id ?? "";
+
+            document.getElementById("detalle-nombre").textContent =
+                producto.nombre ?? "";
+
+            document.getElementById("detalle-descripcion").textContent =
+                producto.descripcion ?? "";
+
+            document.getElementById("detalle-precio").textContent =
+                Number(producto.precio || 0).toLocaleString("es-CO");
+
+            document.getElementById("detalle-stock").textContent =
+                producto.stock ?? 0;
+
+            document.getElementById("detalle-categoria").textContent =
+                producto.categoria ?? "";
+
+            document.getElementById("detalle-marca").textContent =
+                producto.marca ?? "";
+
+            document.getElementById("detalle-tipo").textContent =
+                producto.tipo ?? "";
+
+            document.getElementById("detalle-pais").textContent =
+                producto.pais ?? "";
+
+            // ==========================================
+            // MOSTRAR MODAL
+            // ==========================================
+
+            modal.style.display = "flex";
+
+        } catch (error) {
+
+            console.error("❌ Error obteniendo detalles:", error);
+
+        }
+
     });
-  }
+
+    // ==========================================
+    // CERRAR CON X
+    // ==========================================
+
+    if (cerrar) {
+
+        cerrar.addEventListener("click", () => {
+
+            modal.style.display = "none";
+
+        });
+
+    }
+
+    // ==========================================
+    // CERRAR AL HACER CLICK FUERA
+    // ==========================================
+
+    window.addEventListener("click", (e) => {
+
+        if (e.target === modal) {
+
+            modal.style.display = "none";
+
+        }
+
+    });
+
 });

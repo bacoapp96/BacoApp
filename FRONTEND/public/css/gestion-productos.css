@@ -1,0 +1,432 @@
+/* =========================================
+   GESTIÓN DE PRODUCTOS
+========================================= */
+
+.main {
+    min-height: 100vh;
+    margin-left: 280px;
+    padding: 36px;
+}
+
+.dashboard-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 30px;
+    border: 1px solid rgba(200, 155, 60, .25);
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    box-shadow: var(--shadow);
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--gold);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .4px;
+}
+
+.dashboard-hero h1 {
+    margin-bottom: 10px;
+    font-size: 36px;
+}
+
+.dashboard-hero p {
+    color: var(--gray);
+}
+
+.refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 18px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--gold);
+    color: #111;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+}
+
+.refresh-btn:hover {
+    background: var(--gold-hover);
+    transform: translateY(-1px);
+}
+
+.panel {
+    margin-bottom: 24px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.panel-header {
+    margin-bottom: 20px;
+}
+
+#gestion-productos {
+    margin-bottom: 24px;
+}
+
+
+/* =========================================
+   FORMULARIO
+========================================= */
+
+.product-form {
+    display: grid;
+    gap: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.input-group {
+    display: grid;
+    gap: 6px;
+}
+
+.input-group.full {
+    width: 100%;
+}
+
+.input-group label {
+    color: #d9d9d9;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    min-height: 42px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+
+    background: #141414;
+    color: #fff;
+
+    outline: 0;
+
+    padding: 11px 12px;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+    color: #777;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: rgba(200,155,60,.75);
+
+    box-shadow:
+        0 0 0 3px rgba(200,155,60,.12);
+}
+
+.input-group select {
+    cursor: pointer;
+}
+
+.input-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+
+/* =========================================
+   INPUT DE IMAGEN
+========================================= */
+
+.input-group input[type="file"] {
+    min-height: 42px;
+    padding: 8px;
+
+    cursor: pointer;
+}
+
+.input-group input[type="file"]::file-selector-button {
+    margin-right: 10px;
+
+    padding: 8px 12px;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 6px;
+
+    background: #202020;
+    color: #fff;
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+.input-group input[type="file"]::file-selector-button:hover {
+    border-color: rgba(200,155,60,.55);
+    color: var(--gold);
+}
+
+
+/* =========================================
+   BOTONES DEL FORMULARIO
+========================================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 2px;
+}
+
+.form-actions button {
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 14px;
+
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        color .2s ease;
+}
+
+.form-actions button:hover {
+    transform: translateY(-1px);
+
+    border-color: rgba(200,155,60,.55);
+}
+
+
+/* GUARDAR */
+
+.btn-primary {
+    background: var(--gold);
+    color: #111;
+
+    border-color: transparent !important;
+}
+
+.btn-primary:hover {
+    background: #d9ae48;
+}
+
+
+/* LIMPIAR */
+
+.btn-secondary {
+    background: #242424;
+    color: #f4f4f4;
+}
+
+.btn-secondary:hover {
+    color: var(--gold);
+}
+
+
+/* =========================================
+   TABLA DE PRODUCTOS
+========================================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.products-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 750px;
+}
+
+.products-table th,
+.products-table td {
+    padding: 13px 14px;
+
+    text-align: left;
+
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.products-table th {
+    color: var(--gold);
+
+    font-size: 12px;
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+.products-table td {
+    color: #f5f5f5;
+
+    font-size: 13px;
+}
+
+.products-table tbody tr {
+    transition: background .2s ease;
+}
+
+.products-table tbody tr:hover {
+    background: rgba(255,255,255,.025);
+}
+
+
+/* =========================================
+   BOTONES DE ACCIONES
+========================================= */
+
+.btn-editar,
+.btn-eliminar {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 8px;
+
+    background: #202020;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+}
+
+.btn-editar {
+    color: var(--gold);
+}
+
+.btn-eliminar {
+    color: #ff8f8f;
+}
+
+.btn-editar:hover,
+.btn-eliminar:hover {
+    transform: translateY(-1px);
+}
+
+.btn-editar:hover {
+    border-color: rgba(200,155,60,.55);
+    background: rgba(200,155,60,.10);
+}
+
+.btn-eliminar:hover {
+    border-color: rgba(239,68,68,.45);
+    background: rgba(239,68,68,.10);
+}
+
+
+/* =========================================
+   ESTADO VACÍO
+========================================= */
+
+.products-table tbody td[colspan] {
+    padding: 34px 20px;
+
+    text-align: center;
+
+    color: var(--gray);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 900px) {
+
+    .main {
+        margin-left: 0;
+        padding: 24px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .main {
+        padding: 20px;
+    }
+
+    .dashboard-hero {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .refresh-btn {
+        justify-content: center;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+}

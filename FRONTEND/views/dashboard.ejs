@@ -34,7 +34,7 @@
           <span>Productos y stock</span>
         </a>
 
-        <a class="admin-shortcut" href="/cliente">
+        <a class="admin-shortcut" href="/clientes">
           <i class="fa-solid fa-users"></i>
           <strong>Clientes</strong>
           <span>Gestion comercial</span>
@@ -51,7 +51,16 @@
           <strong>Proveedores</strong>
           <span>Pedidos y aliados</span>
         </a>
-      </section>
+      
+
+       
+        <a class="admin-shortcut" href="#gestion-productos">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <strong>Gestion productos</strong>
+          <span>Agrega, elimina y actualiza produtos</span>
+        </a>
+
+        </section>
 
       <section class="cards">
         <div class="card">
@@ -68,13 +77,13 @@
 
         <div class="card">
           <i class="fa-solid fa-store"></i>
-          <h3>Tiendas activas</h3>
-          <p id="stores">0</p>
+          <h3>Productos</h3>
+          <p id="productos">0</p>
         </div>
 
         <div class="card">
           <i class="fa-solid fa-user-group"></i>
-          <h3>Usuarios</h3>
+          <h3>Clientes</h3>
           <p id="users">0</p>
         </div>
       </section>
@@ -86,19 +95,33 @@
         </div>
 
         <div class="list" id="ordersList">
-          <div class="item">
-            <span>Pedido #101 - BacoStore</span>
-            <strong>Enviado</strong>
-          </div>
-
-          <div class="item">
-            <span>Pedido #102 - AndesLiquor</span>
-            <strong>Pendiente</strong>
-          </div>
+          
         </div>
       </section>
+
+      <section class="panel">
+
+        <div class="panel-header">
+          <h2>⚠ Stock bajo</h2>
+        </div>
+
+        <div class="list" id="stockList">
+        </div>
+      </section>
+
+ 
+
+    
+
     </main>
   </div>
+
+
+ 
+
+
+  
+  
 
   <script src="/js/sidebar.js"></script>
   <script src="/js/dashboard.js"></script>

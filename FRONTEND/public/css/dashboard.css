@@ -121,9 +121,10 @@
 
 .panel{
     background:#171717;
-    padding:24px;
+    padding:15px;
     border-radius:16px;
     border:1px solid #2a2a2a;
+    margin-bottom: 22px;
 }
 
 .panel-header{
@@ -139,7 +140,7 @@
 }
 
 .list{
-    margin-top:16px;
+    margin-top:10px;
     display:grid;
     gap:10px;
 }
@@ -185,4 +186,129 @@
         align-items:flex-start;
         flex-direction:column;
     }
+}
+
+/* gestion de productos */
+.product-form{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.input-group label{
+    font-weight:600;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea{
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    outline:none;
+}
+
+.input-group textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.full{
+    width:100%;
+}
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+}
+
+.btn-primary{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.btn-secondary{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
+.products-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.products-table th,
+.products-table td{
+    padding:14px;
+    text-align:left;
+}
+
+.products-table th{
+    font-weight:700;
+}
+
+/* ===========================
+   STOCK BAJO
+=========================== */
+
+#stockList{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+#stockList .item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    background:black;
+
+    transition:.25s;
+}
+
+#stockList .item:hover{
+    transform:translateY(-2px);
+}
+
+#stockList small{
+    display:block;
+    margin-top:5px;
+
+    font-size:.8rem;
+    color:#666;
+}
+
+.stock-critico{
+    border-left:6px solid #ef4444;
+}
+
+.stock-bajo{
+    border-left:6px solid #f59e0b;
 }

@@ -12,3 +12,11 @@ export const getIndex = (req, res) => {
 export const getLogin = (req, res) => {
     res.sendFile(path.join(__dirname, '../../public/login.html'));
 };
+
+export const getVinos = async (req, res) => {
+    const [vinos] = await pool.query('SELECT * FROM vinos');
+
+    res.render('vinos', {
+        vinos
+    });
+}

@@ -16,12 +16,28 @@
         <span>Inventario</span>
       </a>
     </li>
-    <li class="<%= active === 'cliente' ? 'active' : '' %>">
-      <a class="menu-link" href="/cliente">
+
+     <li class="<%= active === 'ofertas' ? 'active' : '' %>">
+      <a class="menu-link" href="/ofertas">
+        <i class="fa-solid fa-tags"></i>
+        <span>Ofertas</span>
+      </a>
+    </li>
+    
+<li class="<%= active === 'gestion-productos' ? 'active' : '' %>">
+    <a class="menu-link" href="/gestion-productos">
+        <i class="fa-solid fa-gear"></i>
+        <span>Gestión de productos</span>
+    </a>
+</li>
+
+    <li class="<%= active === 'clientes' ? 'active' : '' %>">
+      <a class="menu-link" href="/clientes">
         <i class="fa-solid fa-users"></i>
         <span>Clientes</span>
       </a>
     </li>
+
     <li class="<%= active === 'reportes' ? 'active' : '' %>">
       <a class="menu-link" href="/reportes">
         <i class="fa-solid fa-chart-pie"></i>
@@ -40,12 +56,7 @@
         <span>Configuracion</span>
       </a>
     </li>
-    <li class="<%= active === 'ayuda' ? 'active' : '' %>">
-      <a class="menu-link" href="/ayuda">
-        <i class="fa-solid fa-circle-question"></i>
-        <span>Ayuda</span>
-      </a>
-    </li>
+   
     <li class="<%= active === 'cuenta-admin' ? 'active' : '' %>">
       <a class="menu-link" href="/cuenta-admin">
         <i class="fa-solid fa-user-shield"></i>

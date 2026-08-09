@@ -58,8 +58,13 @@
             <h3><%= producto.Nombre %></h3>
             <p><%= producto.Descripcion %></p>
             <strong>$<%= producto.Precio %></strong>
-            <button class="btn-agregar" data-nombre="<%= producto.Nombre %>" data-precio="<%= producto.Precio %>">Agregar al carrito</button>
-        </div>
+<button
+  class="btn-agregar"
+  data-id="<%= producto.id %>"
+  data-nombre="<%= producto.Nombre %>"
+  data-precio="<%= producto.Precio %>">
+  Agregar al carrito
+</button>        </div>
 
     <% }) %>
 

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de ofertas-BacoApp</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/ofertas-admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+<body class="admin-page">
+
+    <%- include("partials/admin-sidebar", { active: "ofertas" }) %>
+
+<main class="main">
+   
+
+    <section class="page-header">
+
+        <div>
+            <span class="eyebrow">BACOAPP</span>
+            <h1>Gestion de ofertas</h1>
+            <p>Administra todas las promociones disponibles para BacoApp</p>
+        </div>
+
+        <button id="btnNuevaOferta" class="btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            Nueva Oferta
+        </button>
+    
+    </section>
+
+    <section class="stat-grid">
+
+        <div class="stat-card">
+            <h3>Ofertas activas</h3>
+            <strong id="ofertasActivas">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Programadas</h3>
+            <strong id="ofertasProgramadas">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Finalizadas</h3>
+            <strong id="ofertasFinalizadas">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Agotadas</h3>
+            <strong id="ofertasAgotadas">0</strong>
+        </div>
+
+    </section>
+
+    <section class="tabla-container">
+
+        <table class="tabla-ofertas">
+
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Titulo</th>
+                    <th>Descuento</th>
+                    <th>Estado</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Acciones</th>
+
+                </tr>
+            </thead>
+
+            <tbody id="tablaOfertas">
+
+                <% if(ofertas.length === 0) { %>
+               
+
+                <tr>
+                    
+                    <td colspan="7">
+
+                        No hay ofertas registradas
+
+                    </td>
+                </tr>
+
+                <% } else { %>
+
+                <% ofertas.forEach(oferta=>{ %>
+                    <tr>
+                        <td>
+                            <strong><%= oferta.producto %></strong>
+                        </td>
+                        <td><%= oferta.titulo %></td>
+                        <td>
+                            <strong><%= oferta.descuento %>%</strong>
+                        </td>
+                        <td>
+                            <span class="badge <%= oferta.estado.toLowerCase() %>">
+                                <%= oferta.estado%>
+                            </span>
+                        </td>
+
+                        <td><%= new Date(oferta.fecha_inicio).toLocaleDateString("es-CO") %></td>
+                        <td><%= new Date(oferta.fecha_fin).toLocaleDateString("es-CO") %></td>
+                        
+                        <td class="actions">
+
+                            <button class="btn-secondary btn-editar"
+                            data-id="<%= oferta.id_oferta%>">
+                                Editar
+                            </button>
+
+                            <button class="btn-danger btn-eliminar"
+                            data-id="<%= oferta.id_oferta %>">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                    <% }) %>
+
+                    <% } %>
+            </tbody>
+        </table>
+    </section>
+
+    <div id="modalOferta" class="modal">
+
+        <div class="modal-content">
+
+            <h2 id="tituloModal">
+                Nueva oferta
+            </h2>
+
+            <form id="formOferta">
+
+                <input type="hidden" id="id_oferta">
+
+                <label>
+                    Producto
+                </label>
+
+                <select id="producto" required>
+                    <option value="">
+                        Seleccione producto
+                    </option>
+
+                    <% productos.forEach(producto =>{ %>
+                        <option value="<%= producto.id %>">
+                            <%= producto.nombre %>
+                        </option>
+                    <% }) %>
+                </select>
+
+                <label>
+                    Titulo
+                </label>
+
+                <input type="text"
+                        id="titulo"
+                        placeholder="Ej: Oferta de fin de semana"
+                        required>
+
+                <label>
+                    Descuento %
+                </label>
+
+                <input type="number"
+                        id="descuento"
+                        min="1"
+                        max="100"
+                        required>
+
+                <label>
+                    Fecha inicio
+                </label>
+
+                <input type="date"
+                        id="fecha_inicio"
+                        required>
+
+                <label>
+                    Fecha fin
+                </label>
+
+                <input type="date"
+                        id="fecha_fin"
+                        required>
+
+<label>
+    ¿Hasta agotar existencias?
+</label>
+
+<select id="agotable">
+
+    <option value="0">
+        No
+    </option>
+
+    <option value="1">
+        Sí
+    </option>
+
+</select>
+                        <div class="modal-actions">
+
+                            <button
+                                type="button"
+                                id="cerrarModal"
+                                class="btn-secondary">
+                            
+                                    Cancelar
+                                
+                                </button>
+
+                            
+                                <button
+                                    type="submit"
+                                    class="btn-primary">
+                                
+                                        Guardar
+                                    
+                                    </button>
+                            
+
+                        </div>
+            </form>
+        </div>
+    </div>
+</main>
+<script src="/js/sidebar.js"></script>
+<script src="/js/ofertas-admin.js"></script>
+    
+</body>
+
+</html>
