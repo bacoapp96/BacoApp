@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from 'express';
 import ejs from "ejs";
 import crypto from "crypto";
@@ -13,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const sessions = new Map();
 
@@ -61,7 +64,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //configuracion de ejs
 app.set("view engine", "ejs");
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 
 app.use("/", routes);
 

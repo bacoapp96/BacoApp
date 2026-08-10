@@ -7,18 +7,18 @@ import { totalmem } from 'os';
 
 
 //api del backend
+const BACKEND_URL =
+    process.env.BACKEND_URL ||
+    `http://localhost:${process.env.PORT || 3000}`;
+
 export const API_URL = {
-    usuarios: "http://localhost:3000/api/usuarios",
-            productos: "http://localhost:3000/api/productos",
-            categorias: "http://localhost:3000/api/categorias",
-            busquedas: "http://localhost:3000/api/producto/busqueda",
-            ofertas: "http://localhost:3000/api/ofertas",
-            ventas: "http://localhost:3000/api/ventas"
-        
-
-            
-
-   
+    usuarios: `${BACKEND_URL}/api/usuarios`,
+    productos: `${BACKEND_URL}/api/productos`,
+    clientes: `${BACKEND_URL}/api/clientes`,
+    categorias: `${BACKEND_URL}/api/categorias`,
+    busquedas: `${BACKEND_URL}/api/producto/busqueda`,
+    ofertas: `${BACKEND_URL}/api/ofertas`,
+    ventas: `${BACKEND_URL}/api/ventas`
 };
 
 const getPath = (ruta) => fileURLToPath(new URL(ruta, import.meta.url));
@@ -337,7 +337,7 @@ export const getCarrito = (req, res) => {
 //controlador cliente 
  export const getClientes = async (req, res)=> {
     try{
-        const response = await fetch ('http://localhost:3000/api/clientes');
+        const response = await fetch(API_URL.clientes);
         const clientes = await response.json();
 
         console.log(clientes);
@@ -357,19 +357,25 @@ export const getCarrito = (req, res) => {
 //controlador dinamico
 //controlador para vista busqueda
 export const getBusqueda = async (req, res) => {
-
     try {
-        const [productos] = await pool.query("SELECT * FROM productos");
+        const response = await fetch(API_URL.productos);
+
+        if (!response.ok) {
+            throw new Error("No se pudieron obtener los productos");
+        }
+
+        const productos = await response.json();
 
         res.render("busqueda", { productos });
 
     } catch (error) {
-    console.error("ERROR DETALLADO:", error);
-    res.status(500).json({
-        message: "Error en el servidor",
-        error: error.message
-    });
-}
+        console.error("ERROR DETALLADO:", error);
+
+        res.status(500).json({
+            message: "Error en el servidor",
+            error: error.message
+        });
+    }
 };
 
 //controlador estatico
@@ -494,7 +500,7 @@ console.log("Id cliente:", usuario.id_cliente);
 //controlador de vista vinos
 export const getVinos = async (req, res) => {
     try {
-        const response = await fetch('http://localhost:3000/api/productos/categoria/Vinos');
+        const response = await fetch(`${API_URL.productos}/categoria/Vinos`)
         const vinos = await response.json();
 
         console.log(vinos);
@@ -516,7 +522,7 @@ export const getVinos = async (req, res) => {
 
  export const getWhiskys = async (req, res)=> {
     try{
-        const response = await fetch ('http://localhost:3000/api/productos/categoria/Whiskys');
+        const response = await fetch(`${API_URL.productos}/categoria/Whiskys`);
         const whiskys = await response.json();
 
         console.log(whiskys);
@@ -537,7 +543,7 @@ export const getVinos = async (req, res) => {
 
  export const getRones = async (req, res)=> {
     try{
-        const response = await fetch ('http://localhost:3000/api/productos/categoria/rones');
+        const response = await fetch( `${API_URL.productos}/categoria/Rones`);
         const rones = await response.json();
 
         console.log(rones);
@@ -558,7 +564,7 @@ export const getVinos = async (req, res) => {
 
  export const getCervezas = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Cervezas");
+        const response = await fetch(`${API_URL.productos}/categoria/Cervezas`);
         const cervezas = await response.json();
 
         console.log(cervezas);
@@ -578,7 +584,7 @@ export const getVinos = async (req, res) => {
 // controlador de vista tequilas
  export const getTequilas = async (req, res)=> {
     try{
-        const response = await fetch ('http://localhost:3000/api/productos/categoria/tequilas');
+        const response = await fetch (`${API_URL.productos}/categoria/Tequilas`);
         const tequilas = await response.json();
 
         console.log(tequilas);
@@ -598,7 +604,7 @@ export const getVinos = async (req, res) => {
 // controlador de vista aguardientes
  export const getAguardientes = async (req, res)=> {
     try{
-        const response = await fetch ('http://localhost:3000/api/productos/categoria/aguardientes');
+        const response = await fetch (`${API_URL.productos}/categoria/Aguardientes`);
         const aguardientes = await response.json();
 
         console.log(aguardientes);
@@ -619,7 +625,7 @@ export const getVinos = async (req, res) => {
 
  export const getGaseosas = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Gaseosas");
+        const response = await fetch(`${API_URL.productos}/categoria/Gaseosas`);
         const gaseosas = await response.json();
 
         console.log(gaseosas);
@@ -639,7 +645,7 @@ export const getVinos = async (req, res) => {
 // controlador vista de jugos
  export const getJugos = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Jugos");
+        const response = await fetch(`${API_URL.productos}/categoria/Jugos`);
         const jugos = await response.json();
 
         console.log(jugos);
@@ -659,7 +665,7 @@ export const getVinos = async (req, res) => {
 // controlador vista de vodkas
  export const getVodkas = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Vodkas");
+        const response = await fetch(`${API_URL.productos}/categoria/Vodkas`);
         const vodkas = await response.json();
 
         console.log(vodkas);
@@ -680,7 +686,7 @@ export const getVinos = async (req, res) => {
 // controlador vista de ginebras
  export const getGinebras = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Ginebras");
+        const response = await fetch(`${API_URL.productos}/categoria/Ginebras`);
         const ginebras = await response.json();
 
         console.log(ginebras);
@@ -700,7 +706,7 @@ export const getVinos = async (req, res) => {
 // controlador vista de desechables
  export const getDesechables = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Desechables");
+        const response = await fetch(`${API_URL.productos}/categoria/Desechables`);
         const desechables = await response.json();
 
         console.log(desechables);
@@ -720,7 +726,7 @@ export const getVinos = async (req, res) => {
 // controlador vista de dulces
  export const getDulces = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Dulces");
+        const response = await fetch(`${API_URL.productos}/categoria/Dulces`);
         const dulces = await response.json();
 
         console.log(dulces);
@@ -740,7 +746,7 @@ export const getVinos = async (req, res) => {
 // controlador vista de accesorios
  export const getAccesorios = async (req, res)=> {
     try{
-        const response = await fetch("http://localhost:3000/api/productos/categoria/Accesorios");
+        const response = await fetch(`${API_URL.productos}/categoria/Accesorios`);
         const accesorios = await response.json();
 
         console.log(accesorios);

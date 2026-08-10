@@ -24,11 +24,7 @@ export const listarProductos = async (req, res) => {
     
     try {
 
-          console.log("========== PRODUCTOS ==========");
-        console.log("DB_HOST:", process.env.DB_HOST);
-        console.log("DB_PORT:", process.env.DB_PORT);
-        console.log("DB_USER:", process.env.DB_USER);
-        console.log("DB_NAME:", process.env.DB_NAME);
+        
         const [rows] = await pool.query('SELECT * FROM productos');
         res.json(rows);
     } catch (error) {
