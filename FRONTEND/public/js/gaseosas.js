@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Gaseosas cargadas");
-    fetch("http://localhost:3000/api/productos/categoria/Gaseosas")
+    fetch("https://bacoapp.onrender.com/api/productos/categoria/Gaseosas")
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -22,7 +22,7 @@ const cerrar = document.querySelector(".cerrar");
 
 async function mostrarDetallesGaseosa(id) {
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${id}`);
+        const respuesta = await fetch(`https://bacoapp.onrender.com/api/productos/${id}`);
         const gaseosa = await respuesta.json();
 
         console.log(gaseosa);
@@ -127,7 +127,7 @@ async function cargarFiltros() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/api/productos/filtros/Gaseosas"
+            "https://bacoapp.onrender.com/api/productos/filtros/Gaseosas"
         );
 
         if (!response.ok) {

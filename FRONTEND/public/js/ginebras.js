@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Ginebras cargados");
-    fetch("http://localhost:3000/api/productos/categoria/Ginebras")
+    fetch("https://bacoapp.onrender.com/api/productos/categoria/Ginebras")
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -22,7 +22,7 @@ const cerrar = document.querySelector(".cerrar");
 
 async function mostrarDetallesGinebra(id) {
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${id}`);
+        const respuesta = await fetch(`https://bacoapp.onrender.com/api/productos/${id}`);
         const ginebra = await respuesta.json();
 
         console.log(ginebra);
@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "http://localhost:3000/api/productos/filtros/Ginebras"
+         "https://bacoapp.onrender.com/api/productos/filtros/Ginebras"
     );
 
     const data = await response.json();

@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const respuesta = await fetch(
-                `http://localhost:3000/api/productos/${id}`
+                `https://bacoapp.onrender.com/api/productos/${id}`
             );
 
             console.log("Respuesta API:", respuesta.status);

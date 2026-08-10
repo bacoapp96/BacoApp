@@ -91,7 +91,7 @@ async function cargarVentasMes() {
 
     try {
 
-const response = await fetch("http://localhost:3000/api/ventas/mes");
+const response = await fetch("https://bacoapp.onrender.com/api/ventas/mes");
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -252,7 +252,7 @@ async function cargarProductosVendidos() {
 
         const response =
             await fetch(
-                "http://localhost:3000/api/ventas/productos-vendidos-mes"
+                "https://bacoapp.onrender.com/api/ventas/productos-vendidos-mes"
             );
 
 
@@ -348,7 +348,7 @@ cardProductos.addEventListener(
 
             const response =
                 await fetch(
-                    "http://localhost:3000/api/ventas/productos-vendidos-mes"
+                    "https://bacoapp.onrender.com/api/ventas/productos-vendidos-mes"
                 );
 
 
@@ -408,7 +408,7 @@ async function cargarProductoTop() {
 
         const response =
             await fetch(
-                "http://localhost:3000/api/ventas/producto-top-mes"
+                "https://bacoapp.onrender.com/api/ventas/producto-top-mes"
             );
 
         if (!response.ok) {
@@ -479,7 +479,7 @@ cardTop.addEventListener(
 
             const response =
                 await fetch(
-                    "http://localhost:3000/api/ventas/producto-top-mes"
+                    "https://bacoapp.onrender.com/api/ventas/producto-top-mes"
                 );
 
 
@@ -577,7 +577,7 @@ async function cargarMejorVendedor() {
 
         const response =
             await fetch(
-                "http://localhost:3000/api/ventas/mejor-vendedor-mes"
+                "https://bacoapp.onrender.com/api/ventas/mejor-vendedor-mes"
             );
 
 
@@ -663,7 +663,7 @@ kpiMejorVendedor.addEventListener(
 
             const response =
                 await fetch(
-                    "http://localhost:3000/api/ventas/mejor-vendedor-mes"
+                    "https://bacoapp.onrender.com/api/ventas/mejor-vendedor-mes"
                 );
 
 
@@ -767,7 +767,7 @@ async function cargarProductoTopSemanal() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/api/ventas/producto-top-semanal"
+            "https://bacoapp.onrender.com/api/ventas/producto-top-semanal"
         );
 
         if (!response.ok) {
@@ -841,7 +841,7 @@ kpiProductoTop.addEventListener(
 
             const response =
                 await fetch(
-                    "http://localhost:3000/api/ventas/producto-top-semanal"
+                    "https://bacoapp.onrender.com/api/ventas/producto-top-semanal"
                 );
 
             if (!response.ok) {
@@ -925,7 +925,7 @@ kpiProductoTop.addEventListener(
 async function cargarClientesNuevos() {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/clientes/nuevos-mes"
+            "https://bacoapp.onrender.com/api/clientes/nuevos-mes"
             );
 
             if (!response.ok) {
@@ -976,7 +976,7 @@ kpiClientesNuevos.addEventListener(
         try {
 
             const response = await fetch(
-                "http://localhost:3000/api/clientes/nuevos-mes"
+                "https://bacoapp.onrender.com/api/clientes/nuevos-mes"
             );
 
             if (!response.ok) {
@@ -1094,7 +1094,7 @@ async function cargarVentasSemanales() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/api/ventas/semana"
+            "https://bacoapp.onrender.com/api/ventas/semana"
         );
 
         if (!response.ok) {
@@ -1219,7 +1219,7 @@ async function cargarUltimasVentas() {
     try {
 
         const response = await fetch(
-            "http://localhost:3000/api/ventas/ultimas"
+            "https://bacoapp.onrender.com/api/ventas/ultimas"
         );
 
         if (!response.ok) {

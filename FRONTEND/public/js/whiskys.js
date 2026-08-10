@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Whiskys cargados");
-    fetch("http://localhost:3000/api/productos/categoria/Whiskys")
+    fetch("https://bacoapp.onrender.com/api/productos/categoria/Whiskys")
     .then(res => res.json())
     .then(data => console.log("productos encontrados", data));
     
@@ -22,7 +22,7 @@ const cerrar = document.querySelector(".cerrar");
 
 async function mostrarDetallesWhiskys(id) {
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${id}`);
+        const respuesta = await fetch(`https://bacoapp.onrender.com/api/productos/${id}`);
         const whisky = await respuesta.json();
 
         console.log(whisky);
@@ -110,7 +110,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "http://localhost:3000/api/productos/filtros/Whiskys"
+         "https://bacoapp.onrender.com/api/productos/filtros/Whiskys"
     );
 
     const data = await response.json();

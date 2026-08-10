@@ -9,7 +9,7 @@ let clientes = [];
 
 async function cargarClientes(){
   try {
-    const respuesta = await fetch ("http://localhost:3000/api/clientes");
+    const respuesta = await fetch ("http://https://bacoapp.onrender.com/api/clientes");
 
     const datos = await respuesta.json();
 
@@ -450,7 +450,7 @@ function handleAction(action, card) {
   if (action === "gestionar") setPanel(cliente.id, openPanels[cliente.id] === "gestionar" ? null : "gestionar");
  if (action === "pedidos") {
 
-    fetch(`http://localhost:3000/api/clientes/${cliente.id}/pedidos`)
+    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}/pedidos`)
         .then(res => res.json())
         .then(pedidos => {
 
@@ -479,7 +479,7 @@ function handleAction(action, card) {
 
  if (action === "bloquear") {
 
-    fetch(`http://localhost:3000/api/clientes/${cliente.id}/bloquear`, {
+    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}/bloquear`, {
         method: "PUT"
     })
     .then(res => res.json())
@@ -509,7 +509,7 @@ function handleAction(action, card) {
 
     if (!motivo) return;
 
-    fetch(`http://localhost:3000/api/clientes/${cliente.id}/reportar`, {
+    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}/reportar`, {
 
         method: "POST",
 
@@ -583,7 +583,7 @@ clientesContainer.addEventListener("submit", async (event) => {
 
     try {
 
-        const response = await fetch(`http://localhost:3000/api/clientes/${id}/admin`, {
+        const response = await fetch(`http://https://bacoapp.onrender.com/api/clientes/${id}/admin`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

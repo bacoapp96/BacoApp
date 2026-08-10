@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Tequilas cargados");
-    fetch("http://localhost:3000/api/productos/categoria/Tequilas")
+    fetch("https://bacoapp.onrender.com/api/productos/categoria/Tequilas")
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -22,7 +22,7 @@ const cerrar = document.querySelector(".cerrar");
 
 async function mostrarDetallesTequilas(id) {
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${id}`);
+        const respuesta = await fetch(`https://bacoapp.onrender.com/api/productos/${id}`);
         const tequila = await respuesta.json();
 
         console.log(tequila);
@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "http://localhost:3000/api/productos/filtros/Tequilas"
+         "https://bacoapp.onrender.com/api/productos/filtros/Tequilas"
     );
 
     const data = await response.json();

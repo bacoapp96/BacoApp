@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Rones cargados");
-    fetch("http://localhost:3000/api/productos/categoria/Rones")
+    fetch("https://bacoapp.onrender.com/api/productos/categoria/Rones")
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -22,7 +22,7 @@ const cerrar = document.querySelector(".cerrar");
 
 async function mostrarDetallesRones(id) {
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${id}`);
+        const respuesta = await fetch(`https://bacoapp.onrender.com/api/productos/${id}`);
         const ron = await respuesta.json();
 
         console.log(ron);
@@ -108,7 +108,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "http://localhost:3000/api/productos/filtros/Rones"
+         "https://bacoapp.onrender.com/api/productos/filtros/Rones"
     );
 
     const data = await response.json();
