@@ -6,6 +6,11 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: Number(process.env.DB_PORT || 3306),
+
+    connectTimeout: 10000,
+    waitForConnections: true,
+    connectionLimit: 5,
+    queueLimit: 0
 });
 
 export default pool;
