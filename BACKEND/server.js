@@ -32,7 +32,8 @@ import mercadoPagoRoutes from './app/routes/routes.mercadopago.js';
 
 
 const app = express();
-const PORT = 3000;
+app.set("trust proxy", 1);
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(
@@ -42,8 +43,11 @@ app.use(
     )
 );
 app.use(express.json());
+const FRONTEND_URL =
+    process.env.FRONTEND_URL || "http://localhost:4000";
+
 app.use(cors({
-    origin: "http://localhost:4000",
+    origin: FRONTEND_URL,
     credentials: true
 }));
 import session from 'express-session';
@@ -54,12 +58,13 @@ import session from 'express-session';
 app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
-        secret: "bacoapp_secret",
+        secret: process.env.SESSION_SECRET || "bacoapp_secret",
         resave: false,
         saveUninitialized: false,
-        cookie: {
-            secure: false,
-            maxAge: 24 * 60 * 60 * 1000
+       cookie: {
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 24 * 60 * 60 * 1000
+
         }
     })
 );
@@ -90,8 +95,8 @@ app.get('/', (req, res) => {
 
 
 // Servidor
-app.listen(PORT, () => {
-    console.log(`Backend corriendo en http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Backend corriendo en el puerto ${PORT}`);
 });
 
 
