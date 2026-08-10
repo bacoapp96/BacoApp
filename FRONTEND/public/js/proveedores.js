@@ -357,7 +357,7 @@ function mostrarDetallePedido(proveedor) {
 // =========================
 
 
-async function editarProveedor(id) {
+async function editarProveedorLegacy(id) {
 
     try {
 

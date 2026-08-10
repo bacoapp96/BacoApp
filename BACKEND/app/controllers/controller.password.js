@@ -57,7 +57,23 @@ const [verificar] = await pool.query(
 console.log("Datos guardados:", verificar);
 console.log("==================================");
 
-        const enlace = `${process.env.BASE_URL}/reset-password/${token}`;
+        const requestOrigin = req.get("origin") || "";
+        const safeRequestOrigin = /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(requestOrigin)
+            ? requestOrigin
+            : "";
+        const frontendUrl = (safeRequestOrigin || process.env.FRONTEND_URL || process.env.BASE_URL || "")
+            .split(",")[0]
+            .trim()
+            .replace(/\/$/, "");
+
+        if (!frontendUrl) {
+            return res.status(500).json({
+                ok: false,
+                message: "Falta configurar FRONTEND_URL para recuperar la contraseña."
+            });
+        }
+
+        const enlace = `${frontendUrl}/reset-password/${token}`;
   
 
         

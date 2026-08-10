@@ -43,11 +43,26 @@ app.use(
     )
 );
 app.use(express.json());
-const FRONTEND_URL =
-    process.env.FRONTEND_URL || "http://localhost:4000";
+// FRONTEND_URL admite uno o varios orígenes separados por coma. En producción
+// debe contener la URL pública de Railway, nunca la URL local de desarrollo.
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:4000")
+    .split(",")
+    .map((origin) => origin.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+
+const isRailwayOrigin = (origin) =>
+    /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(origin);
 
 app.use(cors({
-    origin: FRONTEND_URL,
+    origin(origin, callback) {
+        // Las llamadas servidor-a-servidor no incluyen Origin; las llamadas
+        // desde navegador solo se aceptan desde los orígenes configurados.
+        if (!origin || allowedOrigins.includes(origin) || isRailwayOrigin(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Origen no permitido por CORS"));
+    },
     credentials: true
 }));
 import session from 'express-session';

@@ -9,7 +9,9 @@ import { totalmem } from 'os';
 //api del backend
 const BACKEND_URL =
     process.env.BACKEND_URL ||
-    `http://localhost:${process.env.PORT || 3000}`;
+    (process.env.NODE_ENV === "production"
+        ? "https://bacoapp.onrender.com"
+        : "http://localhost:3000");
 
 export const API_URL = {
     usuarios: `${BACKEND_URL}/api/usuarios`,

@@ -9,7 +9,9 @@ let clientes = [];
 
 async function cargarClientes(){
   try {
-    const respuesta = await fetch ("http://https://bacoapp.onrender.com/api/clientes");
+    const respuesta = await fetch ("https://bacoapp.onrender.com/api/clientes");
+
+    if (!respuesta.ok) throw new Error("No se pudieron cargar los clientes");
 
     const datos = await respuesta.json();
 
@@ -472,9 +474,20 @@ function handleAction(action, card) {
   if (action === "cerrar") closePanel(cliente.id);
 
   if (action === "eliminar" && confirm(`Deseas eliminar a ${cliente.nombre}?`)) {
-    clientes = clientes.filter((item) => item.id !== cliente.id);
-    delete openPanels[cliente.id];
-    renderClientes();
+    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}`, {
+      method: "DELETE"
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || data.mensaje || "No se pudo eliminar el cliente");
+        clientes = clientes.filter((item) => item.id !== cliente.id);
+        delete openPanels[cliente.id];
+        renderClientes();
+      })
+      .catch((error) => {
+        console.error(error);
+        alert(error.message);
+      });
   }
 
  if (action === "bloquear") {
@@ -583,7 +596,7 @@ clientesContainer.addEventListener("submit", async (event) => {
 
     try {
 
-        const response = await fetch(`http://https://bacoapp.onrender.com/api/clientes/${id}/admin`, {
+        const response = await fetch(`https://bacoapp.onrender.com/api/clientes/${id}/admin`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

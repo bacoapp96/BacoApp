@@ -32,6 +32,29 @@ export const login = async (req, res) => {
 
        if (rows.length > 0) {
 
+            const usuarioEncontrado = rows[0];
+            const passwordGuardada = usuarioEncontrado.Password || usuarioEncontrado.password || "";
+            const passwordValida = passwordGuardada.startsWith("$2")
+                ? await bcrypt.compare(password || "", passwordGuardada)
+                : password === passwordGuardada;
+
+            if (!passwordValida) {
+                return res.status(401).json({
+                    ok: false,
+                    message: "Credenciales incorrectas"
+                });
+            }
+
+            // Compatibilidad con cuentas antiguas que aún guardaban la clave en
+            // texto plano: tras un inicio de sesión válido quedan migradas.
+            if (!passwordGuardada.startsWith("$2")) {
+                const hash = await bcrypt.hash(password, 10);
+                await pool.query(
+                    "UPDATE usuario SET Password = ? WHERE Id_usuario = ?",
+                    [hash, usuarioEncontrado.Id_usuario]
+                );
+            }
+
             req.session.usuario = {
             
             Id_usuario: rows[0].Id_usuario,

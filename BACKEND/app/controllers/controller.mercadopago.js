@@ -8,6 +8,22 @@ export const crearPreferencia = async (req, res) => {
 
     try {
 
+        const requestOrigin = req.get("origin") || "";
+        const safeRequestOrigin = /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(requestOrigin)
+            ? requestOrigin
+            : "";
+        const frontendUrl = (safeRequestOrigin || process.env.FRONTEND_URL || process.env.BASE_URL || "")
+            .split(",")[0]
+            .trim()
+            .replace(/\/$/, "");
+
+        if (!frontendUrl) {
+            return res.status(500).json({
+                ok: false,
+                message: "Falta configurar FRONTEND_URL para los retornos de pago"
+            });
+        }
+
         const {
             id_cliente,
             id_usuario,
@@ -84,13 +100,13 @@ const itemsMercadoPago = productos.map(item => ({
                 back_urls: {
 
                     success:
-                        "https://counsel-portfolio-ordering-phrases.trycloudflare.com/pago-exitoso",
+                        `${frontendUrl}/pago-exitoso`,
 
                     failure:
-                        "https://counsel-portfolio-ordering-phrases.trycloudflare.com/pago-fallido",
+                        `${frontendUrl}/pago-fallido`,
 
                     pending:
-                        "https://counsel-portfolio-ordering-phrases.trycloudflare.com/pago-pendiente"
+                        `${frontendUrl}/pago-pendiente`
 
                 },
 
