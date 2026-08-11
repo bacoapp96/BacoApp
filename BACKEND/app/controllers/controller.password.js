@@ -58,7 +58,12 @@ console.log("Datos guardados:", verificar);
 console.log("==================================");
 
         const requestOrigin = req.get("origin") || "";
-        const safeRequestOrigin = /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(requestOrigin)
+        const allowedOrigins = [
+            "http://localhost:4000",
+            process.env.FRONTEND_URL
+        ].filter(Boolean).map(url => url.trim().replace(/\/$/, ""));
+
+        const safeRequestOrigin = allowedOrigins.includes(requestOrigin.replace(/\/$/, ""))
             ? requestOrigin
             : "";
         const frontendUrl = (safeRequestOrigin || process.env.FRONTEND_URL || process.env.BASE_URL || "")

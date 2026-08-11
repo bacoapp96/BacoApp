@@ -9,20 +9,22 @@ import {
     deleteOferta
 } from "../controllers/controller.ofertas.js";
 
+import { verificarFirmaFrontend, requiereAdmin } from '../middleware/auth.js';
+
 const router = Router();
 
-router.get("/", getOfertas);
+router.get("/", verificarFirmaFrontend, requiereAdmin, getOfertas);
 
-router.get("/estadisticas", getEstadisticas);
+router.get("/estadisticas", verificarFirmaFrontend, requiereAdmin, getEstadisticas);
 
 router.get("/activas", getOfertasActivas);
 
-router.get("/:id", getOferta);
+router.get("/:id", verificarFirmaFrontend, requiereAdmin, getOferta);
 
-router.post("/", postOferta);
+router.post("/", verificarFirmaFrontend, requiereAdmin, postOferta);
 
-router.put("/:id", putOferta);
+router.put("/:id", verificarFirmaFrontend, requiereAdmin, putOferta);
 
-router.delete("/:id", deleteOferta);
+router.delete("/:id", verificarFirmaFrontend, requiereAdmin, deleteOferta);
 
 export default router;

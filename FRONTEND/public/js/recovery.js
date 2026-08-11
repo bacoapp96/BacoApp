@@ -34,7 +34,7 @@ form.addEventListener("submit", async (event) => {
     try {
 
         // Enviar el correo al backend
-        const response = await fetch("https://bacoapp.onrender.com/api/password/forgot", {
+        const response = await fetch(`${window.BACKEND_URL}/api/password/forgot`, {
 
             method: "POST",
 

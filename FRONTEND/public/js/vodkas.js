@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Vodkas cargados");
-    fetch("https://bacoapp.onrender.com/api/productos/categoria/Vodkas")
+    fetch(`${window.BACKEND_URL}/api/productos/categoria/Vodkas`)
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "https://bacoapp.onrender.com/api/productos/filtros/Vodkas"
+         `${window.BACKEND_URL}/api/productos/filtros/Vodkas`
     );
 
     const data = await response.json();

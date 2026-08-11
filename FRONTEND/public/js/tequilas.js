@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Tequilas cargados");
-    fetch("https://bacoapp.onrender.com/api/productos/categoria/Tequilas")
+    fetch(`${window.BACKEND_URL}/api/productos/categoria/Tequilas`)
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "https://bacoapp.onrender.com/api/productos/filtros/Tequilas"
+         `${window.BACKEND_URL}/api/productos/filtros/Tequilas`
     );
 
     const data = await response.json();

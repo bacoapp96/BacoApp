@@ -10,7 +10,7 @@ async function cargarProveedores() {
     try {
 
         const respuesta = await fetch(
-            "https://bacoapp.onrender.com/api/proveedores"
+            "/api/proveedores"
         );
 
         if (!respuesta.ok) {
@@ -363,7 +363,7 @@ async function editarProveedorLegacy(id) {
 
         // Buscar proveedor en la BD
         const respuesta = await fetch(
-            `https://bacoapp.onrender.com/api/proveedores/${id}`
+            `/api/proveedores/${id}`
         );
 
         const proveedor = await respuesta.json();
@@ -471,7 +471,7 @@ async function eliminarProveedor(id) {
     try {
 
         const respuesta = await fetch(
-            `https://bacoapp.onrender.com/api/proveedores/${id}`,
+            `/api/proveedores/${id}`,
             {
                 method: "DELETE"
             }
@@ -683,7 +683,7 @@ async function editarProveedor(id) {
     try {
 
         const respuesta = await fetch(
-            `https://bacoapp.onrender.com/api/proveedores/${id}`
+            `/api/proveedores/${id}`
         );
 
         const proveedor = await respuesta.json();
@@ -818,7 +818,7 @@ formProveedor.addEventListener("submit", async (event) => {
     try {
 
         const respuesta = await fetch(
-            `https://bacoapp.onrender.com/api/proveedores/${id}`,
+            `/api/proveedores/${id}`,
             {
                 method: "PUT",
 

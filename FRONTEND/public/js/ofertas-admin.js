@@ -5,7 +5,7 @@ const formOferta = document.querySelector("#formOferta");
 
 const tituloModal = document.querySelector("#tituloModal");
 const idOferta = document.querySelector("#id_oferta");
-const API_OFERTAS = "https://bacoapp.onrender.com/api/ofertas";
+const API_OFERTAS = "/api/ofertas";
 
 // =======================
 // Abrir modal nueva oferta
@@ -212,7 +212,7 @@ formOferta.addEventListener("submit", async (e) => {
 
 });
 
-const API_ESTADISTICAS = "https://bacoapp.onrender.com/api/ofertas/estadisticas";
+const API_ESTADISTICAS = "/api/ofertas/estadisticas";
 
 
 async function cargarEstadisticasOfertas(){

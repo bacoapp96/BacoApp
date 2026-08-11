@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Jugos cargadas");
-    fetch("https://bacoapp.onrender.com/api/productos/categoria/Jugos")
+    fetch(`${window.BACKEND_URL}/api/productos/categoria/Jugos`)
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "https://bacoapp.onrender.com/api/productos/filtros/Jugos"
+         `${window.BACKEND_URL}/api/productos/filtros/Jugos`
     );
 
     const data = await response.json();

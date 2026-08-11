@@ -24,7 +24,7 @@ async function cargarProductos(){
     try {
 
         const respuesta = await fetch(
-            "https://bacoapp.onrender.com/api/productos"
+            "/api/productos"
         );
 
         productos = await respuesta.json();
@@ -290,7 +290,7 @@ async function cambiarStock(id, cantidad) {
     try {
 
         const response = await fetch(
-            `https://bacoapp.onrender.com/api/productos/${id}/stock`,
+            `/api/productos/${id}/stock`,
             {
                 method: "PUT",
                 headers: {

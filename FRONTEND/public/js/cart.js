@@ -427,7 +427,7 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
         // ==============================
 
 const response = await fetch(
-    "https://bacoapp.onrender.com/api/pagos/crear-preferencia",
+    "/api/pagos/crear-preferencia",
     {
         method: "POST",
         headers: {

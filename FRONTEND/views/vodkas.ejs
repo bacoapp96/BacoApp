@@ -97,7 +97,7 @@
                 <% if (vodkas.imagen) { %>
 
                     <img
-                         src="https://bacoapp.onrender.com<%= vodkas.imagen %>"
+                         src="<%= BACKEND_URL %><%= vodkas.imagen %>"
                         alt="<%= vodkas.nombre %>"
                     >
 
@@ -211,8 +211,8 @@
 
 
 </main>
+<script src="/js/config.js"></script>
 <script src="/js/sidebar.js"></script>
-<script src="/js/inicio.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/vodkas.js"></script>
         

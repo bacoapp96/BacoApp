@@ -96,7 +96,7 @@
                 <% if (desechables.imagen) { %>
 
                     <img
-                         src="https://bacoapp.onrender.com<%= desechables.imagen %>"
+                         src="<%= BACKEND_URL %><%= desechables.imagen %>"
                         alt="<%= desechables.nombre %>"
                     >
 
@@ -210,8 +210,8 @@
 
 
 </main>
+<script src="/js/config.js"></script>
 <script src="/js/sidebar.js"></script>
-<script src="/js/inicio.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/desechables.js"></script>
         

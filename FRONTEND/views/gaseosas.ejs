@@ -95,7 +95,7 @@
                 <% if (gaseosas.imagen) { %>
 
                     <img
-                         src="https://bacoapp.onrender.com<%= gaseosas.imagen %>"
+                         src="<%= BACKEND_URL %><%= gaseosas.imagen %>"
                         alt="<%= gaseosas.nombre %>"
                     >
 
@@ -209,8 +209,8 @@
 
 
 </main>
+<script src="/js/config.js"></script>
 <script src="/js/sidebar.js"></script>
-<script src="/js/inicio.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/gaseosas.js"></script>
         

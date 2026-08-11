@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Vinos cargadas");
-    fetch("https://bacoapp.onrender.com/api/productos/categoria/Vinos")
+    fetch(`${window.BACKEND_URL}/api/productos/categoria/Vinos`)
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -109,7 +109,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "https://bacoapp.onrender.com/api/productos/filtros/Vinos"
+         `${window.BACKEND_URL}/api/productos/filtros/Vinos`
     );
 
     const data = await response.json();

@@ -43,21 +43,16 @@ app.use(
     )
 );
 app.use(express.json());
-// FRONTEND_URL admite uno o varios orígenes separados por coma. En producción
-// debe contener la URL pública de Railway, nunca la URL local de desarrollo.
-const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:4000")
-    .split(",")
-    .map((origin) => origin.trim().replace(/\/$/, ""))
-    .filter(Boolean);
-
-const isRailwayOrigin = (origin) =>
-    /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(origin);
+// FRONTEND_URL contiene la URL pública del frontend (https://bacoapp-front.onrender.com) en producción.
+const allowedOrigins = [
+    "http://localhost:4000",
+    process.env.FRONTEND_URL
+].filter(Boolean).map(url => url.trim().replace(/\/$/, ""));
 
 app.use(cors({
     origin(origin, callback) {
-        // Las llamadas servidor-a-servidor no incluyen Origin; las llamadas
-        // desde navegador solo se aceptan desde los orígenes configurados.
-        if (!origin || allowedOrigins.includes(origin) || isRailwayOrigin(origin)) {
+        // Permitir llamadas sin origin (servidor-a-servidor) u orígenes permitidos
+        if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
 
@@ -86,17 +81,19 @@ app.use(
 
 
 
+import { verificarFirmaFrontend, requiereAdmin, requiereUsuarioLogueado } from './app/middleware/auth.js';
+
 // RUTAS API 
 app.use('/api/productos', productosRoutes);
-app.use('/api/clientes', clienteRoutes);
-app.use('/api/detalle_venta', detallesVentaRoutes);
-app.use('/api/inventario', inventarioRoutes);
+app.use('/api/clientes', verificarFirmaFrontend, requiereAdmin, clienteRoutes);
+app.use('/api/detalle_venta', verificarFirmaFrontend, requiereAdmin, detallesVentaRoutes);
+app.use('/api/inventario', verificarFirmaFrontend, requiereAdmin, inventarioRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/ventas', ventasRoutes);
-app.use('/api/pagos', mercadoPagoRoutes);
+app.use('/api/pagos', verificarFirmaFrontend, requiereUsuarioLogueado, mercadoPagoRoutes);
 app.use('/api/ofertas', ofertasRoutes);
 app.use("/api/password", passwordRoutes);
-app.use("/api/proveedores", proveedoresRoutes);
+app.use("/api/proveedores", verificarFirmaFrontend, requiereAdmin, proveedoresRoutes);
 
 
 

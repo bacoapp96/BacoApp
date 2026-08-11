@@ -9,7 +9,7 @@ let clientes = [];
 
 async function cargarClientes(){
   try {
-    const respuesta = await fetch ("https://bacoapp.onrender.com/api/clientes");
+    const respuesta = await fetch ("/api/clientes");
 
     if (!respuesta.ok) throw new Error("No se pudieron cargar los clientes");
 
@@ -452,7 +452,7 @@ function handleAction(action, card) {
   if (action === "gestionar") setPanel(cliente.id, openPanels[cliente.id] === "gestionar" ? null : "gestionar");
  if (action === "pedidos") {
 
-    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}/pedidos`)
+    fetch(`/api/clientes/${cliente.id}/pedidos`)
         .then(res => res.json())
         .then(pedidos => {
 
@@ -474,7 +474,7 @@ function handleAction(action, card) {
   if (action === "cerrar") closePanel(cliente.id);
 
   if (action === "eliminar" && confirm(`Deseas eliminar a ${cliente.nombre}?`)) {
-    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}`, {
+    fetch(`/api/clientes/${cliente.id}`, {
       method: "DELETE"
     })
       .then(async (res) => {
@@ -492,7 +492,7 @@ function handleAction(action, card) {
 
  if (action === "bloquear") {
 
-    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}/bloquear`, {
+    fetch(`/api/clientes/${cliente.id}/bloquear`, {
         method: "PUT"
     })
     .then(res => res.json())
@@ -522,7 +522,7 @@ function handleAction(action, card) {
 
     if (!motivo) return;
 
-    fetch(`https://bacoapp.onrender.com/api/clientes/${cliente.id}/reportar`, {
+    fetch(`/api/clientes/${cliente.id}/reportar`, {
 
         method: "POST",
 
@@ -596,7 +596,7 @@ clientesContainer.addEventListener("submit", async (event) => {
 
     try {
 
-        const response = await fetch(`https://bacoapp.onrender.com/api/clientes/${id}/admin`, {
+        const response = await fetch(`/api/clientes/${id}/admin`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

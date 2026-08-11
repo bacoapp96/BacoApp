@@ -26,7 +26,7 @@ document.getElementById("registro-form").addEventListener("submit", async (e) =>
 
     try {
 
-        const response = await fetch("https://bacoapp.onrender.com/api/usuarios",{
+        const response = await fetch(`${window.BACKEND_URL}/api/usuarios`,{
 
             method:"POST",
 

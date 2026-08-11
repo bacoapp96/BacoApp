@@ -11,11 +11,12 @@ import {
     obtenerMasVendidos,
     obtenerStockBajo,
     cambiarStock,
-   
 } from '../controllers/controller.productos.js';
 import { uploadProducto } from "../middleware/multer.productos.js";
 
 const router = Router();
+
+import { verificarFirmaFrontend, requiereAdmin } from '../middleware/auth.js';
 
 // CRUD
 
@@ -28,24 +29,20 @@ router.get("/filtros/:categoria", obtenerFiltros);
 
 router.get("/categoria/:categoria", listarPorCategoria);
 
-router.get("/stock-bajo", obtenerStockBajo);
+router.get("/stock-bajo", verificarFirmaFrontend, requiereAdmin, obtenerStockBajo);
 
 router.get("/", listarProductos);
 
 router.get("/:id", obtenerProducto);
 
-router.put("/:id/stock", cambiarStock);
+router.put("/:id/stock", verificarFirmaFrontend, requiereAdmin, cambiarStock);
 
-router.post("/",uploadProducto.single("imagen"),
+router.post("/", verificarFirmaFrontend, requiereAdmin, uploadProducto.single("imagen"),
     crearProducto
 );
 
-router.put("/:id", uploadProducto.single("imagen"), actualizarProducto);
+router.put("/:id", verificarFirmaFrontend, requiereAdmin, uploadProducto.single("imagen"), actualizarProducto);
 
-router.delete("/:id", eliminarProducto);
+router.delete("/:id", verificarFirmaFrontend, requiereAdmin, eliminarProducto);
 
 export default router;
-
-
-
-

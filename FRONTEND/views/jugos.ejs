@@ -96,7 +96,7 @@
                 <% if (jugos.imagen) { %>
 
                     <img
-                         src="https://bacoapp.onrender.com<%= jugos.imagen %>"
+                         src="<%= BACKEND_URL %><%= jugos.imagen %>"
                         alt="<%= jugos.nombre %>"
                     >
 
@@ -210,8 +210,8 @@
 
 
 </main>
+<script src="/js/config.js"></script>
 <script src="/js/sidebar.js"></script>
-<script src="/js/inicio.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/jugos.js"></script>
         

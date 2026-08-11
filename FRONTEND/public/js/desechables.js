@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Desechables cargados");
-    fetch("https://bacoapp.onrender.com/api/productos/categoria/Desechables")
+    fetch(`${window.BACKEND_URL}/api/productos/categoria/Desechables`)
     .then(res => res.json())
     .then(data => console.log(data));
     
@@ -107,7 +107,7 @@ document.addEventListener("click", (e) => {
 async function cargarFiltros(){
 
     const response = await fetch (
-         "https://bacoapp.onrender.com/api/productos/filtros/Desechables"
+         `${window.BACKEND_URL}/api/productos/filtros/Desechables`
     );
 
     const data = await response.json();

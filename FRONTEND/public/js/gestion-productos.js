@@ -1,4 +1,4 @@
-const API_URL = "https://bacoapp.onrender.com/api/productos";
+const API_URL = "/api/productos";
 
 const formulario = document.getElementById("formProducto");
 const tablaProductos = document.getElementById("tablaProductos");

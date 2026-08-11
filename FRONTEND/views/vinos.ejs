@@ -96,7 +96,7 @@
                 <% if (vinos.imagen) { %>
 
                     <img
-                         src="https://bacoapp.onrender.com<%= vinos.imagen %>"
+                         src="<%= BACKEND_URL %><%= vinos.imagen %>"
                         alt="<%= vinos.nombre %>"
                     >
 
@@ -210,8 +210,8 @@
 
 
 </main>
+<script src="/js/config.js"></script>
 <script src="/js/sidebar.js"></script>
-<script src="/js/inicio.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/vinos.js"></script>
         

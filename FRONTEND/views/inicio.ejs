@@ -129,7 +129,7 @@
                 <% if (oferta.imagen) { %>
 
                     <img
-                        src="https://bacoapp.onrender.com<%= oferta.imagen %>"
+                        src="<%= BACKEND_URL %><%= oferta.imagen %>"
                         alt="<%= oferta.nombre %>"
                     >
 
@@ -450,7 +450,8 @@
 </section>
   </main>
 
-  <script src="/js/sidebar.js"></script>
+  <script src="/js/config.js"></script>
+<script src="/js/sidebar.js"></script>
   <script src="/js/inicio.js"></script>
   <script src="/js/cart.js"></script>
 </body>
