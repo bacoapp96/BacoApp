@@ -271,8 +271,8 @@ export const getOfertas = async (req, res) => {
 
     try {
         const [responseOfertas, responseProductos] = await Promise.all([
-            fetch(API_URL.ofertas),
-            fetch(API_URL.productos)
+             fetch("/api/ofertas"),
+             fetch("/api/productos")
         ]);
 
         const ofertas = responseOfertas.ok
