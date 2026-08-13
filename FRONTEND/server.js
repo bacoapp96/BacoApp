@@ -139,8 +139,12 @@ app.all(/^\/api\/(.*)/, async (req, res) => {
     res.status(response.status);
 
     response.headers.forEach((value, name) => {
-      if (name.toLowerCase() !== "transfer-encoding" && name.toLowerCase() !== "connection") {
-        res.setHeader(name, value);
+if (
+  name.toLowerCase() !== "transfer-encoding" &&
+  name.toLowerCase() !== "connection" &&
+  name.toLowerCase() !== "content-encoding" &&
+  name.toLowerCase() !== "content-length"
+) {        res.setHeader(name, value);
       }
     });
 
