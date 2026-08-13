@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.locals.BACKEND_URL = process.env.BACKEND_URL || (process.env.NODE_ENV === "production" ? "https://bacoapp.onrender.com" : "http://localhost:3000");
+app.locals.BACKEND_URL = process.env.BACKEND_URL || (process.env.NODE_ENV === "production" ? "https://bacoapp-production.up.railway.app" : "http://localhost:3000");
 
 const sessions = new Map();
 

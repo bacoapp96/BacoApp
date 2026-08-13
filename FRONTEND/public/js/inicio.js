@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const respuesta = await fetch(
-                `https://bacoapp.onrender.com/api/productos/${id}`
+                `https://bacoapp-production.up.railway.app/api/productos/${id}`
             );
 
             console.log("Respuesta API:", respuesta.status);

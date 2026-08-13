@@ -43,7 +43,7 @@ app.use(
     )
 );
 app.use(express.json());
-// FRONTEND_URL contiene la URL pública del frontend (https://bacoapp-front.onrender.com) en producción.
+// FRONTEND_URL contiene la URL pública del frontend (https://bacoapp-production.up.railway.app) en producción.
 const allowedOrigins = [
     "http://localhost:4000",
     process.env.FRONTEND_URL

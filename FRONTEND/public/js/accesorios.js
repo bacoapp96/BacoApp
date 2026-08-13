@@ -22,7 +22,7 @@ const cerrar = document.querySelector(".cerrar");
 
 async function mostrarDetallesAccesorios(id) {
     try {
-        const respuesta = await fetch(`https://bacoapp.onrender.com/api/productos/${id}`);
+        const respuesta = await fetch(`https://bacoapp-production.up.railway.app/api/productos/${id}`);
         const accesorio = await respuesta.json();
 
         console.log(accesorio);

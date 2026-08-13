@@ -7,9 +7,9 @@ async function loadDashboard() {
             resClientes,
             resVentas
         ] = await Promise.all([
-            fetch("https://bacoapp.onrender.com/api/productos"),
-            fetch("https://bacoapp.onrender.com/api/clientes"),
-            fetch("https://bacoapp.onrender.com/api/ventas")
+            fetch("https://bacoapp-production.up.railway.app/api/productos"),
+            fetch("https://bacoapp-production.up.railway.app/api/clientes"),
+            fetch("https://bacoapp-production.up.railway.app/api/ventas")
         ]);
 
         const productos = await resProductos.json();
@@ -36,7 +36,7 @@ async function cargarUltimosPedidos() {
 
     try {
         
-        const response = await fetch("https://bacoapp.onrender.com/api/ventas");
+        const response = await fetch("https://bacoapp-production.up.railway.app/api/ventas");
         const ventas = await response.json();
 
         const lista = document.getElementById("ordersList");
@@ -63,7 +63,7 @@ async function cargarStockBajo() {
 
     try {
 
-        const response = await fetch("https://bacoapp.onrender.com/api/productos/stock-bajo");
+        const response = await fetch("https://bacoapp-production.up.railway.app/api/productos/stock-bajo");
         const productos = await response.json();
 
         const lista = document.getElementById("stockList");
