@@ -9,9 +9,7 @@ import { totalmem } from 'os';
 //api del backend
 const BACKEND_URL =
     process.env.BACKEND_URL ||
-    (process.env.NODE_ENV === "production"
-        ? "https://bacoapp.onrender.com"
-        : "http://localhost:3000");
+    "https://bacoapp-production.up.railway.app";
 
 export const API_URL = {
     usuarios: `${BACKEND_URL}/api/usuarios`,
