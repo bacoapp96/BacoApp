@@ -66,6 +66,9 @@ export const obtenerProducto = async (req, res) => {
 // CREAR
 export const crearProducto = async (req, res) => {
 
+console.log("BODY:", req.body);
+console.log("FILE:", req.file);
+
     try {
 
         const {
