@@ -7,6 +7,8 @@ import crypto from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 import fetch from 'node-fetch';
+import multer from "multer";
+import { FormData } from "node-fetch";
 import routes from "./app/routes/routes.views.js";
 
 
@@ -17,6 +19,7 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
+const upload = multer();
 const PORT = process.env.PORT || 4000;
 
 app.locals.BACKEND_URL = process.env.BACKEND_URL || (process.env.NODE_ENV === "production" ? "https://bacoapp-production.up.railway.app" : "http://localhost:3000");
@@ -102,8 +105,8 @@ const getRequiredRole = (method, urlPath) => {
 };
 
 // Proxy para peticiones protegidas y administrativas
-app.all(/^\/api\/(.*)/, async (req, res) => {
-  const requiredRole = getRequiredRole(req.method, req.path);
+app.all(/^\/api\/(.*)/, upload.any(), async (req, res) => {
+    const requiredRole = getRequiredRole(req.method, req.path);
   if (requiredRole) {
     if (!req.session?.usuario?.id) {
       return res.status(401).json({ ok: false, error: "No autorizado", message: "Debe iniciar sesión." });
@@ -131,9 +134,20 @@ app.all(/^\/api\/(.*)/, async (req, res) => {
       headers: targetHeaders
     };
 
-    if (req.method !== "GET" && req.method !== "HEAD") {
-      fetchOptions.body = JSON.stringify(req.body);
+if (req.method !== "GET" && req.method !== "HEAD") {
+    if (req.headers["content-type"]?.includes("multipart/form-data")) {
+        const formData = new FormData();
+
+        Object.entries(req.body).forEach(([key, value]) => {
+            formData.append(key, value);
+        });
+
+        fetchOptions.body = formData;
+        delete targetHeaders["content-type"];
+    } else {
+        fetchOptions.body = JSON.stringify(req.body);
     }
+}
 
     const response = await fetch(targetUrl, fetchOptions);
     res.status(response.status);
