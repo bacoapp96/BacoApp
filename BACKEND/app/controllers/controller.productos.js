@@ -21,14 +21,19 @@ export const buscarProductos = async (req, res) => {
 
 // LISTAR
 export const listarProductos = async (req, res) => {
-    
     try {
-
-        
         const [rows] = await pool.query('SELECT * FROM productos');
-        res.json(rows);
+
+        console.log("PRODUCTOS:", rows);
+
+        res.status(200).json(rows);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("ERROR PRODUCTOS:", error);
+
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
 
