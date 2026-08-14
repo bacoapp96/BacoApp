@@ -113,6 +113,13 @@ export const listarUsuarios = async (req, res) => {
 // OBTENER POR ID
 export const obtenerUsuario = async (req, res) => {
     try {
+
+        const id = Number(req.params.id);
+const usuarioId = Number(req.usuarioAutenticado.id);
+
+if (id !== usuarioId && req.usuarioAutenticado.rol?.toLowerCase() !== "admin") {
+    return res.status(403).json({ error: "No tienes permiso para consultar este usuario." });
+}
        const [rows] = await pool.query(
     `SELECT
         u.*,
@@ -268,6 +275,15 @@ const passwordHash = await bcrypt.hash(password, 10);
 // ACTUALIZAR
 export const actualizarUsuario = async (req, res) => {
     try {
+
+        const id = Number(req.params.id);
+const usuarioId = Number(req.usuarioAutenticado.id);
+
+if (id !== usuarioId && req.usuarioAutenticado.rol?.toLowerCase() !== "admin") {
+    return res.status(403).json({
+        error: "No tienes permiso para modificar este usuario."
+    });
+}
         const id = req.params.id;
         const camposPermitidos = {
             Nombre: req.body.Nombre,
