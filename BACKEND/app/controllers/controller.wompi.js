@@ -92,7 +92,12 @@ export const crearPagoWompi = async (req, res) => {
         // FIRMA DE INTEGRIDAD
         // ==============================
 
-        const cadena = `${reference}${amountInCents}COP${process.env.WOMPI_INTEGRITY_SECRET}`;
+        console.log("WOMPI CONFIG:", {
+    publicKey: process.env.WOMPI_PUBLIC_KEY ? "OK" : "FALTA",
+    privateKey: process.env.WOMPI_PRIVATE_KEY ? "OK" : "FALTA",
+    integritySecret: process.env.WOMPI_INTEGRITY_SECRET ? "OK" : "FALTA"
+});
+const cadena = `${reference}${amountInCents}COP${process.env.WOMPI_INTEGRITY_SECRET}`;
 
         const signature = crypto
             .createHash("sha256")
