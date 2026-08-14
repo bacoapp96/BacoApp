@@ -1,3 +1,4 @@
+import pool from "../config/db.js";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 
 const client = new MercadoPagoConfig({
@@ -61,13 +62,51 @@ export const crearPreferencia = async (req, res) => {
         // CREAR ITEMS MERCADO PAGO
         // ==============================
 
-const itemsMercadoPago = productos.map(item => ({
-    id: String(item.idProducto),
-    title: item.nombre,
-    quantity: Number(item.cantidad),
-    currency_id: "COP",
-    unit_price: Number(item.precio)
-}));
+const itemsMercadoPago = [];
+
+for (const item of productos) {
+
+    const idProducto = Number(item.idProducto);
+    const cantidad = Number(item.cantidad);
+
+    if (!idProducto || !Number.isInteger(cantidad) || cantidad <= 0) {
+        return res.status(400).json({
+            ok: false,
+            message: "Producto o cantidad inválida."
+        });
+    }
+
+    const [rows] = await pool.query(
+        `SELECT id, nombre, precio, stock
+         FROM productos
+         WHERE id = ?`,
+        [idProducto]
+    );
+
+    const producto = rows[0];
+
+    if (!producto) {
+        return res.status(404).json({
+            ok: false,
+            message: `El producto ${idProducto} no existe.`
+        });
+    }
+
+    if (Number(producto.stock) < cantidad) {
+        return res.status(400).json({
+            ok: false,
+            message: `Stock insuficiente para ${producto.nombre}.`
+        });
+    }
+
+    itemsMercadoPago.push({
+        id: String(producto.id),
+        title: producto.nombre,
+        quantity: cantidad,
+        currency_id: "COP",
+        unit_price: Number(producto.precio)
+    });
+}
 
 
         // ==============================
