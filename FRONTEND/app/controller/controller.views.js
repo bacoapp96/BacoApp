@@ -118,50 +118,87 @@ export const getSession = (req, res) => {
 };
 
 export const putCuenta = async (req, res) => {
-    if (!req.session?.usuario?.id) {
-        return res.status(401).json({ ok: false, message: "Sesion no activa" });
+  if (!req.session?.usuario?.id) {
+    return res.status(401).json({
+      ok: false,
+      message: "Sesion no activa"
+    });
+  }
+
+  try {
+    const id = req.session.usuario.id;
+
+    const payload = {
+      Nombre: req.body.nombre,
+      Email: req.body.email,
+      Celular: req.body.telefono,
+      Documento: req.body.documento,
+      Direccion: req.body.direccion,
+      Usuario: req.body.usuario || req.session.usuario.usuario
+    };
+
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${
+        process.env.BACKEND_SECRET_KEY || "clave_firma_seguridad_bacoapp"
+      }`,
+      "x-user-id": String(id),
+      "x-user-role": String(req.session.usuario.rol || "")
+    };
+
+    // ACTUALIZAR
+    const response = await fetch(
+      `${API_URL.usuarios}/${id}`,
+      {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        ok: false,
+        message: data.error || data.message || "No se pudo actualizar el perfil"
+      });
     }
 
-    try {
-        const payload = {
-            Nombre: req.body.nombre,
-            Email: req.body.email,
-            Celular: req.body.telefono,
-            Documento: req.body.documento,
-            Direccion: req.body.direccion,
-            Usuario: req.body.usuario || req.session.usuario.usuario,
-            rol: req.session.usuario.rol
-        };
+    // VOLVER A OBTENER LOS DATOS ACTUALIZADOS
+    const updatedResponse = await fetch(
+      `${API_URL.usuarios}/${id}`,
+      {
+        method: "GET",
+        headers
+      }
+    );
 
-        const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-            return res.status(response.status).json({
-                ok: false,
-                message: data.error || data.message || "No se pudo actualizar el perfil"
-            });
-        }
-
-        const updatedResponse = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`);
-        const updatedUser = await updatedResponse.json();
-        req.session.usuario = normalizarUsuario(updatedUser);
-
-        res.json({
-            ok: true,
-            usuario: req.session.usuario
-        });
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            message: "Error al actualizar el perfil",
-            error: error.message
-        });
+    if (!updatedResponse.ok) {
+      return res.status(updatedResponse.status).json({
+        ok: false,
+        message: "Datos actualizados, pero no se pudieron recargar."
+      });
     }
+
+    const updatedUser = await updatedResponse.json();
+
+    req.session.usuario = normalizarUsuario(updatedUser);
+
+    return res.json({
+      ok: true,
+      usuario: req.session.usuario
+    });
+
+  } catch (error) {
+    console.error("Error al actualizar cuenta:", error);
+
+    return res.status(500).json({
+      ok: false,
+      message: "Error al actualizar el perfil",
+      error: error.message
+    });
+  }
 };
 
 export const postAdministrador = async (req, res) => {
