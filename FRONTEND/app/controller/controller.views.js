@@ -219,8 +219,13 @@ export const getCuentaAdmin = async (req, res) => {
     if (!requiereAdmin(req, res)) return;
 
     try {
-        const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`);
-
+const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`, {
+    headers: {
+        "Authorization": `Bearer ${process.env.BACKEND_SECRET_KEY || "clave_firma_seguridad_bacoapp"}`,
+        "x-user-id": String(req.session.usuario.id),
+        "x-user-role": String(req.session.usuario.rol || "")
+    }
+});
         if (!response.ok) {
             req.destroySession?.();
             return res.redirect("/login");
@@ -467,8 +472,13 @@ export const getCuenta = async (req, res) => {
     if (!requiereLogin(req, res)) return;
 
     try {
-        const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`);
-       
+const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`, {
+    headers: {
+        "Authorization": `Bearer ${process.env.BACKEND_SECRET_KEY || "clave_firma_seguridad_bacoapp"}`,
+        "x-user-id": String(req.session.usuario.id),
+        "x-user-role": String(req.session.usuario.rol || "")
+    }
+});       
    
 
         if (!response.ok) { 
