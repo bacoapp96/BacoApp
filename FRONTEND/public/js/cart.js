@@ -483,4 +483,6 @@ if (data.ok && data.initPoint) {
 
 });
 
+renderCart();
+
 });
