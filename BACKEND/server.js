@@ -24,6 +24,7 @@ import ofertasRoutes from './app/routes/routes.ofertas.js';
 import passwordRoutes from "./app/routes/routes.password.js";
 import proveedoresRoutes from "./app/routes/routes.proveedor.js";
 import mercadoPagoRoutes from './app/routes/routes.mercadopago.js';
+import wompiRoutes from "./app/routes/routes.wompi.js";
 
 
 
@@ -91,6 +92,7 @@ app.use('/api/inventario', verificarFirmaFrontend, requiereAdmin, inventarioRout
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/ventas', ventasRoutes);
 app.use('/api/pagos', verificarFirmaFrontend, requiereUsuarioLogueado, mercadoPagoRoutes);
+app.use("/api/pagos/wompi", wompiRoutes);
 app.use('/api/ofertas', ofertasRoutes);
 app.use("/api/password", passwordRoutes);
 app.use("/api/proveedores", verificarFirmaFrontend, requiereAdmin, proveedoresRoutes);

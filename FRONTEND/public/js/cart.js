@@ -427,7 +427,7 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
         // ==============================
 
 const response = await fetch(
-    "/api/pagos/crear-preferencia",
+    "/api/pagos/wompi/crear",
     {
         method: "POST",
         headers: {
@@ -438,48 +438,72 @@ const response = await fetch(
     }
 );
 
-        const data = await response.json();
+const data = await response.json();
 
-        console.log("RESPUESTA MERCADO PAGO:", data);
+console.log("RESPUESTA WOMPI:", data);
 
-        if (!response.ok) {
-
-            alert(
-                data.error ||
-                data.message ||
-                "No se pudo iniciar el pago."
-            );
-
-            return;
-        }
-
-
-        // ==============================
-        // REDIRECCIÓN A MERCADO PAGO
-        // ==============================
-
-if (data.ok && data.initPoint) {
-    window.location.href = data.initPoint;
-} else {
-    console.error("Respuesta Mercado Pago:", data);
+if (!response.ok) {
 
     alert(
         data.message ||
-        "No se recibió el enlace de pago."
+        "No se pudo iniciar el pago."
+    );
+
+    return;
+}
+
+
+// ==============================
+// REDIRECCIÓN A WOMPI
+// ==============================
+
+if (data.ok) {
+
+const params = new URLSearchParams({
+    "public-key": data.publicKey,
+    "currency": data.currency,
+    "amount-in-cents": String(data.amountInCents),
+    "reference": data.reference,
+    "signature:integrity": data.signature
+});
+
+const wompiUrl =
+    `https://checkout.wompi.co/p/?${params.toString()}`;
+
+console.log("URL WOMPI:", wompiUrl);
+
+console.log("DATOS WOMPI:", {
+    publicKey: data.publicKey,
+    currency: data.currency,
+    amountInCents: data.amountInCents,
+    reference: data.reference,
+    signature: data.signature
+});
+
+window.location.href = wompiUrl;
+
+} else {
+
+    console.error("Respuesta Wompi:", data);
+
+    alert(
+        data.message ||
+        "No se pudo iniciar el pago."
     );
 }
-    } catch (error) {
 
-        console.error(
-            "Error iniciando Mercado Pago:",
-            error
-        );
+} catch (error) {
 
-        alert(
-            "Ocurrió un error al iniciar el pago."
-        );
+    console.error(
+        "Error iniciando Wompi:",
+        error
+    );
 
-    }
+    alert(
+        "Ocurrió un error al iniciar el pago."
+    );
+
+}
 
 });
 
