@@ -270,9 +270,16 @@ export const getOfertas = async (req, res) => {
     if (!requiereLogin(req, res)) return;
 
     try {
+
+        const headers = {
+            "Authorization": `Bearer ${process.env.BACKEND_SECRET_KEY || "clave_firma_seguridad_bacoapp"}`,
+            "x-user-id": String(req.session.usuario.id),
+            "x-user-role": String(req.session.usuario.rol || "admin")
+        };
+
         const [responseOfertas, responseProductos] = await Promise.all([
-             fetch("/api/ofertas"),
-             fetch("/api/productos")
+            fetch(API_URL.ofertas, { headers }),
+            fetch(API_URL.productos, { headers })
         ]);
 
         const ofertas = responseOfertas.ok
@@ -292,12 +299,12 @@ export const getOfertas = async (req, res) => {
     } catch (error) {
 
         console.error("Error cargando ofertas o productos:", error);
+
         res.render(getPath("../../views/ofertas-admin.ejs"), {
             ofertas: [],
             productos: [],
             active: "ofertas"
         });
-
     }
 };
 
