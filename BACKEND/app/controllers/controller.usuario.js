@@ -284,7 +284,7 @@ if (id !== usuarioId && req.usuarioAutenticado.rol?.toLowerCase() !== "admin") {
         error: "No tienes permiso para modificar este usuario."
     });
 }
-        const id = req.params.id;
+       
         const camposPermitidos = {
             Nombre: req.body.Nombre,
             Usuario: req.body.Usuario,
