@@ -43,6 +43,7 @@ import {
     getPagoExitoso,
     getPagoFallido,
     getPagoPendiente,
+    getPagoResultado,
     getGestionProductos
 } from "../controller/controller.views.js";
 
@@ -73,6 +74,7 @@ router.get("/reset-password/:token", getReset);
 router.get("/pago-exitoso", getPagoExitoso);
 router.get("/pago-fallido", getPagoFallido);
 router.get("/pago-pendiente", getPagoPendiente);
+router.get("/pago-resultado", getPagoResultado);
 router.get("/gestion-productos", getGestionProductos);
 
 const viewRoutes = [

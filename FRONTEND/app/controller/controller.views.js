@@ -846,6 +846,9 @@ export const getPagoPendiente = (req, res) => {
     res.render("pago-pendiente");
 };
 
+export const getPagoResultado = (req, res) => {
+    res.render("pago-resultado");
+};
 // controlador vista de gestion productos
 export const getGestionProductos = (req, res) => {
     if (!requiereAdmin(req, res)) return;
