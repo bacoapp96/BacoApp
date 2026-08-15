@@ -1,4 +1,29 @@
 import pool from '../config/db.js';
+import cloudinary from '../config/cloudinary.js';
+
+
+const subirImagenCloudinary = (buffer) => {
+    return new Promise((resolve, reject) => {
+
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                folder: "bacoapp/productos",
+                resource_type: "image"
+            },
+            (error, result) => {
+
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+
+            }
+        );
+
+        uploadStream.end(buffer);
+    });
+};
 
 // BUSCAR
 export const buscarProductos = async (req, res) => {
@@ -92,9 +117,19 @@ console.log("FILE:", req.file);
         }
 
         // Ruta de la imagen
-        const imagen = req.file
-            ? `/img/productos/${req.file.filename}`
-            : null;
+let imagen = null;
+
+if (req.file) {
+
+    const resultadoCloudinary = await subirImagenCloudinary(
+        req.file.buffer
+    );
+
+    imagen = resultadoCloudinary.secure_url;
+
+    console.log("IMAGEN SUBIDA A CLOUDINARY:");
+    console.log(imagen);
+}
 
         const [result] = await pool.query(
             `INSERT INTO productos
@@ -171,9 +206,18 @@ export const actualizarProducto = async (req, res) => {
             material
         } = req.body;
 
-        const imagen = req.file
-            ? `/img/productos/${req.file.filename}`
-            : null;
+let imagen = null;
+
+if (req.file) {
+
+    const resultadoCloudinary =
+        await subirImagenCloudinary(req.file.buffer);
+
+    imagen = resultadoCloudinary.secure_url;
+
+    console.log("NUEVA IMAGEN SUBIDA A CLOUDINARY:");
+    console.log(imagen);
+}
 
         if (
             !nombre ||

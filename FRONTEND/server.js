@@ -8,7 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fetch from 'node-fetch';
 import multer from "multer";
-import { FormData } from "node-fetch";
+import { FormData, File } from "node-fetch";
 import routes from "./app/routes/routes.views.js";
 
 
@@ -107,6 +107,10 @@ const getRequiredRole = (method, urlPath) => {
 // Proxy para peticiones protegidas y administrativas
 app.all(/^\/api\/(.*)/, upload.any(), async (req, res) => {
     const requiredRole = getRequiredRole(req.method, req.path);
+
+  console.log("USUARIO SESION:", req.session?.usuario);
+console.log("ROL SESION:", req.session?.usuario?.rol);
+
   if (requiredRole) {
     if (!req.session?.usuario?.id) {
       return res.status(401).json({ ok: false, error: "No autorizado", message: "Debe iniciar sesión." });
@@ -136,14 +140,25 @@ app.all(/^\/api\/(.*)/, upload.any(), async (req, res) => {
 
 if (req.method !== "GET" && req.method !== "HEAD") {
     if (req.headers["content-type"]?.includes("multipart/form-data")) {
-        const formData = new FormData();
+const formData = new FormData();
 
-        Object.entries(req.body).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
+Object.entries(req.body).forEach(([key, value]) => {
+  formData.append(key, value);
+});
 
-        fetchOptions.body = formData;
-        delete targetHeaders["content-type"];
+for (const archivo of req.files || []) {
+  formData.append(
+    archivo.fieldname,
+    new File(
+      [archivo.buffer],
+      archivo.originalname,
+      { type: archivo.mimetype }
+    )
+  );
+}
+
+fetchOptions.body = formData;
+delete targetHeaders["content-type"];
     } else {
         fetchOptions.body = JSON.stringify(req.body);
     }

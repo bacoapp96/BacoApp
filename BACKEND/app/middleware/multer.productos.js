@@ -1,59 +1,10 @@
 import multer from "multer";
 import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Usamos memoria porque la imagen se enviará directamente a Cloudinary.
+// Ya NO necesitamos guardar archivos físicamente en Railway.
 
-// BACKEND/middleware
-//        ↓
-// PROYECTO
-//        ↓
-// FRONTEND/public/img/productos
-
-const carpetaProductos = path.resolve(
-    __dirname,
-    "../../public/img/productos"
-);
-
-// Crear la carpeta si no existe
-if (!fs.existsSync(carpetaProductos)) {
-    fs.mkdirSync(carpetaProductos, {
-        recursive: true
-    });
-}
-
-const storage = multer.diskStorage({
-
-    destination: (req, file, cb) => {
-
-        cb(null, carpetaProductos);
-
-    },
-
-    filename: (req, file, cb) => {
-
-        const extension = path
-            .extname(file.originalname)
-            .toLowerCase();
-
-        const nombre = path
-            .basename(file.originalname, extension)
-            .replace(/[^a-zA-Z0-9-_]/g, "-")
-            .toLowerCase();
-
-        const nombreArchivo =
-            `${nombre}-${Date.now()}${extension}`;
-
-        cb(null, nombreArchivo);
-
-        console.log("ARCHIVO QUE MULTER VA A GUARDAR:");
-console.log(nombreArchivo);
-
-    }
-
-});
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
 
@@ -73,14 +24,13 @@ const fileFilter = (req, file, cb) => {
 
         return cb(
             new Error(
-                "Solo se permiten imágenes JPG, JPEG, PNG o WEBP"
+                "Solo se permiten imágenes JPG, JPEG, PNG, WEBP o JFIF"
             )
         );
 
     }
 
     cb(null, true);
-
 };
 
 export const uploadProducto = multer({

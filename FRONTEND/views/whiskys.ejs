@@ -73,104 +73,16 @@
     </div>
 
 </div>
+ 
+
+  
 
 <div class="productos-grid">
 
     
 <% if (whiskys && whiskys.length > 0) { %>
 
-<div class="productos-grid">
 
-    <% whiskys.forEach(whiskys => { %>
-
-        <div
-            class="producto-card"
-            data-tipo="<%= whiskys.tipo || '' %>"
-            data-pais="<%= whiskys.pais || '' %>"
-            data-marca="<%= whiskys.marca || '' %>"
-        >
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whiskys</title>
-
-    <link rel="stylesheet" href="/css/global.css">
-    <link rel="stylesheet" href="/css/whiskys.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-<body>
-
-     <script src="/js/theme.js"></script>
-     
-
-
-    <%- include("partials/client-sidebar", { active: "whiskys" }) %>
-    
-   
-
-   
-
-  <aside id="cart-sidebar" class="cart-sidebar">
-    <button class="close-cart" aria-label="Cerrar carrito">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <h2>Tu Carrito</h2>
-    <div class="cart-items">
-      <div id="carrito-contenido"></div>
-    </div>
-    <div class="cart-actions">
-      <p id="total-price">Total: $0</p>
-      <a class="cart-page-link" href="/carrito"><i class="fa-solid fa-up-right-from-square"></i> Ver carrito completo</a>
-      <button id="btn-pagar">Pagar</button>
-      <button id="btn-vaciar">Vaciar Carrito</button>
-      <button id="btn-seguir">Seguir Comprando</button>
-    </div>
-  </aside>
-
-    <main class="whiskys-container">
-        <div class="whiskys">
-            <h1>Whiskys</h1>
-            <p>¡Explora nuestra selección de whiskys y escoge el que mas sea de tu agrado!</p>
-        </div>
-
-       
-    </main>
-     <div class="filtros">
-           
-    <div class="filtros-grid">
-        <h2>Filtrar por</h2>
-
-    <div class="filtro-item">
-        <button class="filtro-btn" id ="btn-todos">Todos</button>
-        
-    </div>
-
-    <div class="filtro-item">
-        <button class="filtro-btn">Tipo</button>
-        <div id ="dropdown-tipo" class="dropdown"></div>
-    </div>
-
-    <div class="filtro-item">
-        <button class="filtro-btn">Pais</button>
-        <div id ="dropdown-pais" class="dropdown"></div>
-    </div>
-
-     <div class="filtro-item">
-        <button class="filtro-btn">Marca</button>
-        <div id ="dropdown-marca" class="dropdown"></div>
-    </div>
-    </div>
-
-</div>
-
-<div class="productos-grid">
-
-    
-<% if (whiskys && whiskys.length > 0) { %>
-
-<div class="productos-grid">
 
     <% whiskys.forEach(whiskys => { %>
 

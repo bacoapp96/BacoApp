@@ -1,31 +1,130 @@
 document.addEventListener("DOMContentLoaded", () => {
+
     console.log("Rones cargados");
-    fetch(`${window.BACKEND_URL}/api/productos/categoria/Rones`)
-    .then(res => res.json())
-    .then(data => console.log(data));
-    
+
+    cargarFiltros();
+
+    // =========================
+    // MODAL DETALLES
+    // =========================
+
+    const modal = document.getElementById("modal-rones");
+    const cerrar = document.querySelector(".cerrar");
+
+    document.querySelectorAll(".btn-ver-mas").forEach(btn => {
+
+        btn.addEventListener("click", () => {
+
+            const id = btn.dataset.id;
+
+            console.log("ID:", id);
+
+            mostrarDetallesRones(id);
+        });
+
+    });
+
+    if (cerrar) {
+
+        cerrar.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+    }
+
+    window.addEventListener("click", (e) => {
+
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+
+    });
+
+
+    // =========================
+    // BOTÓN TODOS
+    // =========================
+
+    const btnTodos = document.getElementById("btn-todos");
+
+    if (btnTodos) {
+
+        btnTodos.addEventListener("click", () => {
+
+            document.querySelectorAll(".producto-card").forEach(card => {
+                card.style.display = "flex";
+            });
+
+        });
+
+    }
+
+
+    // =========================
+    // DROPDOWNS
+    // =========================
+
+    const botones = document.querySelectorAll(".filtro-btn");
+
+    botones.forEach(btn => {
+
+        btn.addEventListener("click", (e) => {
+
+            e.stopPropagation();
+
+            const menu = btn.nextElementSibling;
+
+            if (!menu) return;
+
+            document.querySelectorAll(".dropdown").forEach(drop => {
+
+                if (drop !== menu) {
+                    drop.classList.remove("active");
+                }
+
+            });
+
+            menu.classList.toggle("active");
+
+        });
+
+    });
+
+
+    document.addEventListener("click", (e) => {
+
+        if (!e.target.closest(".filtro-item")) {
+
+            document.querySelectorAll(".dropdown").forEach(drop => {
+                drop.classList.remove("active");
+            });
+
+        }
+
+    });
+
 });
 
-const btnAgregar = document.querySelector(".btn-agregar");
 
-if (btnAgregar) {
-    btnAgregar.addEventListener("click", () => {
-        console.log("Agregar rones");
-    });
-}
-
-
-const productos = document.querySelectorAll(".producto-card");
-
-const modal = document.getElementById("modal-rones");
-const cerrar = document.querySelector(".cerrar");
+// =====================================================
+// MOSTRAR DETALLES
+// =====================================================
 
 async function mostrarDetallesRones(id) {
+
     try {
-        const respuesta = await fetch(`https://bacoapp-production.up.railway.app/api/productos/${id}`);
+
+        const respuesta = await fetch(
+            `${window.BACKEND_URL}/api/productos/${id}`
+        );
+
+        if (!respuesta.ok) {
+            throw new Error("No se pudo obtener el producto");
+        }
+
         const ron = await respuesta.json();
 
-        console.log(ron);
+        console.log("RON:", ron);
 
         document.getElementById("id").textContent = ron.id;
         document.getElementById("nombre").textContent = ron.nombre;
@@ -34,211 +133,205 @@ async function mostrarDetallesRones(id) {
         document.getElementById("stock").textContent = ron.stock;
         document.getElementById("categoria").textContent = ron.categoria;
         document.getElementById("marca").textContent = ron.marca;
-        document.getElementById("ventas").textContent = ron.ventas;
-        document.getElementById("fecha_creacion").textContent =
-        new Date(ron.fecha_creacion).toLocaleString("es-CO");
-       
-      
+        document.getElementById("ventas").textContent = ron.ventas ?? 0;
 
-        modal.style.display = "flex";
+        document.getElementById("tipo").textContent = ron.tipo ?? "";
+        document.getElementById("pais").textContent = ron.pais ?? "";
+
+        document.getElementById("fecha_creacion").textContent =
+            new Date(ron.fecha_creacion).toLocaleString("es-CO");
+
+        document.getElementById("modal-rones").style.display = "flex";
 
     } catch (error) {
+
         console.error("Error al obtener el ron:", error);
+
     }
+
 }
 
-if (cerrar) {
-    cerrar.addEventListener("click", () => {
-        modal.style.display = "none";
-    });
-};
 
-window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-        modal.style.display = "none";
-    }
-});
+// =====================================================
+// CARGAR FILTROS
+// =====================================================
 
-document.querySelectorAll(".btn-ver-mas").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
+async function cargarFiltros() {
 
-        console.log("ID:", id);
+    try {
 
-        mostrarDetallesRones(id);
-    });
-});
+        const response = await fetch(
+            `${window.BACKEND_URL}/api/productos/filtros/Rones`
+        );
 
+        if (!response.ok) {
+            throw new Error("No se pudieron cargar los filtros");
+        }
 
-// filtros desplegables
-const botones = document.querySelectorAll(".filtro-btn");
+        const data = await response.json();
 
-botones.forEach(btn => {
+        console.log("FILTROS RONES:", data);
 
-    btn.addEventListener("click", () => {
+        const tipo = document.getElementById("dropdown-tipo");
+        const pais = document.getElementById("dropdown-pais");
+        const marca = document.getElementById("dropdown-marca");
 
-        const menu = btn.nextElementSibling;
+        // =========================
+        // TIPO
+        // =========================
 
-        document.querySelectorAll(".dropdown").forEach(drop => {
+        tipo.innerHTML = `<div data-tipo="Todos">Todos</div>`;
 
-            if(drop !== menu){
-                drop.classList.remove("active");
-            }
+        data.tipos.forEach(item => {
+
+            if (!item.tipo) return;
+
+            tipo.innerHTML += `
+                <div data-tipo="${item.tipo}">
+                    ${item.tipo}
+                </div>
+            `;
 
         });
 
-        menu.classList.toggle("active");
 
-    });
+        // =========================
+        // PAÍS
+        // =========================
 
-});
+        pais.innerHTML = `<div data-pais="Todos">Todos</div>`;
 
-document.addEventListener("click", (e) => {
+        data.pais.forEach(item => {
 
-    if(!e.target.closest(".filtro-item")){
+            if (!item.pais) return;
 
-        document.querySelectorAll(".dropdown").forEach(drop => {
-            drop.classList.remove("active");
+            pais.innerHTML += `
+                <div data-pais="${item.pais}">
+                    ${item.pais}
+                </div>
+            `;
+
         });
+
+
+        // =========================
+        // MARCA
+        // =========================
+
+        marca.innerHTML = `<div data-marca="Todos">Todos</div>`;
+
+        data.marca.forEach(item => {
+
+            if (!item.marca) return;
+
+            marca.innerHTML += `
+                <div data-marca="${item.marca}">
+                    ${item.marca}
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error("Error cargando filtros:", error);
 
     }
 
-});
-
-async function cargarFiltros(){
-
-    const response = await fetch (
-         `${window.BACKEND_URL}/api/productos/filtros/Rones`
-    );
-
-    const data = await response.json();
-
-
-    const tipo = document.getElementById("dropdown-tipo");
-    const pais = document.getElementById("dropdown-pais");
-    const marca = document.getElementById("dropdown-marca");
- 
-
-    tipo.innerHTML =
-    `<div data-tipo="todos"></div>`;
-
-    data.tipos.forEach(item =>{
-
-        tipo.innerHTML +=  `
-            <div data-tipo="${item.tipo}">
-                ${item.tipo}
-            </div>
-        `;
-    });
-
-    pais.innerHTML = 
-    `<div data-pais="todos"></div>`;
-
-    data.pais.forEach(item => {
-
-        pais.innerHTML += `
-            <div data-pais="${item.pais}">
-                ${item.pais}
-            </div>
-        `;
-
-    });
-
-    marca.innerHTML =
-    `<div data-marca=""></div>`;
-
-    data.marca.forEach(item => {
-
-        marca.innerHTML += `
-            <div data-marca="${item.marca}">
-                ${item.marca}
-            </div>
-        `;
-
-    });
 }
 
-cargarFiltros();
+
+// =====================================================
+// FILTRO TIPO
+// =====================================================
 
 document.addEventListener("click", e => {
 
     if (!e.target.dataset.tipo) return;
 
-    const tipoSeleccionado = e.target.dataset.tipo;
+    const seleccionado = e.target.dataset.tipo;
 
-    document
-        .querySelectorAll(".producto-card")
-        .forEach(card => {
+    document.querySelectorAll(".producto-card").forEach(card => {
 
-            const tipoCard = card.dataset.tipo;
+        const valor = card.dataset.tipo;
 
-            if (
-                tipoSeleccionado === "Todos" ||
-                tipoCard === tipoSeleccionado
-            ) {
-                card.style.display = "flex";
-            } else {
-                card.style.display = "none";
-            }
+        if (
+            seleccionado === "Todos" ||
+            valor === seleccionado
+        ) {
 
-        });
+            card.style.display = "flex";
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
 
 });
+
+
+// =====================================================
+// FILTRO PAÍS
+// =====================================================
 
 document.addEventListener("click", e => {
 
     if (!e.target.dataset.pais) return;
 
-    const paisSeleccionado = e.target.dataset.pais;
+    const seleccionado = e.target.dataset.pais;
 
-    document
-        .querySelectorAll(".producto-card")
-        .forEach(card => {
+    document.querySelectorAll(".producto-card").forEach(card => {
 
-            const paisCard = card.dataset.pais;
+        const valor = card.dataset.pais;
 
-            if (
-                paisSeleccionado === "Todos" ||
-                paisCard === paisSeleccionado
-            ) {
-                card.style.display = "flex";
-            } else {
-                card.style.display = "none";
-            }
+        if (
+            seleccionado === "Todos" ||
+            valor === seleccionado
+        ) {
 
-        });
+            card.style.display = "flex";
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
 
 });
+
+
+// =====================================================
+// FILTRO MARCA
+// =====================================================
 
 document.addEventListener("click", e => {
 
     if (!e.target.dataset.marca) return;
 
-    const marcaSeleccionado = e.target.dataset.marca;
+    const seleccionado = e.target.dataset.marca;
 
-    document
-        .querySelectorAll(".producto-card")
-        .forEach(card => {
+    document.querySelectorAll(".producto-card").forEach(card => {
 
-            const marcaCard = card.dataset.marca;
+        const valor = card.dataset.marca;
 
-            if (
-                marcaSeleccionado === "Todos" ||
-                marcaCard === marcaSeleccionado
-            ) {
-                card.style.display = "flex";
-            } else {
-                card.style.display = "none";
-            }
+        if (
+            seleccionado === "Todos" ||
+            valor === seleccionado
+        ) {
 
-        });
+            card.style.display = "flex";
 
-});
+        } else {
 
-document.getElementById("btn-todos").addEventListener("click", () =>{
+            card.style.display = "none";
 
-document.querySelectorAll(".producto-card").forEach(card =>{
-    card.style.display = "flex";
-});
+        }
+
+    });
 
 });

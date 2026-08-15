@@ -9,7 +9,9 @@ import { totalmem } from 'os';
 //api del backend
 const BACKEND_URL =
     process.env.BACKEND_URL ||
-    "https://bacoapp-production.up.railway.app";
+    (process.env.NODE_ENV === "production"
+        ? "https://bacoapp-production.up.railway.app"
+        : "http://localhost:3000");
 
 export const API_URL = {
     usuarios: `${BACKEND_URL}/api/usuarios`,
@@ -849,6 +851,8 @@ export const getPagoPendiente = (req, res) => {
 export const getPagoResultado = (req, res) => {
     res.render("pago-resultado");
 };
+
+
 // controlador vista de gestion productos
 export const getGestionProductos = (req, res) => {
     if (!requiereAdmin(req, res)) return;
