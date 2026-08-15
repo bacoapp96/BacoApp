@@ -89,6 +89,18 @@ export const crearPagoWompi = async (req, res) => {
         // ==============================
 
         const reference = `BACO-${Date.now()}-${id_cliente}`;
+        await pool.query(
+    `INSERT INTO pagos_pendientes
+    (reference, id_cliente, id_usuario, productos, total)
+    VALUES (?, ?, ?, ?, ?)`,
+    [
+        reference,
+        id_cliente,
+        id_usuario,
+        JSON.stringify(productos),
+        total
+    ]
+);
 
         // ==============================
         // FIRMA DE INTEGRIDAD
