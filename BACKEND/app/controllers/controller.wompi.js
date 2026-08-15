@@ -312,7 +312,10 @@ export const webhookWompi = async (req, res) => {
 
         console.log("PAGO APROBADO:", transaccion.reference);
 
-        const productos = JSON.parse(pago.productos);
+        const productos =
+            typeof pago.productos === "string"
+            ? JSON.parse(pago.productos)
+            : pago.productos;
 
         // CREAR VENTA + DETALLE + DESCONTAR STOCK
         const venta = await registrarVentaAprobada({
