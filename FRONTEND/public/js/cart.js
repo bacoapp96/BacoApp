@@ -464,7 +464,8 @@ const params = new URLSearchParams({
     "currency": data.currency,
     "amount-in-cents": String(data.amountInCents),
     "reference": data.reference,
-    "signature:integrity": data.signature
+    "signature:integrity": data.signature,
+    "redirect-url": `${window.location.origin}/pago-exitoso`
 });
 
 const wompiUrl =
