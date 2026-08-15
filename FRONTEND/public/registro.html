@@ -38,17 +38,16 @@
                             required
                             minlength="8"
                             title="Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.">
-
-                            <small style="color: var(--gray);">
-                                La contraseña debe tener:
-                                <ul style="margin-left:20px; margin-top:5px;">
-                                    <li>Mínimo 8 caracteres.</li>
-                                    <li>Una letra mayúscula.</li>
-                                    <li>Una letra minúscula.</li>
-                                    <li>Un número.</li>
-                                    <li>Un carácter especial (@, #, $, %, !, etc.).</li>
-                                </ul>
-                                </small>
+<small id="password-requisitos" style="color: var(--gray);">
+    La contraseña debe tener:
+    <ul style="margin-left:20px; margin-top:5px; list-style: none; padding: 0;">
+        <li id="req-longitud">❌ Mínimo 8 caracteres.</li>
+        <li id="req-mayuscula">❌ Una letra mayúscula.</li>
+        <li id="req-minuscula">❌ Una letra minúscula.</li>
+        <li id="req-numero">❌ Un número.</li>
+        <li id="req-especial">❌ Un carácter especial.</li>
+    </ul>
+</small>
                 </div>
 
                 <div style="display:flex; flex-direction:column; gap:5px;">
