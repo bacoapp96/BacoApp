@@ -49,7 +49,7 @@ export const listarProductos = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM productos');
 
-        console.log("PRODUCTOS:", rows);
+        
 
         res.status(200).json(rows);
 
@@ -65,9 +65,7 @@ export const listarProductos = async (req, res) => {
 // OBTENER
 export const obtenerProducto = async (req, res) => {
     
-    console.log("=================================");
-    console.log("ENTRÓ A OBTENER MAS VENDIDOS");
-    console.log("=================================");
+
     
     try {
         const [rows] = await pool.query(
@@ -91,8 +89,7 @@ export const obtenerProducto = async (req, res) => {
 // CREAR
 export const crearProducto = async (req, res) => {
 
-console.log("BODY:", req.body);
-console.log("FILE:", req.file);
+
 
     try {
 

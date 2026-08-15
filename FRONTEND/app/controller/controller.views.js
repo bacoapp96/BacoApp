@@ -559,7 +559,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Vinos`)
         const vinos = await response.json();
 
-        console.log(vinos);
+       
 
         res.render(getPath("../../views/vinos.ejs"), {
             vinos
@@ -581,7 +581,6 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Whiskys`);
         const whiskys = await response.json();
 
-        console.log(whiskys);
         res.render (getPath("../../views/whiskys.ejs"),{
             whiskys
         });
@@ -602,7 +601,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch( `${API_URL.productos}/categoria/Rones`);
         const rones = await response.json();
 
-        console.log(rones);
+        
         res.render (getPath("../../views/rones.ejs"),{
             rones
         });
@@ -643,7 +642,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch (`${API_URL.productos}/categoria/Tequilas`);
         const tequilas = await response.json();
 
-        console.log(tequilas);
+        
         res.render (getPath("../../views/tequilas.ejs"),{
             tequilas
         });
@@ -663,7 +662,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch (`${API_URL.productos}/categoria/Aguardientes`);
         const aguardientes = await response.json();
 
-        console.log(aguardientes);
+        
         res.render (getPath("../../views/aguardientes.ejs"),{
             aguardientes
         });
@@ -684,7 +683,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Gaseosas`);
         const gaseosas = await response.json();
 
-        console.log(gaseosas);
+        
         res.render (getPath("../../views/gaseosas.ejs"),{
             gaseosas
         });
@@ -704,7 +703,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Jugos`);
         const jugos = await response.json();
 
-        console.log(jugos);
+        
         res.render (getPath("../../views/jugos.ejs"),{
             jugos
         });
@@ -724,7 +723,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Vodkas`);
         const vodkas = await response.json();
 
-        console.log(vodkas);
+       
         res.render (getPath("../../views/vodkas.ejs"),{
             vodkas
         });
@@ -745,7 +744,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Ginebras`);
         const ginebras = await response.json();
 
-        console.log(ginebras);
+        
         res.render (getPath("../../views/ginebras.ejs"),{
             ginebras
         });
@@ -765,7 +764,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Desechables`);
         const desechables = await response.json();
 
-        console.log(desechables);
+        
         res.render (getPath("../../views/desechables.ejs"),{
             desechables
         });
@@ -785,7 +784,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Dulces`);
         const dulces = await response.json();
 
-        console.log(dulces);
+        
         res.render (getPath("../../views/dulces.ejs"),{
             dulces
         });
@@ -805,7 +804,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Accesorios`);
         const accesorios = await response.json();
 
-        console.log(accesorios);
+       
         res.render (getPath("../../views/accesorios.ejs"),{
             accesorios
         });
