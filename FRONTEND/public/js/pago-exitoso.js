@@ -4,44 +4,62 @@ document.addEventListener("DOMContentLoaded", async () => {
         sessionStorage.getItem("baco_pago")
     );
 
-    if (!pago) {
-        console.error("No hay datos de la compra.");
+    const transactionId =
+        new URLSearchParams(window.location.search).get("id");
+
+    if (!pago || !transactionId) {
+        console.error("Faltan datos de la compra o transacción.");
         return;
     }
 
     try {
 
-        const response = await fetch("/api/pagos/wompi/confirmar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify({
-                reference: new URLSearchParams(window.location.search).get("id"),
-                id_cliente: pago.id_cliente,
-                id_usuario: pago.id_usuario,
-                productos: pago.productos
-            })
-        });
+        const response = await fetch(
+            "/api/pagos/wompi/confirmar",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    transactionId,
+                    id_cliente: pago.id_cliente,
+                    id_usuario: pago.id_usuario,
+                    productos: pago.productos
+                })
+            }
+        );
 
         const data = await response.json();
 
         console.log("CONFIRMACIÓN WOMPI:", data);
 
         if (!response.ok || !data.ok) {
-            console.error("Pago no aprobado:", data);
+
+            console.error(
+                "Pago no aprobado o venta no creada:",
+                data
+            );
+
             return;
         }
 
+        // SOLO DESPUÉS DE CREAR LA VENTA
         sessionStorage.removeItem("baco_pago");
         localStorage.removeItem("bacoapp_cart");
 
-        console.log("VENTA REGISTRADA CORRECTAMENTE");
+        console.log(
+            "VENTA REGISTRADA:",
+            data.venta
+        );
 
     } catch (error) {
 
-        console.error("Error confirmando pago:", error);
+        console.error(
+            "ERROR CONFIRMANDO PAGO:",
+            error
+        );
 
     }
 

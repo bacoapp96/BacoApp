@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 import crypto from "crypto";
+import { crearVenta } from "./controller.venta.js";
 
 export const crearPagoWompi = async (req, res) => {
 
@@ -128,20 +129,25 @@ export const confirmarPagoWompi = async (req, res) => {
 
     try {
 
-        const { reference } = req.body;
+        const {
+            transactionId,
+            id_cliente,
+            id_usuario,
+            productos
+        } = req.body;
 
-        if (!reference) {
+        if (!transactionId) {
             return res.status(400).json({
                 ok: false,
-                message: "Falta la referencia del pago."
+                message: "Falta el ID de la transacción."
             });
         }
 
         const respuesta = await fetch(
-            `https://api-sandbox.wompi.co/v1/transactions?reference=${encodeURIComponent(reference)}`,
+            `https://api-sandbox.wompi.co/v1/transactions/${encodeURIComponent(transactionId)}`,
             {
                 headers: {
-                    Authorization: `Bearer ${process.env.WOMPI_PRIVATE_KEY}`
+                    Authorization: `Bearer ${process.env.WOMPI_PUBLIC_KEY}`
                 }
             }
         );
@@ -151,12 +157,12 @@ export const confirmarPagoWompi = async (req, res) => {
         if (!respuesta.ok) {
             return res.status(400).json({
                 ok: false,
-                message: "No se pudo consultar el pago en Wompi.",
+                message: "No se pudo consultar la transacción.",
                 data
             });
         }
 
-        const transaccion = data.data?.[0];
+        const transaccion = data.data;
 
         if (!transaccion) {
             return res.status(404).json({
@@ -165,7 +171,7 @@ export const confirmarPagoWompi = async (req, res) => {
             });
         }
 
-        // SOLO APPROVED continúa
+        // SOLO SE CREA LA VENTA SI WOMPI APROBÓ
         if (transaccion.status !== "APPROVED") {
 
             return res.json({
@@ -175,11 +181,47 @@ export const confirmarPagoWompi = async (req, res) => {
             });
         }
 
-        return res.json({
+        // =========================
+        // CREAR VENTA
+        // =========================
+
+        const ventaReq = {
+            body: {
+                id_cliente,
+                id_usuario,
+                productos
+            }
+        };
+
+        let ventaResponse;
+
+        const ventaRes = {
+            status(codigo) {
+                this.codigo = codigo;
+                return this;
+            },
+
+            json(data) {
+                ventaResponse = data;
+                return this;
+            }
+        };
+
+        await crearVenta(ventaReq, ventaRes);
+
+        if (!ventaResponse?.ok) {
+            return res.status(400).json({
+                ok: false,
+                message: "El pago fue aprobado, pero no se pudo registrar la venta.",
+                error: ventaResponse?.error
+            });
+        }
+
+        res.json({
             ok: true,
             aprobado: true,
             estado: "APPROVED",
-            reference
+            venta: ventaResponse.venta
         });
 
     } catch (error) {
@@ -190,5 +232,43 @@ export const confirmarPagoWompi = async (req, res) => {
             ok: false,
             message: "Error confirmando el pago."
         });
+    }
+};
+
+export const webhookWompi = async (req, res) => {
+    try {
+
+        const evento = req.body;
+
+        console.log("=== WEBHOOK WOMPI ===");
+        console.log(JSON.stringify(evento, null, 2));
+
+        if (evento.event !== "transaction.updated") {
+            return res.sendStatus(200);
+        }
+
+        const transaccion = evento.data?.transaction;
+
+        if (!transaccion) {
+            return res.sendStatus(200);
+        }
+
+        console.log("REFERENCIA:", transaccion.reference);
+        console.log("ESTADO:", transaccion.status);
+
+        if (transaccion.status !== "APPROVED") {
+            return res.sendStatus(200);
+        }
+
+        // AQUÍ conectaremos crearVenta()
+        console.log("PAGO APROBADO:", transaccion.reference);
+
+        return res.sendStatus(200);
+
+    } catch (error) {
+
+        console.error("ERROR WEBHOOK WOMPI:", error);
+
+        return res.sendStatus(500);
     }
 };
