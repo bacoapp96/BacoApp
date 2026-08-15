@@ -1,6 +1,7 @@
 import pool from "../config/db.js";
 import crypto from "crypto";
 import { crearVenta } from "./controller.venta.js";
+import { registrarVentaAprobada } from "../services/ventas.service.js";
 
 export const crearPagoWompi = async (req, res) => {
 
@@ -268,12 +269,74 @@ export const webhookWompi = async (req, res) => {
         console.log("REFERENCIA:", transaccion.reference);
         console.log("ESTADO:", transaccion.status);
 
-        if (transaccion.status !== "APPROVED") {
+        // Buscar el pago pendiente
+        const [pagos] = await pool.query(
+            `SELECT *
+             FROM pagos_pendientes
+             WHERE reference = ?
+             LIMIT 1`,
+            [transaccion.reference]
+        );
+
+        const pago = pagos[0];
+
+        if (!pago) {
+            console.log("PAGO PENDIENTE NO ENCONTRADO");
             return res.sendStatus(200);
         }
 
-        // AQUÍ conectaremos crearVenta()
+        // Evitar duplicar una venta
+        if (pago.estado === "APROBADO") {
+            console.log("VENTA YA PROCESADA:", transaccion.reference);
+            return res.sendStatus(200);
+        }
+
+        // Si no fue aprobado, no crear venta
+        if (transaccion.status !== "APPROVED") {
+
+            await pool.query(
+                `UPDATE pagos_pendientes
+                 SET estado = 'RECHAZADO',
+                     transaccion_wompi = ?
+                 WHERE reference = ?`,
+                [
+                    transaccion.id,
+                    transaccion.reference
+                ]
+            );
+
+            console.log("PAGO NO APROBADO:", transaccion.status);
+
+            return res.sendStatus(200);
+        }
+
         console.log("PAGO APROBADO:", transaccion.reference);
+
+        const productos = JSON.parse(pago.productos);
+
+        // CREAR VENTA + DETALLE + DESCONTAR STOCK
+        const venta = await registrarVentaAprobada({
+            idCliente: pago.id_cliente,
+            idUsuario: pago.id_usuario,
+            productos
+        });
+
+        // Marcar pago como aprobado
+        await pool.query(
+            `UPDATE pagos_pendientes
+             SET estado = 'APROBADO',
+                 transaccion_wompi = ?,
+                 id_venta = ?,
+                 aprobado_en = NOW()
+             WHERE reference = ?`,
+            [
+                transaccion.id,
+                venta.id_venta,
+                transaccion.reference
+            ]
+        );
+
+        console.log("VENTA CREADA:", venta.id_venta);
 
         return res.sendStatus(200);
 
