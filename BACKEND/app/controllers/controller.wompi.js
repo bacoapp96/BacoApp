@@ -23,7 +23,8 @@ export const crearPagoWompi = async (req, res) => {
                 ok: false,
                 message: "El carrito está vacío"
             });
-        }
+        };
+
 
         // ==============================
         // VALIDAR PRODUCTOS Y STOCK
@@ -92,13 +93,6 @@ export const crearPagoWompi = async (req, res) => {
         // FIRMA DE INTEGRIDAD
         // ==============================
 
-console.log("=== WOMPI DATOS FIRMA ===");
-console.log("REFERENCE:", reference);
-console.log("AMOUNT IN CENTS:", amountInCents);
-console.log("CURRENCY:", "COP");
-console.log("SECRET LENGTH:", process.env.WOMPI_INTEGRITY_SECRET?.length);
-console.log("========================");
-
 const cadena = `${reference}${amountInCents}COP${process.env.WOMPI_INTEGRITY_SECRET}`;
 
         const signature = crypto
@@ -126,6 +120,75 @@ const cadena = `${reference}${amountInCents}COP${process.env.WOMPI_INTEGRITY_SEC
         res.status(500).json({
             ok: false,
             message: "No se pudo preparar el pago con Wompi"
+        });
+    }
+};
+
+export const confirmarPagoWompi = async (req, res) => {
+
+    try {
+
+        const { reference } = req.body;
+
+        if (!reference) {
+            return res.status(400).json({
+                ok: false,
+                message: "Falta la referencia del pago."
+            });
+        }
+
+        const respuesta = await fetch(
+            `https://api-sandbox.wompi.co/v1/transactions?reference=${encodeURIComponent(reference)}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.WOMPI_PRIVATE_KEY}`
+                }
+            }
+        );
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+            return res.status(400).json({
+                ok: false,
+                message: "No se pudo consultar el pago en Wompi.",
+                data
+            });
+        }
+
+        const transaccion = data.data?.[0];
+
+        if (!transaccion) {
+            return res.status(404).json({
+                ok: false,
+                message: "Transacción no encontrada."
+            });
+        }
+
+        // SOLO APPROVED continúa
+        if (transaccion.status !== "APPROVED") {
+
+            return res.json({
+                ok: false,
+                aprobado: false,
+                estado: transaccion.status
+            });
+        }
+
+        return res.json({
+            ok: true,
+            aprobado: true,
+            estado: "APPROVED",
+            reference
+        });
+
+    } catch (error) {
+
+        console.error("ERROR CONFIRMANDO WOMPI:", error);
+
+        res.status(500).json({
+            ok: false,
+            message: "Error confirmando el pago."
         });
     }
 };

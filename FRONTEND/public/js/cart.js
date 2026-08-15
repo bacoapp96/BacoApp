@@ -480,6 +480,12 @@ console.log("DATOS WOMPI:", {
     signature: data.signature
 });
 
+sessionStorage.setItem("baco_pago", JSON.stringify({
+    id_cliente: idCliente,
+    id_usuario: idUsuario,
+    productos: productos
+}));
+
 window.location.href = wompiUrl;
 
 } else {
