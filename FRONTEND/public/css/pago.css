@@ -42,14 +42,52 @@
     font-weight: bold;
 }
 
-.btn {
-    display: inline-block;
+.pago-card .btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
     margin-top: 25px;
     padding: 12px 25px;
+    overflow: hidden;
 
-    background: #6b21a8;
-    color: white;
+    background: var(--gold);
+    color: #111;
 
     text-decoration: none;
     border-radius: 10px;
+
+    box-shadow: 0 10px 24px rgba(200, 155, 60, .22);
+}
+
+.pago-card .btn::before {
+    content: "";
+    position: absolute;
+    inset: -40% 70% -40% -45%;
+    z-index: -1;
+
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.75),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+    transition: .55s ease;
+}
+
+.pago-card .btn:hover {
+    background: var(--gold-hover);
+    transform: translateY(-4px) scale(1.03);
+
+    box-shadow:
+        0 16px 34px rgba(200, 155, 60, .38),
+        0 0 18px rgba(224, 173, 70, .28);
+}
+
+.pago-card .btn:hover::before {
+    inset: -40% -50% -40% 75%;
 }
