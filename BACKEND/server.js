@@ -91,8 +91,8 @@ app.use('/api/detalle_venta', verificarFirmaFrontend, requiereAdmin, detallesVen
 app.use('/api/inventario', verificarFirmaFrontend, requiereAdmin, inventarioRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/ventas', ventasRoutes);
-app.use('/api/pagos', verificarFirmaFrontend, requiereUsuarioLogueado, mercadoPagoRoutes);
 app.use("/api/pagos/wompi", wompiRoutes);
+app.use('/api/pagos', verificarFirmaFrontend, requiereUsuarioLogueado, mercadoPagoRoutes);
 app.use('/api/ofertas', ofertasRoutes);
 app.use("/api/password", passwordRoutes);
 app.use("/api/proveedores", verificarFirmaFrontend, requiereAdmin, proveedoresRoutes);
