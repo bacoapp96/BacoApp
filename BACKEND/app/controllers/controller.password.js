@@ -84,7 +84,7 @@ console.log("==================================");
         
 
 await transporter.sendMail({
-            from: "BacoApp <onboarding@resend.dev>",
+             from: '"BacoApp" <bacoapp96@gmail.com>',
             to: usuario.Email,
             subject: "Recuperación de contraseña - BacoApp",
             html: `
