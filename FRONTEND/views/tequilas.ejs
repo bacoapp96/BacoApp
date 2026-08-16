@@ -95,7 +95,9 @@
 
                 <% if (tequilas.imagen) { %>
 <img
-    src="<%= tequilas.imagen %>"
+    src="<%= tequilas.imagen?.startsWith('http')
+        ? tequilas.imagen
+        : BACKEND_URL + tequilas.imagen %>"
     alt="<%= tequilas.nombre %>"
 >
 

@@ -95,7 +95,9 @@
                 <% if (accesorios.imagen) { %>
 
 <img
-    src="<%= accesorios.imagen %>"
+    src="<%= accesorios.imagen?.startsWith('http')
+        ? accesorios.imagen
+        : BACKEND_URL + accesorios.imagen %>"
     alt="<%= accesorios.nombre %>"
 >
 

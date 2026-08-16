@@ -95,10 +95,12 @@
 
                 <% if (vinos.imagen) { %>
 
-                    <img
-                         src="<%= BACKEND_URL %><%= vinos.imagen %>"
-                        alt="<%= vinos.nombre %>"
-                    >
+<img
+    src="<%= vinos.imagen?.startsWith('http')
+        ? vinos.imagen
+        : BACKEND_URL + vinos.imagen %>"
+    alt="<%= vinos.nombre %>"
+>
 
                 <% } else { %>
 

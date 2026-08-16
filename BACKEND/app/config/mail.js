@@ -1,8 +1,16 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+    host: "smtp-relay.brevo.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.BREVO_SMTP_USER,
+        pass: process.env.BREVO_SMTP_KEY
+    }
+});
 
-export default resend;
+export default transporter;

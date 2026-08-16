@@ -95,7 +95,9 @@
                 <% if (cerveza.imagen) { %>
 
 <img
-    src="<%= cerveza.imagen %>"
+    src="<%= cerveza.imagen?.startsWith('http')
+        ? cerveza.imagen
+        : BACKEND_URL + cerveza.imagen %>"
     alt="<%= cerveza.nombre %>"
 >
 

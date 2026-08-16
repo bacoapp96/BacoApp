@@ -96,9 +96,10 @@
             <div class="producto-imagen">
 
                 <% if (dulces.imagen) { %>
-
 <img
-    src="<%= dulces.imagen %>"
+    src="<%= dulces.imagen?.startsWith('http')
+        ? dulces.imagen
+        : BACKEND_URL + dulces.imagen %>"
     alt="<%= dulces.nombre %>"
 >
 

@@ -96,7 +96,9 @@
                 <% if (ginebras.imagen) { %>
 
 <img
-    src="<%= ginebras.imagen %>"
+    src="<%= ginebras.imagen?.startsWith('http')
+        ? ginebras.imagen
+        : BACKEND_URL + ginebras.imagen %>"
     alt="<%= ginebras.nombre %>"
 >
 

@@ -99,7 +99,9 @@
                 <% if (whiskys.imagen) { %>
 
 <img
-    src="<%= whiskys.imagen %>"
+    src="<%= whiskys.imagen?.startsWith('http')
+        ? whiskys.imagen
+        : BACKEND_URL + whiskys.imagen %>"
     alt="<%= whiskys.nombre %>"
 >
 

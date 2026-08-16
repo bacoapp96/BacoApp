@@ -97,7 +97,9 @@
                 <% if (vodkas.imagen) { %>
 
 <img
-    src="<%= vodkas.imagen %>"
+    src="<%= vodkas.imagen?.startsWith('http')
+        ? vodkas.imagen
+        : BACKEND_URL + vodkas.imagen %>"
     alt="<%= vodkas.nombre %>"
 >
 

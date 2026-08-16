@@ -96,7 +96,9 @@
                 <% if (rones.imagen) { %>
 
 <img
-    src="<%= rones.imagen %>"
+    src="<%= rones.imagen?.startsWith('http')
+        ? rones.imagen
+        : BACKEND_URL + rones.imagen %>"
     alt="<%= rones.nombre %>"
 >
 

@@ -95,7 +95,9 @@
                     <% if (aguardiente.imagen) { %>
 
 <img
-    src="<%= aguardiente.imagen %>"
+    src="<%= aguardiente.imagen?.startsWith('http')
+        ? aguardiente.imagen
+        : BACKEND_URL + aguardiente.imagen %>"
     alt="<%= aguardiente.nombre %>"
 >
 

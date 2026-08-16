@@ -95,7 +95,9 @@
 
                 <% if (jugos.imagen) { %>
 <img
-    src="<%= jugos.imagen %>"
+    src="<%= jugos.imagen?.startsWith('http')
+        ? jugos.imagen
+        : BACKEND_URL + jugos.imagen %>"
     alt="<%= jugos.nombre %>"
 >
 

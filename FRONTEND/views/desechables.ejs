@@ -96,7 +96,9 @@
                 <% if (desechables.imagen) { %>
 
 <img
-    src="<%= desechables.imagen %>"
+    src="<%= desechables.imagen?.startsWith('http')
+        ? desechables.imagen
+        : BACKEND_URL + desechables.imagen %>"
     alt="<%= desechables.nombre %>"
 >
 

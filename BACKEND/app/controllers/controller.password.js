@@ -83,7 +83,7 @@ console.log("==================================");
 
         
 
-await transporter.emails.send({
+await transporter.sendMail({
             from: "BacoApp <onboarding@resend.dev>",
             to: usuario.Email,
             subject: "Recuperación de contraseña - BacoApp",

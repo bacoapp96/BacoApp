@@ -95,7 +95,9 @@
                 <% if (gaseosas.imagen) { %>
 
 <img
-    src="<%= gaseosas.imagen %>"
+    src="<%= gaseosas.imagen?.startsWith('http')
+        ? gaseosas.imagen
+        : BACKEND_URL + gaseosas.imagen %>"
     alt="<%= gaseosas.nombre %>"
 >
 
