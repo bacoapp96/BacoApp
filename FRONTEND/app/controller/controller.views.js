@@ -67,7 +67,9 @@ const requiereLogin = (req, res) => {
 const requiereAdmin = (req, res) => {
     if (!requiereLogin(req, res)) return false;
 
-    if (req.session.usuario.rol?.toLowerCase() !== "admin") {
+    const rol = req.session.usuario.rol?.trim().toLowerCase();
+
+    if (rol !== "admin" && rol !== "administrador") {
         res.redirect("/cuenta");
         return false;
     }
