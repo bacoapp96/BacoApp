@@ -204,21 +204,38 @@ export const putCuenta = async (req, res) => {
 };
 
 export const postAdministrador = async (req, res) => {
+    // 1. Verificar sesión en el frontend
     if (!req.session?.usuario?.id) {
-        return res.status(401).json({ ok: false, message: "Sesion no activa" });
+        return res.status(401).json({
+            ok: false,
+            message: "Sesión no activa"
+        });
     }
 
+    // 2. Verificar que el usuario actual sea administrador
     if (req.session.usuario.rol?.toLowerCase() !== "admin") {
-        return res.status(403).json({ ok: false, message: "No tienes permisos para crear administradores" });
+        return res.status(403).json({
+            ok: false,
+            message: "No tienes permisos para crear administradores"
+        });
     }
 
     try {
+        // 3. Enviar la petición al backend con la autorización
         const response = await fetch(`${API_URL.usuarios}/admin`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.BACKEND_SECRET_KEY}`,
+                "x-user-id": String(req.session.usuario.id),
+                "x-user-role": String(req.session.usuario.rol || "")
+            },
             body: JSON.stringify(req.body)
         });
+
         const data = await response.json();
+
+        console.log("Respuesta backend crear administrador:", response.status, data);
 
         if (!response.ok) {
             return res.status(response.status).json({
@@ -227,20 +244,23 @@ export const postAdministrador = async (req, res) => {
             });
         }
 
-        res.status(201).json({
+        // 4. Respuesta exitosa al navegador
+        return res.status(201).json({
             ok: true,
             message: data.message,
             id: data.id
         });
+
     } catch (error) {
-        res.status(500).json({
+        console.error("Error en postAdministrador:", error);
+
+        return res.status(500).json({
             ok: false,
             message: "Error al crear administrador",
             error: error.message
         });
     }
 };
-
 export const postLogout = (req, res) => {
     req.destroySession?.();
     res.json({ ok: true });

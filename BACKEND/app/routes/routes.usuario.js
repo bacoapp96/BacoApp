@@ -16,7 +16,7 @@ const router = Router();
 // CRUD
 router.get('/', verificarFirmaFrontend, requiereAdmin, listarUsuarios);
 router.post('/login', login);
-router.post('/admin', verificarFirmaFrontend, requiereAdmin, crearAdministrador);
+router.post('/admin', verificarFirmaFrontend, crearAdministrador);
 router.get('/:id', verificarFirmaFrontend, requiereUsuarioLogueado, obtenerUsuario);
 router.post('/', crearUsuario);
 router.put('/:id', verificarFirmaFrontend, requiereUsuarioLogueado, actualizarUsuario);

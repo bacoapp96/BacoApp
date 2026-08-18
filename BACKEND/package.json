@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/jaideralmanza-ops/BacoApp#readme",
   "dependencies": {
+    "@getbrevo/brevo": "^6.0.3",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.10.0",
     "cors": "^2.8.6",

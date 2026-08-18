@@ -1,7 +1,8 @@
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import pool from "../config/db.js";
-import transporter from "../config/mail.js";
+import brevo from "../config/brevo.js";
+
 
 // Enviar correo de recuperación
 export const forgotPassword = async (req, res) => {
@@ -57,58 +58,63 @@ const [verificar] = await pool.query(
 console.log("Datos guardados:", verificar);
 console.log("==================================");
 
-        const requestOrigin = req.get("origin") || "";
-        const allowedOrigins = [
-            "http://localhost:4000",
-            process.env.FRONTEND_URL
-        ].filter(Boolean).map(url => url.trim().replace(/\/$/, ""));
+        
+        const frontendUrl = process.env.FRONTEND_URL
+    ?.split(",")[0]
+    .trim()
+    .replace(/\/$/, "");
 
-        const safeRequestOrigin = allowedOrigins.includes(requestOrigin.replace(/\/$/, ""))
-            ? requestOrigin
-            : "";
-        const frontendUrl = (safeRequestOrigin || process.env.FRONTEND_URL || process.env.BASE_URL || "")
-            .split(",")[0]
-            .trim()
-            .replace(/\/$/, "");
+if (!frontendUrl) {
+    return res.status(500).json({
+        ok: false,
+        message: "Falta configurar FRONTEND_URL para recuperar la contraseña."
+    });
+}
 
-        if (!frontendUrl) {
-            return res.status(500).json({
-                ok: false,
-                message: "Falta configurar FRONTEND_URL para recuperar la contraseña."
-            });
-        }
+const enlace = `${frontendUrl}/reset-password/${token}`;
 
-        const enlace = `${frontendUrl}/reset-password/${token}`;
-  
+console.log("FRONTEND_URL:", frontendUrl);
+console.log("ENLACE RECUPERACIÓN:", enlace);
+
+ 
 
         
 
-await transporter.sendMail({
-             from: '"BacoApp" <bacoapp96@gmail.com>',
-            to: usuario.Email,
-            subject: "Recuperación de contraseña - BacoApp",
-            html: `
-                <h2>Hola ${usuario.Nombre}</h2>
 
-                <p>Haz clic en el siguiente botón para cambiar tu contraseña.</p>
+await brevo.transactionalEmails.sendTransacEmail({
+    sender: {
+        name: "BacoApp",
+        email: "bacoapp96@gmail.com"
+    },
+    to: [
+        {
+            email: usuario.Email,
+            name: usuario.Nombre
+        }
+    ],
+    subject: "Recuperación de contraseña - BacoApp",
+    htmlContent: `
+        <h2>Hola ${usuario.Nombre}</h2>
 
-                <a href="${enlace}"
-                   style="
-                        background:#6b21a8;
-                        color:white;
-                        padding:12px 20px;
-                        text-decoration:none;
-                        border-radius:8px;
-                        display:inline-block;
-                   ">
-                   Restablecer contraseña
-                </a>
+        <p>Haz clic en el siguiente botón para cambiar tu contraseña.</p>
 
-                <p>Este enlace expirará en 20 minutos.</p>
+        <a href="${enlace}"
+           style="
+                background:#6b21a8;
+                color:white;
+                padding:12px 20px;
+                text-decoration:none;
+                border-radius:8px;
+                display:inline-block;
+           ">
+           Restablecer contraseña
+        </a>
 
-                <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
-            `
-        });
+        <p>Este enlace expirará en 20 minutos.</p>
+
+        <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+    `
+});
 
         return res.json({
             ok: true,
