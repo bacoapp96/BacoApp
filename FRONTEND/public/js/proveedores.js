@@ -4,46 +4,77 @@
 // =========================
 
 let proveedores = [];
+let pedidosProveedor = [];
 
 async function cargarProveedores() {
 
     try {
 
-        const respuesta = await fetch(
+        // =========================
+        // CARGAR PROVEEDORES
+        // =========================
+
+        const respuestaProveedores = await fetch(
             "/api/proveedores"
         );
 
-        if (!respuesta.ok) {
+        if (!respuestaProveedores.ok) {
             throw new Error("Error al obtener proveedores");
         }
 
-        const datos = await respuesta.json();
+        const datosProveedores =
+            await respuestaProveedores.json();
 
-        proveedores = datos.map(proveedor => ({
+
+        proveedores = datosProveedores.map(proveedor => ({
+
             id: proveedor.id_proveedor,
+
             nombre: proveedor.nombre || "",
+
             telefono: proveedor.telefono || "",
+
             correo: proveedor.correo || "",
+
             direccion: proveedor.direccion || "",
+
             ciudad: proveedor.ciudad || "",
+
             nit: proveedor.nit || "",
+
             contacto: proveedor.contacto || "",
+
             notas: proveedor.notas || "",
+
             estado: proveedor.estado || "Activo",
 
-            // Mientras todavía no tenemos pedidos
             pedidos: 0,
-            deuda: 0,
 
-            detallePedido: {
-                numero: "",
-                fecha: "",
-                total: 0,
-                productos: []
-            }
+            deuda: 0
+
         }));
 
+
+        // =========================
+        // CARGAR PEDIDOS REALES
+        // =========================
+
+        await cargarPedidosProveedor();
+
+
+        // =========================
+        // MOSTRAR PROVEEDORES
+        // =========================
+
         mostrarProveedores(proveedores);
+
+
+        // =========================
+        // MOSTRAR PEDIDOS
+        // =========================
+
+        mostrarPedidosRecientes();
+
 
     } catch (error) {
 
@@ -59,9 +90,323 @@ async function cargarProveedores() {
                 </td>
             </tr>
         `;
+
     }
+
 }
 
+async function cargarPedidosProveedor() {
+
+    try {
+
+        const respuesta = await fetch(
+            "/api/pedidos-proveedor"
+        );
+
+        if (!respuesta.ok) {
+            throw new Error(
+                "Error al obtener pedidos"
+            );
+        }
+
+        pedidosProveedor =
+            await respuesta.json();
+
+
+        console.log(
+            "Pedidos reales:",
+            pedidosProveedor
+        );
+
+
+        // =========================
+        // CONTAR PEDIDOS POR PROVEEDOR
+        // =========================
+
+        proveedores.forEach(proveedor => {
+
+            const pedidosDelProveedor =
+                pedidosProveedor.filter(
+                    pedido =>
+                        Number(pedido.id_proveedor) ===
+                        Number(proveedor.id)
+                );
+
+            proveedor.pedidos =
+                pedidosDelProveedor.length;
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando pedidos:",
+            error
+        );
+
+        pedidosProveedor = [];
+
+    }
+
+}
+
+function mostrarPedidosRecientes() {
+
+    detallePedidos.innerHTML = "";
+
+    if (
+        !pedidosProveedor ||
+        pedidosProveedor.length === 0
+    ) {
+
+        detallePedidos.innerHTML = `
+            <div class="pedido-card">
+
+                <h3>No hay pedidos registrados</h3>
+
+                <p>
+                    📦 Todavía no existen pedidos a proveedores.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    pedidosProveedor
+        .slice(0, 5)
+        .forEach(pedido => {
+
+            const fecha = new Date(
+                pedido.fecha_pedido
+            );
+
+
+            const fechaFormateada =
+                fecha.toLocaleDateString(
+                    "es-CO"
+                );
+
+
+            detallePedidos.innerHTML += `
+
+                <div class="pedido-card">
+
+                    <h3>
+                        Pedido #${pedido.id_pedido}
+                    </h3>
+
+                    <p>
+                        🚚 Proveedor:
+                        ${pedido.proveedor}
+                    </p>
+
+                    <p>
+                        📅 Fecha:
+                        ${fechaFormateada}
+                    </p>
+
+                    <p>
+                        💰 Total:
+                        $${Number(
+                            pedido.total || 0
+                        ).toLocaleString("es-CO")}
+                    </p>
+
+                    <p>
+                        📌 Estado:
+                        <span class="estado ${pedido.estado.toLowerCase()}">
+                            ${pedido.estado}
+                        </span>
+                    </p>
+
+                    <button
+                        class="btn ver"
+                        onclick="verPedidoProveedor(${pedido.id_pedido})"
+                    >
+                        Ver pedido
+                    </button>
+
+                </div>
+
+            `;
+
+        });
+
+}
+
+async function verPedidoProveedor(idPedido) {
+
+    try {
+
+        const respuesta = await fetch(
+            `/api/pedidos-proveedor/${idPedido}`
+        );
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                data.message ||
+                "No se pudo obtener el pedido"
+            );
+
+        }
+
+
+        const pedido = data.pedido;
+
+        const productos = data.productos;
+
+
+        // =========================
+        // PRODUCTOS
+        // =========================
+
+        let productosHTML = "";
+
+
+        productos.forEach(producto => {
+
+            productosHTML += `
+
+                <div class="producto-item">
+
+                    <span>
+                        ${producto.producto}
+                    </span>
+
+                    <span>
+                        x${producto.cantidad}
+                    </span>
+
+                </div>
+
+            `;
+
+        });
+
+
+        // =========================
+        // FECHA
+        // =========================
+
+        const fecha =
+            new Date(
+                pedido.fecha_pedido
+            ).toLocaleDateString(
+                "es-CO"
+            );
+
+
+        // =========================
+        // DETALLE
+        // =========================
+
+        detalleCompleto.innerHTML = `
+
+            <div class="pedido-detalle-card">
+
+                <h3>
+                    Pedido #${pedido.id_pedido}
+                </h3>
+
+                <p>
+                    🚚 Proveedor:
+                    ${pedido.proveedor}
+                </p>
+
+                <p>
+                    📅 Fecha:
+                    ${fecha}
+                </p>
+
+                <p>
+                    📌 Estado:
+
+                    <span class="estado ${pedido.estado.toLowerCase()}">
+                        ${pedido.estado}
+                    </span>
+
+                </p>
+
+                ${
+                    pedido.observaciones
+                    ? `
+                        <p>
+                            📝 Observaciones:
+                            ${pedido.observaciones}
+                        </p>
+                    `
+                    : ""
+                }
+
+                <hr>
+
+                <div class="productos-pedido">
+
+                    ${productosHTML}
+
+                </div>
+
+                <hr>
+
+                <h4>
+                    💰 Total:
+                    $${Number(
+                        pedido.total || 0
+                    ).toLocaleString("es-CO")}
+                </h4>
+
+                ${
+                    pedido.estado === "Pendiente"
+                    ? `
+                        <button
+                            class="btn cancelar"
+                            onclick="cancelarPedidoReal(${pedido.id_pedido})"
+                        >
+                            Cancelar pedido
+                        </button>
+                    `
+                    : ""
+                }
+
+            </div>
+
+        `;
+
+
+        // Llevar la vista hacia el detalle
+
+        detalleCompleto.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Error obteniendo pedido:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "No se pudo obtener el pedido."
+        );
+
+    }
+
+}
+
+
+window.verPedidoProveedor =
+    verPedidoProveedor;
 
 // =========================
 // ELEMENTOS
@@ -139,7 +484,7 @@ function mostrarProveedores(lista){
 
                         <button 
                             class="btn cancelar"
-                            onclick="cancelarPedido(${index})"
+                            
                         >
                             Cancelar
                         </button>
@@ -437,23 +782,62 @@ async function editarProveedorLegacy(id) {
 // CANCELAR PEDIDO
 // =========================
 
-function cancelarPedido(index){
+async function cancelarPedidoReal(idPedido) {
 
-    const confirmar =
-    confirm("¿Cancelar pedido?");
+    const confirmar = confirm(
+        `¿Estás seguro de cancelar el pedido #${idPedido}?`
+    );
 
-    if(confirmar){
+    if (!confirmar) return;
 
-        proveedores[index].estado =
-        "Cancelado";
+    try {
 
-        mostrarProveedores(proveedores);
+        const respuesta = await fetch(
+            `/api/pedidos-proveedor/${idPedido}/cancelar`,
+            {
+                method: "PUT"
+            }
+        );
 
-        verProveedor(index);
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                data.message ||
+                "No se pudo cancelar el pedido."
+            );
+
+        }
+
+        alert(
+            "Pedido cancelado correctamente."
+        );
+
+        // Recargar proveedores y pedidos
+        await cargarProveedores();
+
+        // Mostrar nuevamente el pedido actualizado
+        await verPedidoProveedor(idPedido);
+
+    } catch (error) {
+
+        console.error(
+            "Error cancelando pedido:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "No se pudo cancelar el pedido."
+        );
 
     }
 
 }
+
+window.cancelarPedidoReal =
+    cancelarPedidoReal;
 
 
 // =========================
@@ -769,126 +1153,359 @@ async function editarProveedor(id) {
 // =========================
 
 formProveedor.addEventListener("submit", async (event) => {
-
     event.preventDefault();
 
-    const id =
-        document.getElementById("id_proveedor").value.trim();
-
-    // Verificar que estamos editando un proveedor
-    if (!id) {
-        alert("No se encontró el proveedor que deseas editar.");
-        console.error("ID proveedor vacío");
-        return;
-    }
+    const id = document.getElementById("id_proveedor").value.trim();
 
     const datos = {
-
-        nombre:
-            document.getElementById("nombreProveedor").value.trim(),
-
-        telefono:
-            document.getElementById("telefonoProveedor").value.trim(),
-
-        correo:
-            document.getElementById("correoProveedor").value.trim(),
-
-        direccion:
-            document.getElementById("direccionProveedor").value.trim(),
-
-        ciudad:
-            document.getElementById("ciudadProveedor").value.trim(),
-
-        nit:
-            document.getElementById("nitProveedor").value.trim(),
-
-        contacto:
-            document.getElementById("contactoProveedor").value.trim(),
-
-        notas:
-            document.getElementById("notasProveedor").value.trim()
-
+        nombre: document.getElementById("nombreProveedor").value.trim(),
+        telefono: document.getElementById("telefonoProveedor").value.trim(),
+        correo: document.getElementById("correoProveedor").value.trim(),
+        direccion: document.getElementById("direccionProveedor").value.trim(),
+        ciudad: document.getElementById("ciudadProveedor").value.trim(),
+        nit: document.getElementById("nitProveedor").value.trim(),
+        contacto: document.getElementById("contactoProveedor").value.trim(),
+        notas: document.getElementById("notasProveedor").value.trim()
     };
 
+    // Determinar URL y método HTTP dependiendo de si hay ID
+    const url = id ? `/api/proveedores/${id}` : "/api/proveedores";
+    const metodo = id ? "PUT" : "POST";
 
-    console.log("Actualizando proveedor:", id);
-    console.log("Datos enviados:", datos);
-
+    console.log(`${id ? "Actualizando" : "Creando"} proveedor...`);
 
     try {
+        const respuesta = await fetch(url, {
+            method: metodo,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datos)
+        });
 
-        const respuesta = await fetch(
-            `/api/proveedores/${id}`,
-            {
-                method: "PUT",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(datos)
-            }
-        );
-
-
-        const resultado =
-            await respuesta.json();
-
-
-        console.log("Respuesta del servidor:", resultado);
-
+        const resultado = await respuesta.json();
 
         if (!respuesta.ok) {
-
             throw new Error(
                 resultado.error ||
-                "No se pudo actualizar el proveedor"
+                `No se pudo ${id ? "actualizar" : "crear"} el proveedor`
             );
-
         }
 
-
-        alert(
-            "Proveedor actualizado correctamente."
-        );
-
+        alert(`Proveedor ${id ? "actualizado" : "creado"} correctamente.`);
 
         // Cerrar modal
         modalProveedor.style.display = "none";
 
-
-        // Limpiar formulario
+        // Limpiar formulario y restablecer estados del modal
         formProveedor.reset();
+        document.getElementById("id_proveedor").value = "";
+        tituloModal.textContent = "Nuevo proveedor";
 
-        document.getElementById(
-            "id_proveedor"
-        ).value = "";
-
-
-        // Volver al título de nuevo proveedor
-        tituloModal.textContent =
-            "Nuevo proveedor";
-
-
-        // Recargar datos desde BD
+        // Recargar datos actualizados desde la BD
         await cargarProveedores();
 
+    } catch (error) {
+        console.error(`Error al procesar proveedor:`, error);
+        alert(error.message || `No se pudo ${id ? "actualizar" : "crear"} el proveedor.`);
+    }
+});
+
+// ==========================================
+// PEDIDOS A PROVEEDORES
+// ==========================================
+
+const modalPedido = document.getElementById("modalPedido");
+const formPedido = document.getElementById("formPedido");
+
+const pedidoProveedor = document.getElementById("pedidoProveedor");
+const pedidoProducto = document.getElementById("pedidoProducto");
+const pedidoCantidad = document.getElementById("pedidoCantidad");
+
+const productosPedido = document.getElementById("productosPedido");
+
+let productosSeleccionados = [];
+
+document.getElementById("btnNuevoPedido")?.addEventListener("click", async () => {
+
+    productosSeleccionados = [];
+
+    productosPedido.innerHTML = "";
+
+    formPedido.reset();
+
+    modalPedido.style.display = "flex";
+
+    await cargarProveedoresPedido();
+    await cargarProductosPedido();
+
+});
+
+document.getElementById("cerrarModalPedido")?.addEventListener("click", () => {
+
+    modalPedido.style.display = "none";
+
+});
+
+modalPedido?.addEventListener("click", (event) => {
+
+    if (event.target === modalPedido) {
+
+        modalPedido.style.display = "none";
+
+    }
+
+});
+
+async function cargarProveedoresPedido() {
+
+    try {
+
+        const response = await fetch("/api/proveedores");
+
+        if (!response.ok) {
+            throw new Error("No se pudieron cargar los proveedores");
+        }
+
+        const proveedores = await response.json();
+
+        pedidoProveedor.innerHTML = `
+            <option value="">
+                Seleccionar proveedor
+            </option>
+        `;
+
+        proveedores.forEach(proveedor => {
+
+            const option = document.createElement("option");
+
+            option.value = proveedor.id_proveedor;
+
+            option.textContent = proveedor.nombre;
+
+            pedidoProveedor.appendChild(option);
+
+        });
 
     } catch (error) {
 
-        console.error(
-            "Error actualizando proveedor:",
-            error
+        console.error("Error cargando proveedores:", error);
+
+        alert("No se pudieron cargar los proveedores.");
+
+    }
+
+}
+
+async function cargarProductosPedido() {
+
+    try {
+
+        const response = await fetch("/api/productos");
+
+        if (!response.ok) {
+            throw new Error("No se pudieron cargar los productos");
+        }
+
+        const productos = await response.json();
+
+        pedidoProducto.innerHTML = `
+            <option value="">
+                Seleccionar producto
+            </option>
+        `;
+
+        productos.forEach(producto => {
+
+            const option = document.createElement("option");
+
+            option.value = producto.id;
+
+            option.textContent =
+                `${producto.nombre} - $${Number(producto.precio).toLocaleString("es-CO")}`;
+
+            pedidoProducto.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error("Error cargando productos:", error);
+
+        alert("No se pudieron cargar los productos.");
+
+    }
+
+}
+
+document
+    .getElementById("btnAgregarProductoPedido")
+    ?.addEventListener("click", () => {
+
+        const idProducto = Number(pedidoProducto.value);
+        const cantidad = Number(pedidoCantidad.value);
+
+        if (!idProducto) {
+            alert("Selecciona un producto.");
+            return;
+        }
+
+        if (!cantidad || cantidad <= 0) {
+            alert("Ingresa una cantidad válida.");
+            return;
+        }
+
+        const productoExistente =
+            productosSeleccionados.find(
+                producto => producto.id_producto === idProducto
+            );
+
+        if (productoExistente) {
+
+            productoExistente.cantidad += cantidad;
+
+        } else {
+
+            const nombre =
+                pedidoProducto.options[pedidoProducto.selectedIndex].textContent;
+
+            productosSeleccionados.push({
+                id_producto: idProducto,
+                nombre,
+                cantidad
+            });
+
+        }
+
+        renderProductosPedido();
+
+    });
+
+    function renderProductosPedido() {
+
+    productosPedido.innerHTML = "";
+
+    productosSeleccionados.forEach((producto, index) => {
+
+        const div = document.createElement("div");
+
+        div.className = "producto-pedido-item";
+
+        div.innerHTML = `
+            <span>
+                ${producto.nombre}
+            </span>
+
+            <span>
+                x${producto.cantidad}
+            </span>
+
+            <button
+                type="button"
+                onclick="eliminarProductoPedido(${index})">
+                ❌
+            </button>
+        `;
+
+        productosPedido.appendChild(div);
+
+    });
+
+}
+
+window.eliminarProductoPedido = function(index) {
+
+    productosSeleccionados.splice(index, 1);
+
+    renderProductosPedido();
+
+};
+
+formPedido?.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const idProveedor = Number(pedidoProveedor.value);
+
+    const observaciones =
+        document.getElementById("pedidoObservaciones").value.trim();
+
+    if (!idProveedor) {
+
+        alert("Selecciona un proveedor.");
+
+        return;
+
+    }
+
+    if (productosSeleccionados.length === 0) {
+
+        alert("Agrega al menos un producto.");
+
+        return;
+
+    }
+
+    const productos = productosSeleccionados.map(producto => ({
+        id_producto: producto.id_producto,
+        cantidad: producto.cantidad
+    }));
+
+    try {
+
+        const response = await fetch("/api/pedidos-proveedor", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                id_proveedor: idProveedor,
+                productos,
+                observaciones
+            })
+
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "No se pudo crear el pedido."
+            );
+
+        }
+
+        alert(
+            `Pedido #${data.id_pedido} creado correctamente.`
         );
+
+        modalPedido.style.display = "none";
+
+        formPedido.reset();
+
+        productosSeleccionados = [];
+
+        productosPedido.innerHTML = "";
+
+        await cargarProveedores();
+
+    } catch (error) {
+
+        console.error("Error creando pedido:", error);
 
         alert(
             error.message ||
-            "No se pudo actualizar el proveedor."
+            "No se pudo crear el pedido."
         );
 
     }
 
 });
+
 
 
 cargarProveedores();

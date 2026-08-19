@@ -44,6 +44,10 @@
                     + Nuevo proveedor
                 </button>
 
+                <button id="btnNuevoPedido">
+                    + Nuevo pedido
+                </button>
+
             </div>
 
         </div>
@@ -173,78 +177,7 @@
 
         <!-- DETALLE COMPLETO -->
 
-        <div class="detalle-pedido-completo">
-
-            <h2>
-                📋 Detalle del pedido
-            </h2>
-
-            <div id="detalleCompleto">
-
-                <div class="pedido-detalle-card">
-
-                    <h3>
-                        Pedido #204
-                    </h3>
-
-                    <p>
-                        🚚 Proveedor:
-                        AndesLiquor
-                    </p>
-
-                    <p>
-                        📅 Fecha:
-                        28/05/2026
-                    </p>
-
-                    <p>
-                        📌 Estado:
-                        Pendiente
-                    </p>
-
-                    <hr>
-
-                    <div class="productos-pedido">
-
-                        <div class="producto-item">
-
-                            <span>
-                                Whisky Old Parr
-                            </span>
-
-                            <span>
-                                x10
-                            </span>
-
-                        </div>
-
-
-                        <div class="producto-item">
-
-                            <span>
-                                Ron Medellín
-                            </span>
-
-                            <span>
-                                x20
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <hr>
-
-                    <h4>
-                        💰 Total:
-                        $2.500.000
-                    </h4>
-
-                </div>
-
-            </div>
-
-        </div>
+        <div id="detalleCompleto"></div>
 
 
 <!-- MODAL -->
@@ -359,6 +292,90 @@
                     id="guardarProveedor"
                     class="btn-primary">
                     Guardar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+<!-- MODAL NUEVO PEDIDO -->
+
+<div class="modal" id="modalPedido">
+
+    <div class="modal-content">
+
+        <h2>Nuevo pedido al proveedor</h2>
+
+        <form id="formPedido">
+
+            <label>Proveedor</label>
+
+            <select id="pedidoProveedor" required>
+                <option value="">Seleccionar proveedor</option>
+            </select>
+<div class="form-grid">
+
+    <div>
+        <label>Producto</label>
+
+        <select id="pedidoProducto">
+            <option value="">
+                Seleccionar producto
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Cantidad</label>
+
+        <input
+            type="number"
+            id="pedidoCantidad"
+            min="1"
+            value="1"
+        >
+    </div>
+
+</div>
+
+<button
+    type="button"
+    id="btnAgregarProductoPedido"
+    class="btn-secondary">
+
+    + Agregar producto
+
+</button>
+
+            <div id="productosPedido">
+
+                <!-- Aquí aparecerán los productos -->
+
+            </div>
+
+            <label>Observaciones</label>
+
+            <textarea
+                id="pedidoObservaciones"
+                placeholder="Observaciones del pedido">
+            </textarea>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="cerrarModalPedido"
+                    class="btn-secondary">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary">
+                    Crear pedido
                 </button>
 
             </div>

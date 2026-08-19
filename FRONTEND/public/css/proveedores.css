@@ -588,3 +588,348 @@ MODAL
     }
 
 }
+
+/* ===========================
+   MODAL PEDIDO PROVEEDOR
+=========================== */
+
+#formPedido {
+    display: grid;
+    gap: 18px;
+}
+
+#formPedido label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+    font-size: .95rem;
+}
+
+#formPedido input,
+#formPedido select,
+#formPedido textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    outline: none;
+    background: #fafafa;
+    transition: .25s;
+    font-size: .95rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+#formPedido textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+#formPedido input:focus,
+#formPedido select:focus,
+#formPedido textarea:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(107, 33, 168, .12);
+}
+
+
+/* ===========================
+   AGREGAR PRODUCTO
+=========================== */
+
+#btnAgregarProductoPedido {
+    width: 100%;
+    margin-top: -5px;
+}
+
+
+/* ===========================
+   LISTA DE PRODUCTOS
+=========================== */
+
+#productosPedido {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 5px;
+
+}
+
+
+/* PRODUCTO INDIVIDUAL */
+
+.producto-pedido-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 14px 16px;
+
+    background: #f8f8f8;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 12px;
+
+    transition: .2s;
+
+}
+
+.producto-pedido-item:hover {
+
+    background: #fff;
+
+    border-color: #ccc;
+
+}
+
+
+/* NOMBRE DEL PRODUCTO */
+
+.producto-pedido-item span:first-child {
+
+    flex: 1;
+
+    font-weight: 600;
+
+    color: #333;
+
+}
+
+
+/* CANTIDAD */
+
+.producto-pedido-item span:nth-child(2) {
+
+    font-weight: 700;
+
+    color: var(--primary);
+
+    white-space: nowrap;
+
+}
+
+
+/* BOTÓN ELIMINAR */
+
+.producto-pedido-item button {
+
+    width: 35px;
+
+    height: 35px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #fee2e2;
+
+    color: #dc2626;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+.producto-pedido-item button:hover {
+
+    background: #fecaca;
+
+    transform: scale(1.05);
+
+}
+
+
+/* ===========================
+   BOTONES MODAL
+=========================== */
+/* ===========================
+   BOTONES DEL MODAL
+=========================== */
+
+#formPedido .modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 10px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #eee;
+}
+
+
+/* BOTONES */
+
+#formPedido .modal-actions button {
+
+    min-width: 140px;
+
+    height: 44px;
+
+    padding: 0 22px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: .95rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+
+}
+
+
+/* CANCELAR */
+
+#formPedido .btn-secondary {
+
+    background: #fff;
+
+    color: #555;
+
+    border: 1px solid #d6d6d6;
+
+}
+
+#formPedido .btn-secondary:hover {
+
+    background: #f5f5f5;
+
+    border-color: #bbb;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* CREAR PEDIDO */
+
+#formPedido .btn-primary {
+
+    background: gold(--primary);
+
+    color: #0a0a0a;
+
+    border: 1px solid var(--primary);
+
+    box-shadow: 0 4px 10px rgba(0,0,0,.12);
+
+}
+
+#formPedido .btn-primary:hover {
+
+    filter: brightness(.92);
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 14px rgba(0,0,0,.16);
+
+}
+
+#formPedido .btn-primary:active,
+#formPedido .btn-secondary:active {
+
+    transform: translateY(0);
+
+}
+
+
+/* ===========================
+   BOTÓN AGREGAR PRODUCTO
+=========================== */
+
+#btnAgregarProductoPedido {
+
+    width: 100%;
+
+    height: 44px;
+
+    margin-top: -2px;
+
+    border-radius: 10px;
+
+    background: #f5f5f5;
+
+    color: var(--primary);
+
+    border: 1px dashed var(--primary);
+
+    font-family: inherit;
+
+    font-size: .95rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+
+}
+
+#btnAgregarProductoPedido:hover {
+
+    background: rgba(107, 33, 168, .06);
+
+    transform: translateY(-1px);
+
+}
+
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:700px) {
+
+    #modalPedido .modal-content {
+
+        padding: 22px;
+
+        max-height: 90vh;
+
+        overflow-y: auto;
+
+    }
+
+    #formPedido .modal-actions {
+
+        flex-direction: column;
+
+    }
+
+    #formPedido .modal-actions button {
+
+        width: 100%;
+
+    }
+
+    .producto-pedido-item {
+
+        flex-wrap: wrap;
+
+    }
+
+}

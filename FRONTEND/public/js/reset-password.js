@@ -41,19 +41,24 @@ form.addEventListener("submit", async (e) => {
 
     try {
 
-        const response = await fetch(
-            `https://bacoapp-production.up.railway.app/api/password/reset-password/${token}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    password,
-                    confirmPassword
-                })
-            }
-        );
+const BACKEND_URL =
+    window.location.hostname === "localhost"
+        ? "http://localhost:3000"
+        : "https://bacoapp-production.up.railway.app";
+
+const response = await fetch(
+    `${BACKEND_URL}/api/password/reset-password/${token}`,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            password,
+            confirmPassword
+        })
+    }
+);
 
         const data = await response.json();
 
