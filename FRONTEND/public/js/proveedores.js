@@ -515,18 +515,61 @@ function mostrarProveedores(lista){
 
 function actualizarKPIs() {
 
+    // =========================
+    // PROVEEDORES ACTIVOS
+    // =========================
+
     const activos = proveedores.filter(
-        p => p.estado === "Activo"
+        proveedor => proveedor.estado === "Activo"
     ).length;
 
-    const pendientes = proveedores.filter(
-        p => p.estado === "Pendiente"
+
+    // =========================
+    // PEDIDOS PENDIENTES
+    // =========================
+
+    const pendientes = pedidosProveedor.filter(
+        pedido => pedido.estado === "Pendiente"
     ).length;
 
-    const deudaTotal = proveedores.reduce(
-        (total, p) => total + Number(p.deuda || 0),
-        0
-    );
+
+    // =========================
+    // ENTREGAS HOY
+    // =========================
+
+    const hoy = new Date();
+
+    const entregasHoy = pedidosProveedor.filter(pedido => {
+
+        if (pedido.estado !== "Recibido") {
+            return false;
+        }
+
+        const fechaPedido = new Date(
+            pedido.fecha_pedido
+        );
+
+        return (
+            fechaPedido.getFullYear() === hoy.getFullYear() &&
+            fechaPedido.getMonth() === hoy.getMonth() &&
+            fechaPedido.getDate() === hoy.getDate()
+        );
+
+    }).length;
+
+
+    // =========================
+    // PEDIDOS CANCELADOS
+    // =========================
+
+    const cancelados = pedidosProveedor.filter(
+        pedido => pedido.estado === "Cancelado"
+    ).length;
+
+
+    // =========================
+    // ACTUALIZAR TARJETAS
+    // =========================
 
     document
         .querySelector("#cardActivos p")
@@ -538,12 +581,12 @@ function actualizarKPIs() {
 
     document
         .querySelector("#cardEntregas p")
-        .textContent = "0";
+        .textContent = entregasHoy;
 
     document
         .querySelector("#cardDeuda p")
-        .textContent =
-        `$${deudaTotal.toLocaleString("es-CO")}`;
+        .textContent = cancelados;
+
 }
 
 // =========================
@@ -988,12 +1031,13 @@ document
 .getElementById("cardDeuda")
 .addEventListener("click", () => {
 
-    mostrarProveedores(
+    const cancelados = pedidosProveedor.filter(
+        pedido => pedido.estado === "Cancelado"
+    );
 
-        proveedores.filter(p =>
-            p.deuda > 0
-        )
-
+    console.log(
+        "Pedidos cancelados:",
+        cancelados
     );
 
 });

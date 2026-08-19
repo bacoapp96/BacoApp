@@ -401,15 +401,30 @@ res.status(201).json({
 
 
 // CANCELAR PEDIDO
+// CANCELAR PEDIDO
 export const cancelarPedidoProveedor = async (req, res) => {
     const { id } = req.params;
 
     try {
 
+        // ==========================================
+        // OBTENER PEDIDO Y PROVEEDOR
+        // ==========================================
+
         const [pedido] = await pool.query(
-            `SELECT id_pedido, estado
-             FROM pedidos_proveedor
-             WHERE id_pedido = ?`,
+            `SELECT
+                pp.id_pedido,
+                pp.id_proveedor,
+                pp.fecha_pedido,
+                pp.estado,
+                pp.total,
+                pp.observaciones,
+                p.nombre AS proveedor,
+                p.correo
+             FROM pedidos_proveedor pp
+             INNER JOIN proveedores p
+                ON p.id_proveedor = pp.id_proveedor
+             WHERE pp.id_pedido = ?`,
             [id]
         );
 
@@ -420,19 +435,47 @@ export const cancelarPedidoProveedor = async (req, res) => {
             });
         }
 
-        if (pedido[0].estado === "Cancelado") {
+        const pedidoActual = pedido[0];
+
+        // ==========================================
+        // VALIDAR ESTADO
+        // ==========================================
+
+        if (pedidoActual.estado === "Cancelado") {
             return res.status(400).json({
                 ok: false,
                 message: "El pedido ya está cancelado"
             });
         }
 
-        if (pedido[0].estado === "Recibido") {
+        if (pedidoActual.estado === "Recibido") {
             return res.status(400).json({
                 ok: false,
                 message: "No se puede cancelar un pedido recibido"
             });
         }
+
+        // ==========================================
+        // OBTENER PRODUCTOS DEL PEDIDO
+        // ==========================================
+
+        const [detalles] = await pool.query(
+            `SELECT
+                d.id_producto,
+                pr.nombre AS producto,
+                d.cantidad,
+                d.precio,
+                d.subtotal
+             FROM detalle_pedido_proveedor d
+             INNER JOIN productos pr
+                ON pr.id = d.id_producto
+             WHERE d.id_pedido = ?`,
+            [id]
+        );
+
+        // ==========================================
+        // CANCELAR PEDIDO
+        // ==========================================
 
         await pool.query(
             `UPDATE pedidos_proveedor
@@ -440,6 +483,187 @@ export const cancelarPedidoProveedor = async (req, res) => {
              WHERE id_pedido = ?`,
             [id]
         );
+
+        // ==========================================
+        // ENVIAR CORREO AL PROVEEDOR
+        // ==========================================
+
+        try {
+
+            const productosCorreo = detalles.map(detalle => `
+                <tr>
+                    <td style="padding:8px;border-bottom:1px solid #ddd;">
+                        ${detalle.producto}
+                    </td>
+
+                    <td style="
+                        padding:8px;
+                        border-bottom:1px solid #ddd;
+                        text-align:center;
+                    ">
+                        ${detalle.cantidad}
+                    </td>
+
+                    <td style="
+                        padding:8px;
+                        border-bottom:1px solid #ddd;
+                        text-align:right;
+                    ">
+                        $${Number(detalle.precio).toLocaleString("es-CO")}
+                    </td>
+
+                    <td style="
+                        padding:8px;
+                        border-bottom:1px solid #ddd;
+                        text-align:right;
+                    ">
+                        $${Number(detalle.subtotal).toLocaleString("es-CO")}
+                    </td>
+                </tr>
+            `).join("");
+
+            await brevo.transactionalEmails.sendTransacEmail({
+
+                sender: {
+                    name: "BacoApp",
+                    email: "bacoapp96@gmail.com"
+                },
+
+                to: [
+                    {
+                        email: pedidoActual.correo,
+                        name: pedidoActual.proveedor
+                    }
+                ],
+
+                subject: `Pedido #${pedidoActual.id_pedido} cancelado - BacoApp`,
+
+                htmlContent: `
+                    <div style="
+                        font-family:Arial,sans-serif;
+                        max-width:700px;
+                        margin:auto;
+                        padding:20px;
+                    ">
+
+                        <h2 style="color:#dc2626;">
+                            ❌ Pedido cancelado
+                        </h2>
+
+                        <p>
+                            Hola <strong>${pedidoActual.proveedor}</strong>,
+                        </p>
+
+                        <p>
+                            Le informamos que el siguiente pedido
+                            realizado a través de BacoApp ha sido
+                            <strong>cancelado</strong>.
+                        </p>
+
+                        <p>
+                            <strong>Pedido:</strong>
+                            #${pedidoActual.id_pedido}
+                            <br>
+
+                            <strong>Estado:</strong>
+                            Cancelado
+                            <br>
+
+                            <strong>Total:</strong>
+                            $${Number(pedidoActual.total).toLocaleString("es-CO")}
+                        </p>
+
+                        <h3>Productos del pedido</h3>
+
+                        <table style="
+                            width:100%;
+                            border-collapse:collapse;
+                        ">
+
+                            <thead>
+
+                                <tr style="background:#f3f3f3;">
+
+                                    <th style="
+                                        padding:8px;
+                                        text-align:left;
+                                    ">
+                                        Producto
+                                    </th>
+
+                                    <th style="padding:8px;">
+                                        Cantidad
+                                    </th>
+
+                                    <th style="
+                                        padding:8px;
+                                        text-align:right;
+                                    ">
+                                        Precio
+                                    </th>
+
+                                    <th style="
+                                        padding:8px;
+                                        text-align:right;
+                                    ">
+                                        Subtotal
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+                                ${productosCorreo}
+                            </tbody>
+
+                        </table>
+
+                        ${
+                            pedidoActual.observaciones
+                                ? `
+                                    <p style="margin-top:20px;">
+                                        <strong>Observaciones:</strong><br>
+                                        ${pedidoActual.observaciones}
+                                    </p>
+                                `
+                                : ""
+                        }
+
+                        <p style="margin-top:25px;">
+                            Por favor, tenga en cuenta que este pedido
+                            ya no requiere gestión ni despacho.
+                        </p>
+
+                        <hr>
+
+                        <p style="
+                            color:#777;
+                            font-size:13px;
+                        ">
+                            Este correo fue enviado automáticamente
+                            por BacoApp.
+                        </p>
+
+                    </div>
+                `
+            });
+
+            console.log(
+                `Correo de cancelación del pedido #${pedidoActual.id_pedido} enviado a ${pedidoActual.correo}`
+            );
+
+        } catch (error) {
+
+            console.error(
+                `El pedido #${pedidoActual.id_pedido} fue cancelado, pero no se pudo enviar el correo:`,
+                error
+            );
+        }
+
+        // ==========================================
+        // RESPUESTA
+        // ==========================================
 
         res.json({
             ok: true,
