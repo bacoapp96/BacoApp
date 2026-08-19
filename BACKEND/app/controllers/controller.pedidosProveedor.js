@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import brevo from "../config/brevo.js";
 
 // LISTAR PEDIDOS
 export const listarPedidosProveedor = async (req, res) => {
@@ -176,6 +177,7 @@ export const crearPedidoProveedor = async (req, res) => {
 
             detalles.push({
                 id_producto,
+                nombre: producto[0].nombre,
                 cantidad,
                 precio,
                 subtotal
@@ -215,12 +217,170 @@ export const crearPedidoProveedor = async (req, res) => {
 
         await connection.commit();
 
-        res.status(201).json({
-            ok: true,
-            message: "Pedido creado correctamente",
-            id_pedido,
-            total
-        });
+
+// ==========================================
+// ENVIAR CORREO AL PROVEEDOR
+// ==========================================
+
+try {
+
+    const productosCorreo = detalles.map(detalle => {
+
+    return `
+        <tr>
+            <td style="padding:8px;border-bottom:1px solid #ddd;">
+                ${detalle.nombre}
+            </td>
+
+            <td style="padding:8px;border-bottom:1px solid #ddd;text-align:center;">
+                ${detalle.cantidad}
+            </td>
+
+            <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">
+                $${Number(detalle.precio).toLocaleString("es-CO")}
+            </td>
+
+            <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">
+                $${Number(detalle.subtotal).toLocaleString("es-CO")}
+            </td>
+        </tr>
+    `;
+
+}).join("");
+
+
+    await brevo.transactionalEmails.sendTransacEmail({
+
+        sender: {
+            name: "BacoApp",
+            email: "bacoapp96@gmail.com"
+        },
+
+        to: [
+            {
+                email: proveedor[0].correo,
+                name: proveedor[0].nombre
+            }
+        ],
+
+        subject: `Nuevo pedido de BacoApp #${id_pedido}`,
+
+        htmlContent: `
+            <div style="
+                font-family:Arial,sans-serif;
+                max-width:700px;
+                margin:auto;
+                padding:20px;
+            ">
+
+                <h2 style="color:#6b21a8;">
+                    📦 Nuevo pedido de BacoApp
+                </h2>
+
+                <p>
+                    Hola <strong>${proveedor[0].nombre}</strong>,
+                </p>
+
+                <p>
+                    Hemos generado un nuevo pedido a través de BacoApp.
+                </p>
+
+                <p>
+                    <strong>Pedido:</strong> #${id_pedido}<br>
+                    <strong>Estado:</strong> Pendiente
+                </p>
+
+                <h3>Productos solicitados</h3>
+
+                <table style="
+                    width:100%;
+                    border-collapse:collapse;
+                ">
+
+                    <thead>
+
+                        <tr style="background:#f3f3f3;">
+
+                            <th style="padding:8px;text-align:left;">
+                                Producto
+                            </th>
+
+                            <th style="padding:8px;">
+                                Cantidad
+                            </th>
+
+                            <th style="padding:8px;text-align:right;">
+                                Precio
+                            </th>
+
+                            <th style="padding:8px;text-align:right;">
+                                Subtotal
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        ${productosCorreo}
+                    </tbody>
+
+                </table>
+
+                <h3 style="text-align:right;">
+                    Total:
+                    $${Number(total).toLocaleString("es-CO")}
+                </h3>
+
+                ${
+                    observaciones
+                        ? `
+                            <p>
+                                <strong>Observaciones:</strong><br>
+                                ${observaciones}
+                            </p>
+                        `
+                        : ""
+                }
+
+                <p>
+                    Por favor revise este pedido y gestione su entrega.
+                </p>
+
+                <hr>
+
+                <p style="color:#777;font-size:13px;">
+                    Este correo fue enviado automáticamente por BacoApp.
+                </p>
+
+            </div>
+        `
+    });
+
+    console.log(
+        `Correo de pedido #${id_pedido} enviado a ${proveedor[0].correo}`
+    );
+
+} catch (error) {
+
+    console.error(
+        `El pedido #${id_pedido} fue creado, pero no se pudo enviar el correo:`,
+        error
+    );
+
+}
+
+
+// ==========================================
+// RESPUESTA
+// ==========================================
+
+res.status(201).json({
+    ok: true,
+    message: "Pedido creado correctamente",
+    id_pedido,
+    total
+});
 
     } catch (error) {
 
