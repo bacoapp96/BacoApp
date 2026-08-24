@@ -25,7 +25,7 @@ async function mostrarDetallesAguardientes(id) {
         const respuesta = await fetch(`https://bacoapp-production.up.railway.app/api/productos/${id}`);
         const aguardiente = await respuesta.json();
 
-        console.log(aguardiente);
+        
 
         document.getElementById("id").textContent = aguardiente.id;
         document.getElementById("nombre").textContent = aguardiente.nombre;
@@ -63,7 +63,7 @@ document.querySelectorAll(".btn-ver-mas").forEach(btn => {
     btn.addEventListener("click", () => {
         const id = btn.dataset.id;
 
-        console.log("ID:", id);
+        
 
         mostrarDetallesAguardientes(id);
     });

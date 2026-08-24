@@ -127,25 +127,3 @@ app.listen(PORT, "0.0.0.0", () => {
 
 
 
-// Configuración de la sesión
-function verificarLogin(req, res, next) {
-    if (!req.session.usuario) {
-        return res.redirect("/login");
-    }
-    next();
-}
-
-app.get("/api/session", (req, res) => {
-
-    if (!req.session.usuario) {
-        return res.status(401).json({
-            ok: false,
-            message: "No autenticado"
-        });
-    }
-
-    res.json({
-        ok: true,
-        usuario: req.session.usuario
-    });
-});

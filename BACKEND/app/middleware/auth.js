@@ -22,12 +22,17 @@ export const verificarFirmaFrontend = (req, res, next) => {
 };
 
 export const requiereAdmin = (req, res, next) => {
-    if (!req.usuarioAutenticado || req.usuarioAutenticado.rol?.toLowerCase() !== "admin") {
-        return res.status(403).json({ error: "Prohibido. Requiere rol de administrador." });
+
+    const rol = req.usuarioAutenticado?.rol?.trim().toLowerCase();
+
+    if (rol !== "admin" && rol !== "administrador") {
+        return res.status(403).json({
+            error: "Prohibido. Requiere rol de administrador."
+        });
     }
+
     next();
 };
-
 export const requiereUsuarioLogueado = (req, res, next) => {
     if (!req.usuarioAutenticado || !req.usuarioAutenticado.id) {
         return res.status(403).json({ error: "Prohibido. Requiere estar autenticado." });

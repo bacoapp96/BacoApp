@@ -25,7 +25,7 @@ async function mostrarDetallesDulces(id) {
         const respuesta = await fetch(`https://bacoapp-production.up.railway.app/api/productos/${id}`);
         const dulce = await respuesta.json();
 
-        console.log(dulce);
+        
 
         document.getElementById("id").textContent = dulce.id;
         document.getElementById("nombre").textContent = dulce.nombre;

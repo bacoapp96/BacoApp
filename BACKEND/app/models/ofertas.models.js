@@ -185,10 +185,10 @@ export const obtenerOfertasActivas = async () => {
             p.material,
             p.imagen,
 
-           ROUND(
-                 p.precio - (p.precio * o.descuento / 100),
-                    0
-                    ) AS precio_oferta
+            ROUND(
+                p.precio - (p.precio * o.descuento / 100),
+                0
+            ) AS precio_oferta
 
         FROM ofertas o
 
@@ -196,13 +196,12 @@ export const obtenerOfertasActivas = async () => {
             ON o.id_producto = p.id
 
         WHERE
-            NOW() BETWEEN o.fecha_inicio AND o.fecha_fin
+        CURDATE() BETWEEN o.fecha_inicio AND o.fecha_fin
 
-        AND
-            (
-                o.hasta_agotar_existencias = 0
-                OR p.stock > 0
-            )
+        AND (
+            o.hasta_agotar_existencias = 0
+            OR p.stock > 0
+        )
 
         ORDER BY o.fecha_inicio DESC
 

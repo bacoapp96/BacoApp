@@ -92,6 +92,7 @@ export const postLogin = async (req, res) => {
 
 req.session.usuario = normalizarUsuario(data.user);
 
+// Guardar explícitamente la sesión en MySQL
 const sessionResponse = await fetch(
     `${BACKEND_URL}/api/session`,
     {
@@ -106,7 +107,9 @@ const sessionResponse = await fetch(
             "x-session-id": req.sessionID
         },
         body: JSON.stringify({
-            session: req.session
+            session: {
+                usuario: req.session.usuario
+            }
         })
     }
 );
@@ -624,7 +627,7 @@ export const getCarrito = (req, res) => {
         const response = await fetch(API_URL.clientes);
         const clientes = await response.json();
 
-        console.log(clientes);
+       
         res.render (getPath("../../views/clientes.ejs"),{
             clientes
         });
@@ -763,8 +766,7 @@ const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`, {
         const usuario = normalizarUsuario(await response.json());
         req.session.usuario = usuario;
 
-        console.log("Usuario:", usuario);
-console.log("Id cliente:", usuario.id_cliente);
+
 
         // obtener ventas cliente
         const responseVentas = await fetch(
@@ -857,7 +859,7 @@ export const getVinos = async (req, res) => {
         const response = await fetch(`${API_URL.productos}/categoria/Cervezas`);
         const cervezas = await response.json();
 
-        console.log(cervezas);
+        
         res.render (getPath("../../views/cervezas.ejs"),{
             cervezas
         });

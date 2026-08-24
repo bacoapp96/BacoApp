@@ -180,8 +180,7 @@ const getRequiredRole = (method, urlPath) => {
 app.all(/^\/api\/(.*)/, upload.any(), async (req, res) => {
     const requiredRole = getRequiredRole(req.method, req.path);
 
-  console.log("USUARIO SESION:", req.session?.usuario);
-console.log("ROL SESION:", req.session?.usuario?.rol);
+
 
   if (requiredRole) {
     if (!req.session?.usuario?.id) {

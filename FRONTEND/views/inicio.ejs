@@ -119,9 +119,9 @@
 
   
 
-  <% if (ofertas && ofertas.length > 0) { %>
+<% if (ofertasLista.length > 0) { %>
 
-    <% ofertas.forEach(oferta => { %>
+    <% ofertasLista.forEach(oferta => { %>
 
        <div class="producto-grid">
 
@@ -130,23 +130,38 @@
             <!-- AQUÍ VA LA IMAGEN -->
             <div class="producto-imagen">
 
-                <% if (oferta.imagen) { %>
+<% if (oferta.imagen) { %>
 
-                    <img
-                        src="<%= BACKEND_URL %><%= oferta.imagen %>"
-                        alt="<%= oferta.nombre %>"
-                    >
+    <%
+        const imagenOferta = oferta.imagen.startsWith("http")
+            ? oferta.imagen
+            : `${BACKEND_URL}${oferta.imagen.startsWith("/")
+                ? oferta.imagen
+                : "/" + oferta.imagen}`;
+    %>
 
-                <% } else { %>
+    <img
+        src="<%= imagenOferta %>"
+        alt="<%= oferta.producto %>"
+        loading="lazy"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    >
 
-                    <div class="sin-imagen">
-                        <i class="fa-solid fa-image"></i>
-                        <span>Sin imagen</span>
-                    </div>
+    <div class="sin-imagen" style="display:none;">
+        <i class="fa-solid fa-image"></i>
+        <span>Sin imagen</span>
+    </div>
 
-                <% } %>
+<% } else { %>
 
-            </div>
+    <div class="sin-imagen">
+        <i class="fa-solid fa-image"></i>
+        <span>Sin imagen</span>
+    </div>
+
+<% } %>
+
+</div>
 
             <!-- AQUÍ VA LA INFORMACIÓN -->
             <div class="producto-info">
@@ -454,7 +469,7 @@
 </section>
   </main>
 
-  <script src="/js/config.js"></script>
+ 
 <script src="/js/sidebar.js"></script>
   <script src="/js/inicio.js"></script>
   <script src="/js/cart.js"></script>

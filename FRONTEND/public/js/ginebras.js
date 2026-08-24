@@ -25,7 +25,7 @@ async function mostrarDetallesGinebra(id) {
         const respuesta = await fetch(`https://bacoapp-production.up.railway.app/api/productos/${id}`);
         const ginebra = await respuesta.json();
 
-        console.log(ginebra);
+       
 
         document.getElementById("id").textContent = ginebra.id;
         document.getElementById("nombre").textContent = ginebra.nombre;
@@ -63,7 +63,7 @@ document.querySelectorAll(".btn-ver-mas").forEach(btn => {
     btn.addEventListener("click", () => {
         const id = btn.dataset.id;
 
-        console.log("ID:", id);
+        
 
         mostrarDetallesGinebra(id);
     });

@@ -98,13 +98,6 @@ function getProductData(button) {
         button.dataset.tipo ||
         "Producto";
 
-    console.log("=================================");
-    console.log("PRODUCTO PARA CARRITO");
-    console.log("ID:", id);
-    console.log("Nombre:", name);
-    console.log("Precio:", price);
-    console.log("Tipo:", tipo);
-    console.log("=================================");
 
     if (!id) {
         console.error("Este producto no tiene ID:", id);
@@ -357,9 +350,7 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
         const idCliente = Number(usuario.Id_cliente);
         const idUsuario = Number(usuario.Id_usuario);
 
-        console.log("USUARIO PARA CHECKOUT:", usuario);
-        console.log("ID CLIENTE:", idCliente);
-        console.log("ID USUARIO:", idUsuario);
+
 
         if (!idCliente || !idUsuario) {
             alert("No se pudo identificar el cliente o usuario.");
@@ -419,7 +410,7 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
             
         };
 
-        console.log("ENVIANDO A MERCADO PAGO:", payload);
+       
 
 
         // ==============================
@@ -440,7 +431,7 @@ const response = await fetch(
 
 const data = await response.json();
 
-console.log("RESPUESTA WOMPI:", data);
+
 
 if (!response.ok) {
 
@@ -471,7 +462,7 @@ const params = new URLSearchParams({
 const wompiUrl =
     `https://checkout.wompi.co/p/?${params.toString()}`;
 
-console.log("URL WOMPI:", wompiUrl);
+
 
 console.log("DATOS WOMPI:", {
     publicKey: data.publicKey,
