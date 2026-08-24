@@ -24,10 +24,23 @@
       <li class="<%= active === 'carrito' ? 'active' : '' %>">
         <a href="/carrito"><i class="fa-solid fa-cart-shopping"></i> Carrito <span data-cart-count>0</span></a>
       </li>
+<%
+    const rolUsuario =
+        typeof usuario !== "undefined" && usuario?.rol
+            ? usuario.rol.trim().toLowerCase()
+            : "";
+%>
+
 <li class="<%= active === 'cuenta' ? 'active' : '' %>">
-    <a href="<%= usuario?.rol?.trim().toLowerCase() === 'admin' || usuario?.rol?.trim().toLowerCase() === 'administrador' ? '/cuenta-admin' : '/Cuenta' %>">
+
+    <a href="<%= rolUsuario === 'admin' || rolUsuario === 'administrador'
+        ? '/cuenta-admin'
+        : '/Cuenta' %>">
+
         <i class="fa-solid fa-user"></i> Cuenta
+
     </a>
+
 </li>
       <li>
         <a href="/Index"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion</a>
