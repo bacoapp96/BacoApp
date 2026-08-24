@@ -12,6 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const cerrar = modal.querySelector(".cerrar");
 
+    // URL del backend
+    const BACKEND_URL =
+        window.BACKEND_URL ||
+        "https://bacoapp-production.up.railway.app";
+
     // ==========================================
     // BOTÓN VER DETALLES
     // ==========================================
@@ -27,20 +32,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = btn.dataset.idProducto;
 
         if (!id) {
+            alert("No se encontró el producto.");
             return;
         }
 
         try {
 
             const respuesta = await fetch(
-                `${window.BACKEND_URL}/api/productos/${id}`
+                `${BACKEND_URL}/api/productos/${id}`
             );
 
             if (!respuesta.ok) {
-                throw new Error("No se pudo obtener el producto");
+                throw new Error(
+                    `Error HTTP: ${respuesta.status}`
+                );
             }
 
             const producto = await respuesta.json();
+
+            // ==========================================
+            // LLENAR MODAL
+            // ==========================================
 
             document.getElementById("detalle-id").textContent =
                 producto.id ?? "";
@@ -52,7 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 producto.descripcion ?? "";
 
             document.getElementById("detalle-precio").textContent =
-                Number(producto.precio || 0).toLocaleString("es-CO");
+                Number(producto.precio || 0)
+                    .toLocaleString("es-CO");
 
             document.getElementById("detalle-stock").textContent =
                 producto.stock ?? 0;
@@ -69,12 +82,19 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("detalle-pais").textContent =
                 producto.pais ?? "";
 
+            // ==========================================
+            // MOSTRAR MODAL
+            // ==========================================
+
             modal.style.display = "flex";
 
         } catch (error) {
 
-            // No mostramos información de depuración al usuario
-            alert("No se pudieron cargar los detalles del producto.");
+            console.error("Error obteniendo detalles:", error);
+
+            alert(
+                "No se pudieron cargar los detalles del producto."
+            );
 
         }
 
@@ -87,7 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cerrar) {
 
         cerrar.addEventListener("click", () => {
+
             modal.style.display = "none";
+
         });
 
     }
@@ -99,7 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("click", (e) => {
 
         if (e.target === modal) {
+
             modal.style.display = "none";
+
         }
 
     });
