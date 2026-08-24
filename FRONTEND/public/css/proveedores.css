@@ -933,3 +933,16 @@ MODAL
     }
 
 }
+
+/* Espaciador y estructura para el listado de tarjetas de pedido */
+#detallePedidos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
+/* Margen de separación para la tarjeta de detalle completo */
+.pedido-detalle-card {
+    margin-top: 16px;
+}

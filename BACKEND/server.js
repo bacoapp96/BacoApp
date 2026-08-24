@@ -26,6 +26,7 @@ import proveedoresRoutes from "./app/routes/routes.proveedor.js";
 import pedidosProveedorRoutes from "./app/routes/routes.pedidosProveedor.js";
 import mercadoPagoRoutes from './app/routes/routes.mercadopago.js';
 import wompiRoutes from "./app/routes/routes.wompi.js";
+import sessionRoutes from "./app/routes/routes.session.js";
 
 
 
@@ -63,20 +64,28 @@ app.use(cors({
     credentials: true
 }));
 import session from 'express-session';
+import { sessionStore } from './app/middleware/sessionStore.js';
 
 
 
 //para recibir datos de formularios
-app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
-        secret: process.env.SESSION_SECRET || "bacoapp_secret",
-        resave: false,
-        saveUninitialized: false,
-       cookie: {
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 24 * 60 * 60 * 1000
+        store: sessionStore,
 
+        name: "baco_sid",
+
+        secret: process.env.SESSION_SECRET || "bacoapp_secret",
+
+        resave: false,
+
+        saveUninitialized: false,
+
+        cookie: {
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000
         }
     })
 );
@@ -86,6 +95,7 @@ app.use(
 import { verificarFirmaFrontend, requiereAdmin, requiereUsuarioLogueado } from './app/middleware/auth.js';
 
 // RUTAS API 
+app.use("/api/session", sessionRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/clientes', verificarFirmaFrontend, requiereAdmin, clienteRoutes);
 app.use('/api/detalle_venta', verificarFirmaFrontend, requiereAdmin, detallesVentaRoutes);

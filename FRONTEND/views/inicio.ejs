@@ -43,8 +43,12 @@
         <li class="active"><a href="/Inicio"><i class="fa-solid fa-house"></i> Inicio</a></li>
         <li><a href="/Categorias"><i class="fa-solid fa-wine-bottle"></i> Categorias</a></li>
         <li><a href="#carrito"><i class="fa-solid fa-cart-shopping"></i> Carrito <span data-cart-count>0</span></a></li>
-        <li><a href="/Cuenta"><i class="fa-solid fa-user"></i> Cuenta</a></li>
-        <li><a href="/Index"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion</a></li>
+    <li>
+        <a href="<%= usuario?.rol?.trim().toLowerCase() === 'admin' || usuario?.rol?.trim().toLowerCase() === 'administrador' ? '/cuenta-admin' : '/Cuenta' %>">
+            <i class="fa-solid fa-user"></i> Cuenta
+        </a>
+    </li>        
+    <li><a href="/Index"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion</a></li>
       </ul>
     </nav>
   </aside>

@@ -25,8 +25,8 @@ export const API_URL = {
 
 const getPath = (ruta) => fileURLToPath(new URL(ruta, import.meta.url));
 
-const normalizarUsuario = (usuario = {}) => {
-    // La sesión del frontend es la fuente que consume el checkout. Conservamos
+const normalizarUsuario = (usuario = {}, rolAnterior = "") => {
+        // La sesión del frontend es la fuente que consume el checkout. Conservamos
     // explícitamente los nombres del API para no perder la relación usuario-cliente.
     const Id_usuario = usuario.Id_usuario ?? usuario.id ?? "";
     const Id_cliente = usuario.Id_cliente ?? usuario.id_cliente ?? "";
@@ -42,7 +42,7 @@ const normalizarUsuario = (usuario = {}) => {
     telefono: usuario.Celular || usuario.Telefono || usuario.telefono || "",
     documento: usuario.Documento || usuario.documento || "",
     direccion: usuario.Direccion || usuario.direccion || "",
-    rol: usuario.rol || usuario.Rol || "",
+    rol: usuario.rol || usuario.Rol || rolAnterior || "",
 
     // Datos del cliente
     id_cliente: Id_cliente,
@@ -90,13 +90,44 @@ export const postLogin = async (req, res) => {
             return res.status(response.status === 200 ? 401 : response.status).json(data);
         }
 
-        req.session.usuario = normalizarUsuario(data.user);
-        
+req.session.usuario = normalizarUsuario(data.user);
 
-        res.json({
-            ok: true,
-            user: req.session.usuario
-        });
+const sessionResponse = await fetch(
+    `${BACKEND_URL}/api/session`,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":
+                `Bearer ${
+                    process.env.BACKEND_SECRET_KEY ||
+                    "clave_firma_seguridad_bacoapp"
+                }`,
+            "x-session-id": req.sessionID
+        },
+        body: JSON.stringify({
+            session: req.session
+        })
+    }
+);
+
+if (!sessionResponse.ok) {
+
+    console.error(
+        "No se pudo guardar la sesión en MySQL:",
+        await sessionResponse.text()
+    );
+
+    return res.status(500).json({
+        ok: false,
+        message: "No se pudo guardar la sesión."
+    });
+}
+
+return res.json({
+    ok: true,
+    user: req.session.usuario
+});
     } catch (error) {
         res.status(500).json({
             ok: false,
@@ -106,19 +137,69 @@ export const postLogin = async (req, res) => {
     }
 };
 
-export const getSession = (req, res) => {
-    if (!req.session?.usuario) {
-        return res.status(401).json({ ok: false, message: "Sesion no activa" });
+export const getSession = async (req, res) => {
+
+    try {
+
+        if (!req.session?.usuario) {
+            return res.status(401).json({
+                ok: false,
+                message: "Sesion no activa"
+            });
+        }
+
+        const rolAnterior = req.session.usuario.rol || "";
+
+        req.session.usuario = normalizarUsuario(
+            req.session.usuario,
+            rolAnterior
+        );
+
+        // Mantener la sesión persistente actualizada
+        const sessionResponse = await fetch(
+            `${BACKEND_URL}/api/session`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":
+                        `Bearer ${
+                            process.env.BACKEND_SECRET_KEY ||
+                            "clave_firma_seguridad_bacoapp"
+                        }`,
+                    "x-session-id": req.sessionID
+                },
+                body: JSON.stringify({
+                    session: req.session
+                })
+            }
+        );
+
+        if (!sessionResponse.ok) {
+
+            console.error(
+                "No se pudo actualizar la sesión:",
+                await sessionResponse.text()
+            );
+        }
+
+        return res.json({
+            ok: true,
+            usuario: req.session.usuario
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error obteniendo sesión:",
+            error
+        );
+
+        return res.status(500).json({
+            ok: false,
+            message: "Error obteniendo sesión"
+        });
     }
-
-    // También repara sesiones creadas antes de que se conservaran los nombres
-    // canónicos de los identificadores.
-    req.session.usuario = normalizarUsuario(req.session.usuario);
-
-    res.json({
-        ok: true,
-        usuario: req.session.usuario
-    });
 };
 
 export const putCuenta = async (req, res) => {
@@ -185,14 +266,46 @@ export const putCuenta = async (req, res) => {
       });
     }
 
-    const updatedUser = await updatedResponse.json();
+const updatedUser = await updatedResponse.json();
 
-    req.session.usuario = normalizarUsuario(updatedUser);
+req.session.usuario = normalizarUsuario(updatedUser);
 
-    return res.json({
-      ok: true,
-      usuario: req.session.usuario
-    });
+// Actualizar la sesión persistente en MySQL
+const sessionResponse = await fetch(
+    `${BACKEND_URL}/api/session`,
+    {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json",
+
+            "Authorization":
+                `Bearer ${
+                    process.env.BACKEND_SECRET_KEY ||
+                    "clave_firma_seguridad_bacoapp"
+                }`,
+
+            "x-session-id": req.sessionID
+        },
+
+        body: JSON.stringify({
+            session: req.session
+        })
+    }
+);
+
+if (!sessionResponse.ok) {
+
+    console.error(
+        "No se pudo actualizar la sesión en MySQL:",
+        await sessionResponse.text()
+    );
+}
+
+return res.json({
+    ok: true,
+    usuario: req.session.usuario
+});
 
   } catch (error) {
     console.error("Error al actualizar cuenta:", error);
@@ -263,9 +376,25 @@ export const postAdministrador = async (req, res) => {
         });
     }
 };
-export const postLogout = (req, res) => {
-    req.destroySession?.();
-    res.json({ ok: true });
+export const postLogout = async (req, res) => {
+
+    try {
+
+        await req.destroySession?.();
+
+        return res.json({
+            ok: true
+        });
+
+    } catch (error) {
+
+        console.error("Error en logout:", error);
+
+        return res.status(500).json({
+            ok: false,
+            message: "Error al cerrar sesión"
+        });
+    }
 };
 
 //controlador estatico
@@ -277,30 +406,112 @@ export const getIndex = (req, res) => {
 //controlador para cuenta-admin
 
 export const getCuentaAdmin = async (req, res) => {
+
     if (!requiereAdmin(req, res)) return;
 
     try {
-const response = await fetch(`${API_URL.usuarios}/${req.session.usuario.id}`, {
-    headers: {
-        "Authorization": `Bearer ${process.env.BACKEND_SECRET_KEY || "clave_firma_seguridad_bacoapp"}`,
-        "x-user-id": String(req.session.usuario.id),
-        "x-user-role": String(req.session.usuario.rol || "")
-    }
-});
+
+        const response = await fetch(
+            `${API_URL.usuarios}/${req.session.usuario.id}`,
+            {
+                headers: {
+                    "Authorization":
+                        `Bearer ${
+                            process.env.BACKEND_SECRET_KEY ||
+                            "clave_firma_seguridad_bacoapp"
+                        }`,
+
+                    "x-user-id":
+                        String(req.session.usuario.id),
+
+                    "x-user-role":
+                        String(req.session.usuario.rol || "")
+                }
+            }
+        );
+
         if (!response.ok) {
+
             req.destroySession?.();
+
             return res.redirect("/login");
         }
 
-        const usuario = normalizarUsuario(await response.json());
+        // Guardamos el rol que ya tenía la sesión
+        const rolAnterior =
+            req.session.usuario?.rol || "";
+
+        // Leer la respuesta UNA sola vez
+        const datosUsuario =
+            await response.json();
+
+        // Normalizar conservando el rol anterior
+        const usuario =
+            normalizarUsuario(
+                datosUsuario,
+                rolAnterior
+            );
+
         req.session.usuario = usuario;
 
-        res.render(getPath("../../views/cuenta-admin.ejs"), { usuario });
+        // Actualizar sesión persistente en MySQL
+        const sessionResponse = await fetch(
+            `${BACKEND_URL}/api/session`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    "Authorization":
+                        `Bearer ${
+                            process.env.BACKEND_SECRET_KEY ||
+                            "clave_firma_seguridad_bacoapp"
+                        }`,
+
+                    "x-session-id":
+                        req.sessionID
+                },
+
+                body: JSON.stringify({
+                    session: req.session
+                })
+            }
+        );
+
+        if (!sessionResponse.ok) {
+
+            console.error(
+                "No se pudo actualizar la sesión:",
+                await sessionResponse.text()
+            );
+        }
+
+        return res.render(
+            getPath(
+                "../../views/cuenta-admin.ejs"
+            ),
+            {
+                usuario: req.session.usuario
+            }
+        );
+
     } catch (error) {
-        console.error("Error cuenta admin:", error);
-        res.render(getPath("../../views/cuenta-admin.ejs"), {
-            usuario: req.session.usuario
-        });
+
+        console.error(
+            "Error cuenta admin:",
+            error
+        );
+
+        return res.render(
+            getPath(
+                "../../views/cuenta-admin.ejs"
+            ),
+            {
+                usuario: req.session.usuario
+            }
+        );
     }
 };
 
@@ -505,7 +716,8 @@ export const getInicio = async (req, res) => {
         res.render("inicio", {
             productos,
             ofertas,
-            masVendidos
+            masVendidos,
+            usuario: req.session?.usuario || null
         });
 
     } catch (error) {
@@ -515,7 +727,8 @@ export const getInicio = async (req, res) => {
         res.render("inicio", {
             productos: [],
             ofertas: [],
-            masVendidos: []
+            masVendidos: [],
+            usuario: req.session?.usuario || null
         });
 
     }

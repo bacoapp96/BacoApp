@@ -19,12 +19,13 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
+app.set("trust proxy", 1);
 const upload = multer();
 const PORT = process.env.PORT || 4000;
 
 app.locals.BACKEND_URL = process.env.BACKEND_URL || (process.env.NODE_ENV === "production" ? "https://bacoapp-production.up.railway.app" : "http://localhost:3000");
 
-const sessions = new Map();
+
 
 const parseCookies = (cookieHeader = "") => Object.fromEntries(
   cookieHeader
@@ -40,29 +41,100 @@ const parseCookies = (cookieHeader = "") => Object.fromEntries(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  const cookies = parseCookies(req.headers.cookie);
-  let sessionId = cookies.baco_sid;
+app.use(async (req, res, next) => {
 
-  if (!sessionId || !sessions.has(sessionId)) {
-    sessionId = crypto.randomUUID();
-    sessions.set(sessionId, {});
-    res.cookie("baco_sid", sessionId, {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/"
-    });
-  }
+    try {
 
-  req.session = sessions.get(sessionId);
-  req.sessionID = sessionId;
+        const cookies = parseCookies(req.headers.cookie);
 
-  req.destroySession = () => {
-    sessions.delete(sessionId);
-    res.clearCookie("baco_sid", { path: "/" });
-  };
+        let sessionId = cookies.baco_sid;
 
-  next();
+        if (!sessionId) {
+
+            sessionId = crypto.randomUUID();
+
+            res.cookie("baco_sid", sessionId, {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production",
+                path: "/"
+            });
+        }
+
+        req.sessionID = sessionId;
+
+        // Recuperar sesión desde el backend / MySQL
+        const response = await fetch(
+            `${app.locals.BACKEND_URL}/api/session`,
+            {
+                headers: {
+                    "Authorization":
+                        `Bearer ${
+                            process.env.BACKEND_SECRET_KEY ||
+                            "clave_firma_seguridad_bacoapp"
+                        }`,
+                    "x-session-id": sessionId
+                }
+            }
+        );
+
+        if (response.ok) {
+
+            const data = await response.json();
+
+            req.session = data.session || {};
+
+        } else {
+
+            req.session = {};
+        }
+
+        req.destroySession = async () => {
+
+            try {
+
+                await fetch(
+                    `${app.locals.BACKEND_URL}/api/session`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization":
+                                `Bearer ${
+                                    process.env.BACKEND_SECRET_KEY ||
+                                    "clave_firma_seguridad_bacoapp"
+                                }`,
+                            "x-session-id": sessionId
+                        }
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Error eliminando sesión:",
+                    error
+                );
+            }
+
+            res.clearCookie("baco_sid", {
+                path: "/"
+            });
+        };
+
+        next();
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando sesión:",
+            error
+        );
+
+        req.session = {};
+        req.sessionID = null;
+
+        next();
+    }
 });
 
 //archivos estaticos

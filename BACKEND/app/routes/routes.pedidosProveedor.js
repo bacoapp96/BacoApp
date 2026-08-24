@@ -4,7 +4,8 @@ import {
     listarPedidosProveedor,
     obtenerPedidoProveedor,
     crearPedidoProveedor,
-    cancelarPedidoProveedor
+    cancelarPedidoProveedor,
+    recibirPedidoProveedor
 } from "../controllers/controller.pedidosProveedor.js";
 
 const router = Router();
@@ -17,6 +18,9 @@ router.get("/:id", obtenerPedidoProveedor);
 
 // CREAR PEDIDO
 router.post("/", crearPedidoProveedor);
+
+//Recibir pedido
+router.put("/:id/recibir",recibirPedidoProveedor);
 
 // CANCELAR PEDIDO
 router.put("/:id/cancelar", cancelarPedidoProveedor);

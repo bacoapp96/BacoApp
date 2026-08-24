@@ -80,7 +80,7 @@
 
                 <h3>Entregas hoy</h3>
 
-                <p>4</p>
+                <p>0</p>
 
             </div>
 
@@ -103,25 +103,11 @@
 
                 <h2>Lista de proveedores</h2>
 
-                <select id="filtroEstado">
-
-                    <option value="todos">
-                        Todos
-                    </option>
-
-                    <option value="Activo">
-                        Activos
-                    </option>
-
-                    <option value="Pendiente">
-                        Pendientes
-                    </option>
-
-                    <option value="Cancelado">
-                        Cancelados
-                    </option>
-
-                </select>
+<select id="filtroEstado">
+    <option value="todos">Todos los proveedores</option>
+    <option value="Activo">Activos</option>
+    <option value="Inactivo">Inactivos</option>
+</select>
 
             </div>
 
@@ -161,17 +147,38 @@
 
         <!-- DETALLE PEDIDOS -->
 
-        <div class="detalle-container">
+<div class="detalle-container">
 
-            <h2>
-                📦 Pedidos recientes
-            </h2>
+    <div class="detalle-header">
 
-            <div id="detallePedidos">
+        <h2>
+            📦 Pedidos recientes
+        </h2>
 
-            </div>
+        <select id="filtroPedidosEstado">
+            <option value="todos">
+                Todos los pedidos
+            </option>
 
-        </div>
+            <option value="Pendiente">
+                Abiertos
+            </option>
+
+            <option value="Recibido">
+                Entregados
+            </option>
+
+            <option value="Cancelado">
+                Cancelados
+            </option>
+        </select>
+
+    </div>
+
+    <div id="detallePedidos">
+    </div>
+
+</div>
 
 
 

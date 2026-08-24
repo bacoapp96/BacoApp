@@ -680,3 +680,98 @@ export const cancelarPedidoProveedor = async (req, res) => {
         });
     }
 };
+
+// ==========================================
+// MARCAR PEDIDO COMO RECIBIDO
+// ==========================================
+
+export const recibirPedidoProveedor = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+
+        const [pedido] = await pool.query(
+            `
+            SELECT
+                id_pedido,
+                estado
+            FROM pedidos_proveedor
+            WHERE id_pedido = ?
+            `,
+            [id]
+        );
+
+
+        if (pedido.length === 0) {
+
+            return res.status(404).json({
+                ok: false,
+                message: "Pedido no encontrado"
+            });
+
+        }
+
+
+        const pedidoActual = pedido[0];
+
+
+        // =========================
+        // VALIDAR ESTADO
+        // =========================
+
+        if (pedidoActual.estado === "Recibido") {
+
+            return res.status(400).json({
+                ok: false,
+                message: "El pedido ya está recibido"
+            });
+
+        }
+
+
+        if (pedidoActual.estado === "Cancelado") {
+
+            return res.status(400).json({
+                ok: false,
+                message: "No se puede recibir un pedido cancelado"
+            });
+
+        }
+
+
+        // =========================
+        // CAMBIAR ESTADO
+        // =========================
+
+        await pool.query(
+            `
+            UPDATE pedidos_proveedor
+            SET estado = 'Recibido'
+            WHERE id_pedido = ?
+            `,
+            [id]
+        );
+
+
+        res.json({
+            ok: true,
+            message: "Pedido marcado como recibido correctamente"
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Error marcando pedido como recibido:",
+            error
+        );
+
+        res.status(500).json({
+            ok: false,
+            message: "Error al marcar pedido como recibido"
+        });
+
+    }
+
+};

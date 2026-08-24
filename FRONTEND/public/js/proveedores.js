@@ -151,14 +151,11 @@ async function cargarPedidosProveedor() {
 
 }
 
-function mostrarPedidosRecientes() {
+function mostrarPedidosRecientes(filtro = "todos") {
 
     detallePedidos.innerHTML = "";
 
-    if (
-        !pedidosProveedor ||
-        pedidosProveedor.length === 0
-    ) {
+    if (!pedidosProveedor || pedidosProveedor.length === 0) {
 
         detallePedidos.innerHTML = `
             <div class="pedido-card">
@@ -175,53 +172,106 @@ function mostrarPedidosRecientes() {
         return;
     }
 
+    // =========================
+    // FILTRAR PEDIDOS
+    // =========================
 
-    pedidosProveedor
-        .slice(0, 5)
-        .forEach(pedido => {
+    const pedidosFiltrados = pedidosProveedor.filter(pedido => {
 
-            const fecha = new Date(
-                pedido.fecha_pedido
-            );
+        if (filtro === "todos") {
+            return true;
+        }
 
+        return pedido.estado === filtro;
 
-            const fechaFormateada =
-                fecha.toLocaleDateString(
-                    "es-CO"
-                );
+    });
 
 
-            detallePedidos.innerHTML += `
+    // =========================
+    // SIN RESULTADOS
+    // =========================
 
-                <div class="pedido-card">
+    if (pedidosFiltrados.length === 0) {
 
-                    <h3>
-                        Pedido #${pedido.id_pedido}
-                    </h3>
+        let mensaje = "No hay pedidos";
 
-                    <p>
-                        🚚 Proveedor:
-                        ${pedido.proveedor}
-                    </p>
+        if (filtro === "Pendiente") {
+            mensaje = "No hay pedidos abiertos";
+        }
 
-                    <p>
-                        📅 Fecha:
-                        ${fechaFormateada}
-                    </p>
+        if (filtro === "Recibido") {
+            mensaje = "No hay pedidos entregados";
+        }
 
-                    <p>
-                        💰 Total:
-                        $${Number(
-                            pedido.total || 0
-                        ).toLocaleString("es-CO")}
-                    </p>
+        if (filtro === "Cancelado") {
+            mensaje = "No hay pedidos cancelados";
+        }
 
-                    <p>
-                        📌 Estado:
-                        <span class="estado ${pedido.estado.toLowerCase()}">
-                            ${pedido.estado}
-                        </span>
-                    </p>
+        detallePedidos.innerHTML = `
+            <div class="pedido-card">
+
+                <h3>${mensaje}</h3>
+
+                <p>
+                    📦 No existen pedidos con este estado.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // =========================
+    // MOSTRAR PEDIDOS
+    // =========================
+
+    pedidosFiltrados.forEach(pedido => {
+
+        const fecha = new Date(
+            pedido.fecha_pedido
+        );
+
+        const fechaFormateada =
+            fecha.toLocaleDateString("es-CO");
+
+
+        detallePedidos.innerHTML += `
+
+            <div class="pedido-card">
+
+                <h3>
+                    Pedido #${pedido.id_pedido}
+                </h3>
+
+                <p>
+                    🚚 Proveedor:
+                    ${pedido.proveedor}
+                </p>
+
+                <p>
+                    📅 Fecha:
+                    ${fechaFormateada}
+                </p>
+
+                <p>
+                    💰 Total:
+                    $${Number(
+                        pedido.total || 0
+                    ).toLocaleString("es-CO")}
+                </p>
+
+                <p>
+                    📌 Estado:
+
+                    <span class="estado ${pedido.estado.toLowerCase()}">
+                        ${pedido.estado}
+                    </span>
+
+                </p>
+
+                <div class="pedido-acciones">
 
                     <button
                         class="btn ver"
@@ -232,9 +282,11 @@ function mostrarPedidosRecientes() {
 
                 </div>
 
-            `;
+            </div>
 
-        });
+        `;
+
+    });
 
 }
 
@@ -427,6 +479,18 @@ document.getElementById("detallePedidos");
 const detalleCompleto =
 document.getElementById("detalleCompleto");
 
+const filtroPedidosEstado =
+    document.getElementById("filtroPedidosEstado");
+
+filtroPedidosEstado?.addEventListener("change", () => {
+
+    const valor =
+        filtroPedidosEstado.value;
+
+    mostrarPedidosRecientes(valor);
+
+});
+
 
 // =========================
 // MOSTRAR PROVEEDORES
@@ -579,9 +643,15 @@ function actualizarKPIs() {
         .querySelector("#cardPendientes p")
         .textContent = pendientes;
 
-    document
-        .querySelector("#cardEntregas p")
-        .textContent = entregasHoy;
+document
+    .getElementById("cardEntregas")
+    .addEventListener("click", () => {
+
+        filtroPedidosEstado.value = "Recibido";
+
+        mostrarPedidosRecientes("Recibido");
+
+    });
 
     document
         .querySelector("#cardDeuda p")
@@ -1013,35 +1083,25 @@ document
 
 
 document
-.getElementById("cardPendientes")
-.addEventListener("click", () => {
+    .getElementById("cardPendientes")
+    .addEventListener("click", () => {
 
-    mostrarProveedores(
+        filtroPedidosEstado.value = "Pendiente";
 
-        proveedores.filter(p =>
-            p.estado === "Pendiente"
-        )
+        mostrarPedidosRecientes("Pendiente");
 
-    );
-
-});
+    });
 
 
 document
-.getElementById("cardDeuda")
-.addEventListener("click", () => {
+    .getElementById("cardDeuda")
+    .addEventListener("click", () => {
 
-    const cancelados = pedidosProveedor.filter(
-        pedido => pedido.estado === "Cancelado"
-    );
+        filtroPedidosEstado.value = "Cancelado";
 
-    console.log(
-        "Pedidos cancelados:",
-        cancelados
-    );
+        mostrarPedidosRecientes("Cancelado");
 
-});
-
+    });
 
 
 // =========================
