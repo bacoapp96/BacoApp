@@ -298,23 +298,7 @@ document.querySelectorAll("button.btn-agregar").forEach((button) => {
     }
   });
 
-  document.getElementById("btn-seguir")?.addEventListener("click", closeCart);
-
-  document.getElementById("applyCoupon")?.addEventListener("click", () => {
-    coupon = couponInput?.value.trim().toUpperCase() || "";
-    localStorage.setItem(couponKey, coupon);
-    renderCart();
-    alert(coupon === "BACO10" ? "Cupon aplicado: 10% de descuento." : "Cupon guardado. Prueba BACO10 para ver el descuento demo.");
-  });
-
-  document.getElementById("clearCoupon")?.addEventListener("click", () => {
-    coupon = "";
-    localStorage.removeItem(couponKey);
-    if (couponInput) couponInput.value = "";
-    renderCart();
-  });
-
-document.getElementById("btn-pagar")?.addEventListener("click", async () => {
+ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
 
     if (!cart.length) {
         alert("Tu carrito está vacío.");
@@ -333,7 +317,6 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
 
         if (!sessionResponse.ok) {
             alert("Debes iniciar sesión para realizar la compra.");
-            window.location.href = "/login";
             return;
         }
 
@@ -341,34 +324,46 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
 
         if (!sessionData.ok || !sessionData.usuario) {
             alert("Debes iniciar sesión para realizar la compra.");
-            window.location.href = "/login";
             return;
         }
 
         const usuario = sessionData.usuario;
 
-        const idCliente = Number(usuario.Id_cliente);
-        const idUsuario = Number(usuario.Id_usuario);
+        // ==============================
+        // IDENTIFICAR USUARIO Y CLIENTE
+        // ==============================
 
+        const idUsuario = Number(
+            usuario.Id_usuario ??
+            usuario.id_usuario ??
+            usuario.id
+        );
 
+        const idCliente = Number(
+            usuario.Id_cliente ??
+            usuario.id_cliente
+        );
 
-        if (!idCliente || !idUsuario) {
-            alert("No se pudo identificar el cliente o usuario.");
+        if (!idUsuario) {
+            alert("No se pudo identificar el usuario.");
             return;
         }
 
+        if (!idCliente) {
+            alert("No se pudo identificar el cliente.");
+            return;
+        }
 
         // ==============================
         // PRODUCTOS
         // ==============================
 
-            const productos = cart.map(item => ({
+        const productos = cart.map(item => ({
             idProducto: Number(item.id),
             nombre: item.nombre,
-            cantidad: Number(item.cantidad),
-            precio: Number(item.precio)
+            cantidad: Number(item.cantidad) || 1,
+            precio: Number(item.precio) || 0
         }));
-
 
         // ==============================
         // CALCULAR TOTAL
@@ -395,113 +390,96 @@ document.getElementById("btn-pagar")?.addEventListener("click", async () => {
             0
         );
 
-
         // ==============================
-        // PAYLOAD PARA MERCADO PAGO
+        // PAYLOAD
         // ==============================
 
         const payload = {
             id_cliente: idCliente,
             id_usuario: idUsuario,
-            productos: productos,
-            subtotal: subtotal,
-            envio: envio,
-            total: total,
-            
+            productos,
+            subtotal,
+            descuento,
+            envio,
+            total
         };
 
-       
-
-
         // ==============================
-        // CREAR PREFERENCIA
+        // CREAR PAGO WOMPI
         // ==============================
 
-const response = await fetch(
-    "/api/pagos/wompi/crear",
-    {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify(payload)
+        const response = await fetch(
+            "/api/pagos/wompi/crear",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(payload)
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(
+                data.message ||
+                data.error ||
+                "No se pudo iniciar el pago."
+            );
+            return;
+        }
+
+        // ==============================
+        // REDIRECCIÓN A WOMPI
+        // ==============================
+
+        if (
+            data.ok &&
+            data.publicKey &&
+            data.currency &&
+            data.amountInCents &&
+            data.reference &&
+            data.signature
+        ) {
+
+            const params = new URLSearchParams({
+                "public-key": data.publicKey,
+                "currency": data.currency,
+                "amount-in-cents": String(data.amountInCents),
+                "reference": data.reference,
+                "signature:integrity": data.signature,
+                "redirect-url":
+                    `${window.location.origin}/pago-resultado`
+            });
+
+            sessionStorage.setItem(
+                "baco_pago",
+                JSON.stringify({
+                    id_cliente: idCliente,
+                    id_usuario: idUsuario,
+                    productos
+                })
+            );
+
+            window.location.href =
+                `https://checkout.wompi.co/p/?${params.toString()}`;
+
+        } else {
+
+            alert(
+                data.message ||
+                "No se pudo iniciar el pago."
+            );
+        }
+
+    } catch (error) {
+
+        alert(
+            "Ocurrió un error al iniciar el pago."
+        );
     }
-);
-
-const data = await response.json();
-
-
-
-if (!response.ok) {
-
-    alert(
-        data.message ||
-        "No se pudo iniciar el pago."
-    );
-
-    return;
-}
-
-
-// ==============================
-// REDIRECCIÓN A WOMPI
-// ==============================
-
-if (data.ok) {
-
-const params = new URLSearchParams({
-    "public-key": data.publicKey,
-    "currency": data.currency,
-    "amount-in-cents": String(data.amountInCents),
-    "reference": data.reference,
-    "signature:integrity": data.signature,
-    "redirect-url": `${window.location.origin}/pago-resultado`
-});
-
-const wompiUrl =
-    `https://checkout.wompi.co/p/?${params.toString()}`;
-
-
-
-console.log("DATOS WOMPI:", {
-    publicKey: data.publicKey,
-    currency: data.currency,
-    amountInCents: data.amountInCents,
-    reference: data.reference,
-    signature: data.signature
-});
-
-sessionStorage.setItem("baco_pago", JSON.stringify({
-    id_cliente: idCliente,
-    id_usuario: idUsuario,
-    productos: productos
-}));
-
-window.location.href = wompiUrl;
-
-} else {
-
-    console.error("Respuesta Wompi:", data);
-
-    alert(
-        data.message ||
-        "No se pudo iniciar el pago."
-    );
-}
-
-} catch (error) {
-
-    console.error(
-        "Error iniciando Wompi:",
-        error
-    );
-
-    alert(
-        "Ocurrió un error al iniciar el pago."
-    );
-
-}
 
 });
 
